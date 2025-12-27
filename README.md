@@ -69,16 +69,16 @@ docker run -d \
   --network host \
   -v $(pwd)/config:/config \
   --restart unless-stopped \
-  ghcr.io/yourusername/uc-intg-yourdevice:latest
+  ghcr.io/tinogo/uc-intg-stormaudio:latest
 ```
 
 ### Docker Compose
 
 ```yaml
 services:
-  uc-intg-yourdevice:
-    image: ghcr.io/yourusername/uc-intg-yourdevice:latest
-    container_name: uc-intg-yourdevice
+  uc-intg-stormaudio:
+    image: ghcr.io/tinogo/uc-intg-stormaudio:latest
+    container_name: uc-intg-stormaudio
     network_mode: host
     volumes:
       - ./config:/config
@@ -120,4 +120,4 @@ In `setup.py`, modify the `_MANUAL_INPUT_SCHEMA` to add fields for your device's
 
 ## License
 
-Mozilla Public License Version 2.0 - see [LICENSE](LICENSE) for details.
+Mozilla Public License Version 2.0 – see [LICENSE](LICENSE) for details.

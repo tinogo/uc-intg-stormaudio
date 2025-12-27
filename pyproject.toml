@@ -1,5 +1,4 @@
 [project]
-# TODO: Update project name to match your integration
 name = "uc-intg-stormaudio"
 version = "0.1.0"
 description = "Unfolded Circle Integration StormAudio"
@@ -7,19 +6,17 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MPL-2.0"
 
-# TODO: Update author information
 authors = [
     { name = "Tino Goratsch", email = "mail@goratschwebdesign.de" }
 ]
 
-# TODO: Update repository URL
 urls.Homepage = "https://github.com/tinogo/uc-intg-stormaudio"
 urls.Repository = "https://github.com/tinogo/uc-intg-stormaudio"
 
 dependencies = [
     # Core dependencies
-    "ucapi==0.4.0",
-    "ucapi-framework==1.2.3",
+    "ucapi==0.5.1",
+    "ucapi-framework==1.4.0",
     "pyee>=9.0",
     
     # Discovery protocols
