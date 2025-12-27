@@ -1,31 +1,30 @@
 {
-  "driver_id": "your_device_driver",
+  "driver_id": "integration-stormaudio-ng",
   "version": "0.1.0",
   "min_core_api": "0.20.0",
-  "name": { "en": "Your Device Name" },
+  "name": { "en": "StormAudio" },
   "icon": "uc:integration",
   "description": {
-    "en": "Control your network-connected device"
+    "en": "Control your StormAudio AV-Processor/-Receiver.",
+    "de": "Steuere deinen StormAudio AV-Prozessor/-Receiver."
   },
   "developer": {
-    "name": "Your Name",
-    "email": "your.email@example.com",
-    "url": "https://github.com/yourusername"
+    "name": "Tino Goratsch",
+    "email": "mail@goratschwebdesign.de",
+    "url": "https://github.com/tinogo"
   },
-  "home_page": "https://github.com/yourusername/uc-intg-yourdevice",
+  "home_page": "https://github.com/tinogo/uc-intg-stormaudio",
   "setup_data_schema": {
     "title": {
       "en": "Integration setup",
-      "de": "Integrationssetup",
-      "fr": "Configuration de l'intégration"
+      "de": "Integrationssetup"
     },
     "settings": [
       {
         "id": "info",
         "label": {
           "en": "Setup process",
-          "de": "Setup Fortschritt",
-          "fr": "Progression de la configuration"
+          "de": "Setup Fortschritt"
         },
         "field": {
           "label": {
