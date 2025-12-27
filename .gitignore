@@ -105,3 +105,5 @@ config.json
 env
 licenses.json
 tools/licenses.md
+
+.idea
