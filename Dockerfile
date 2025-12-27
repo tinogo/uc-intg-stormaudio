@@ -17,8 +17,6 @@ ENV UC_INTEGRATION_HTTP_PORT="9090"
 # Configuration path
 ENV UC_CONFIG_HOME="/config"
 
-# TODO: Update the image source URL
-LABEL org.opencontainers.image.source https://github.com/yourusername/uc-intg-yourdevice
+LABEL org.opencontainers.image.source=https://github.com/tinogo/uc-intg-stormaudio
 
-# TODO: Update the path if you rename the intg-template folder
-CMD ["python3", "-u", "intg-template/driver.py"]
+CMD ["python3", "-u", "intg-stormaudio/driver.py"]

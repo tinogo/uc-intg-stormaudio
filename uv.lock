@@ -340,7 +340,7 @@ wheels = [
 ]
 
 [[package]]
-name = "uc-intg-template"
+name = "uc-intg-stormaudio"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
