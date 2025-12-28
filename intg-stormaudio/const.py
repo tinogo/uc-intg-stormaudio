@@ -54,3 +54,22 @@ class SimpleCommands(StrEnum):
     # TODO: Define simple commands for your device
     # EXAMPLE_COMMAND = "Example Command"
     pass
+
+
+class StormAudioCommands(StrEnum):
+    """Telnet commands for StormAudio device."""
+
+    POWER_ON = "ssp.power.on"
+    POWER_OFF = "ssp.power.off"
+    POWER_TOGGLE = "ssp.power.toggle"
+    PROC_STATE = "ssp.procstate"
+
+
+class StormAudioResponses(StrEnum):
+    """Telnet responses from StormAudio device."""
+
+    POWER_ON = "ssp.power.on"
+    POWER_OFF = "ssp.power.off"
+    PROC_STATE_OFF = "ssp.procstate.[0]"
+    PROC_STATE_INITIALISING = "ssp.procstate.[1]"
+    PROC_STATE_ON = "ssp.procstate.[2]"

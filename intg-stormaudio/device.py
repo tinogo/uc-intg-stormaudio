@@ -17,6 +17,8 @@ from ucapi.media_player import States, Attributes as MediaAttr
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
+from const import StormAudioCommands, StormAudioResponses
+
 _LOG = logging.getLogger(__name__)
 
 
@@ -81,13 +83,13 @@ class StormAudioDevice(PersistentConnectionDevice):
                     future.set_result(message)
                     self._waiters.remove((pattern, future))
 
-            if message == "ssp.procstate.[0]":
+            if message == StormAudioResponses.PROC_STATE_OFF:
                 self._update_state(States.OFF)
-            elif message == "ssp.procstate.[1]":
-                # Maps both initializing and shutting down to STANDBY
+            elif message == StormAudioResponses.PROC_STATE_INITIALISING:
+                # Maps both initializing and shutting down to OFF
                 # as they are not "fully booted"
                 self._update_state(States.OFF)
-            elif message == "ssp.procstate.[2]":
+            elif message == StormAudioResponses.PROC_STATE_ON:
                 self._update_state(States.ON)
             else:
                 self.events.emit(
@@ -131,13 +133,13 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def power_on(self):
         """Power on the StormAudio processor."""
-        await self._send_command("ssp.power.on")
-        await self._wait_for_response("ssp.power.on")
+        await self._send_command(StormAudioCommands.POWER_ON)
+        await self._wait_for_response(StormAudioResponses.POWER_ON)
 
     async def power_off(self):
         """Power off the StormAudio processor."""
-        await self._send_command("ssp.power.off")
-        await self._wait_for_response("ssp.power.off")
+        await self._send_command(StormAudioCommands.POWER_OFF)
+        await self._wait_for_response(StormAudioResponses.POWER_OFF)
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
@@ -146,11 +148,11 @@ class StormAudioDevice(PersistentConnectionDevice):
         off_future = asyncio.get_running_loop().create_future()
         
         # Add waiters BEFORE sending command to avoid race conditions
-        self._waiters.append(("ssp.power.on", on_future))
-        self._waiters.append(("ssp.power.off", off_future))
+        self._waiters.append((StormAudioResponses.POWER_ON, on_future))
+        self._waiters.append((StormAudioResponses.POWER_OFF, off_future))
 
         try:
-            await self._send_command("ssp.power.toggle")
+            await self._send_command(StormAudioCommands.POWER_TOGGLE)
             
             done, pending = await asyncio.wait(
                 [on_future, off_future],
