@@ -13,7 +13,7 @@ from typing import Any
 
 from const import StormAudioConfig
 from ucapi import IntegrationSetupError, RequestUserInput, SetupError
-from ucapi_framework import BaseSetupFlow
+from ucapi_framework import BaseSetupFlow, DiscoveredDevice
 
 _LOG = logging.getLogger(__name__)
 
@@ -61,6 +61,21 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
     Handles device configuration through discovery or manual entry.
     Extend this class to add custom setup logic for your device.
     """
+
+    async def discover_devices(self) -> list[DiscoveredDevice]:
+        if self.discovery:
+            return await self.discovery.discover()
+        return []
+
+    async def prepare_input_from_discovery(
+        self, device: DiscoveredDevice, additional_input: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Convert discovered device to input values."""
+        return {
+            "identifier": device.identifier,
+            "name": device.name,
+            "host": device.address,
+        }
 
     def get_manual_entry_form(self) -> RequestUserInput:
         """
