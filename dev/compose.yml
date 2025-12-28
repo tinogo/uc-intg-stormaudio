@@ -22,7 +22,7 @@ services:
        dockerfile: ./dev/Dockerfile
      hostname: uc-intg-stormaudio
      # nodemon watches for file changes and auto-restarts
-     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon -e py,json --exec 'python3 -u' intg-stormaudio/driver.py"
+     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' intg-stormaudio/driver.py"
      volumes:
        - ../:/app
 
