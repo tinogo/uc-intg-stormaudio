@@ -12,8 +12,9 @@ import logging
 import telnetlib3
 from typing import Any
 
-from ucapi.media_player import States
-from ucapi_framework import PersistentConnectionDevice
+from ucapi import EntityTypes
+from ucapi.media_player import States, Attributes as MediaAttr
+from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
 _LOG = logging.getLogger(__name__)
@@ -80,11 +81,20 @@ class StormAudioDevice(PersistentConnectionDevice):
                     future.set_result(message)
                     self._waiters.remove((pattern, future))
 
-            self.events.emit(
-                DeviceEvents.UPDATE,
-                self.identifier,
-                {"message": message}
-            )
+            if message == "ssp.procstate.[0]":
+                self._update_state(States.OFF)
+            elif message == "ssp.procstate.[1]":
+                # Maps both initializing and shutting down to STANDBY
+                # as they are not "fully booted"
+                self._update_state(States.OFF)
+            elif message == "ssp.procstate.[2]":
+                self._update_state(States.ON)
+            else:
+                self.events.emit(
+                    DeviceEvents.UPDATE,
+                    create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                    {"message": message}
+                )
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
@@ -101,6 +111,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Wait for a specific response from the device."""
         future = asyncio.get_running_loop().create_future()
         self._waiters.append((pattern, future))
+
         try:
             return await asyncio.wait_for(future, timeout=timeout)
         except asyncio.TimeoutError:
@@ -114,49 +125,19 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._state = state
         self.events.emit(
             DeviceEvents.UPDATE,
-            self.identifier,
-            {"state": self._state}
+            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+            {MediaAttr.STATE: self._state}
         )
-
-    async def _query_and_handle_procstate(self) -> None:
-        """Query and update processor state."""
-        # Add waiter BEFORE sending command to avoid race conditions
-        future = asyncio.get_running_loop().create_future()
-        self._waiters.append(("ssp.procstate", future))
-        
-        await self._send_command("ssp.procstate")
-        
-        try:
-            state_resp = await asyncio.wait_for(future, timeout=5.0)
-            if state_resp:
-                if state_resp == "ssp.procstate.0":
-                    self._update_state(States.OFF)
-                elif state_resp == "ssp.procstate.1":
-                    # Maps both initializing and shutting down to STANDBY
-                    # as they are not "fully booted"
-                    self._update_state(States.OFF)
-                elif state_resp == "ssp.procstate.2":
-                    self._update_state(States.ON)
-        except asyncio.TimeoutError:
-            _LOG.warning("[%s] Timeout waiting for procstate", self.log_id)
-            if ("ssp.procstate", future) in self._waiters:
-                self._waiters.remove(("ssp.procstate", future))
 
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command("ssp.power.on")
-        response = await self._wait_for_response("ssp.power.on")
-
-        if response == "ssp.power.on":
-            await self._query_and_handle_procstate()
+        await self._wait_for_response("ssp.power.on")
 
     async def power_off(self):
         """Power off the StormAudio processor."""
         await self._send_command("ssp.power.off")
-        response = await self._wait_for_response("ssp.power.off")
-
-        if response == "ssp.power.off":
-            await self._query_and_handle_procstate()
+        await self._wait_for_response("ssp.power.off")
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
@@ -192,11 +173,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                         self._waiters.remove((pattern, fut))
                 return
 
-            result_future = done.pop()
-            response = result_future.result()
-
-            if response in ["ssp.power.on", "ssp.power.off"]:
-                await self._query_and_handle_procstate()
+            await done.pop()
         except Exception:
             # Emergency cleanup of waiters if something fails before wait
             for pattern, fut in self._waiters[:]:
