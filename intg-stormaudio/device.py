@@ -142,6 +142,54 @@ class StormAudioDevice(PersistentConnectionDevice):
             {MediaAttr.STATE: self._state}
         )
 
+    async def _toggle_helper(
+        self, 
+        command: str, 
+        response_a: str, 
+        response_b: str, 
+        timeout_msg: str
+    ) -> None:
+        """Generic helper for toggle commands with two possible responses."""
+        # Create futures for both possible responses
+        future_a = asyncio.get_running_loop().create_future()
+        future_b = asyncio.get_running_loop().create_future()
+
+        # Add waiters BEFORE sending command to avoid race conditions
+        self._waiters.append((response_a, future_a))
+        self._waiters.append((response_b, future_b))
+
+        try:
+            await self._send_command(command)
+
+            done, pending = await asyncio.wait(
+                [future_a, future_b],
+                return_when=asyncio.FIRST_COMPLETED,
+                timeout=5.0
+            )
+
+            # Cleanup pending waiters
+            for p in pending:
+                p.cancel()
+                for pattern, fut in self._waiters[:]:
+                    if fut == p:
+                        self._waiters.remove((pattern, fut))
+
+            if not done:
+                _LOG.warning("[%s] %s", self.log_id, timeout_msg)
+                # Cleanup the ones that timed out
+                for pattern, fut in self._waiters[:]:
+                    if fut in [future_a, future_b]:
+                        self._waiters.remove((pattern, fut))
+                return
+
+            await done.pop()
+        except Exception:
+            # Emergency cleanup of waiters if something fails before wait
+            for pattern, fut in self._waiters[:]:
+                if fut in [future_a, future_b]:
+                    self._waiters.remove((pattern, fut))
+            raise
+
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_ON)
@@ -154,45 +202,12 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
-        # Create futures for both possible responses
-        on_future = asyncio.get_running_loop().create_future()
-        off_future = asyncio.get_running_loop().create_future()
-        
-        # Add waiters BEFORE sending command to avoid race conditions
-        self._waiters.append((StormAudioResponses.POWER_ON, on_future))
-        self._waiters.append((StormAudioResponses.POWER_OFF, off_future))
-
-        try:
-            await self._send_command(StormAudioCommands.POWER_TOGGLE)
-            
-            done, pending = await asyncio.wait(
-                [on_future, off_future],
-                return_when=asyncio.FIRST_COMPLETED,
-                timeout=5.0
-            )
-            
-            # Cleanup pending waiters
-            for p in pending:
-                p.cancel()
-                for pattern, fut in self._waiters[:]:
-                    if fut == p:
-                        self._waiters.remove((pattern, fut))
-
-            if not done:
-                _LOG.warning("[%s] Timeout waiting for power toggle response", self.log_id)
-                # Cleanup the ones that timed out
-                for pattern, fut in self._waiters[:]:
-                    if fut in [on_future, off_future]:
-                        self._waiters.remove((pattern, fut))
-                return
-
-            await done.pop()
-        except Exception:
-            # Emergency cleanup of waiters if something fails before wait
-            for pattern, fut in self._waiters[:]:
-                if fut in [on_future, off_future]:
-                    self._waiters.remove((pattern, fut))
-            raise
+        await self._toggle_helper(
+            StormAudioCommands.POWER_TOGGLE,
+            StormAudioResponses.POWER_ON,
+            StormAudioResponses.POWER_OFF,
+            "Timeout waiting for power toggle response"
+        )
 
     async def mute_on(self):
         """Mute the StormAudio processor."""
@@ -206,42 +221,9 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def mute_toggle(self):
         """Toggle mute of the StormAudio processor."""
-        # Create futures for both possible responses
-        on_future = asyncio.get_running_loop().create_future()
-        off_future = asyncio.get_running_loop().create_future()
-
-        # Add waiters BEFORE sending command to avoid race conditions
-        self._waiters.append((StormAudioResponses.MUTE_ON, on_future))
-        self._waiters.append((StormAudioResponses.MUTE_OFF, off_future))
-
-        try:
-            await self._send_command(StormAudioCommands.MUTE_TOGGLE)
-
-            done, pending = await asyncio.wait(
-                [on_future, off_future],
-                return_when=asyncio.FIRST_COMPLETED,
-                timeout=5.0
-            )
-
-            # Cleanup pending waiters
-            for p in pending:
-                p.cancel()
-                for pattern, fut in self._waiters[:]:
-                    if fut == p:
-                        self._waiters.remove((pattern, fut))
-
-            if not done:
-                _LOG.warning("[%s] Timeout waiting for power toggle response", self.log_id)
-                # Cleanup the ones that timed out
-                for pattern, fut in self._waiters[:]:
-                    if fut in [on_future, off_future]:
-                        self._waiters.remove((pattern, fut))
-                return
-
-            await done.pop()
-        except Exception:
-            # Emergency cleanup of waiters if something fails before wait
-            for pattern, fut in self._waiters[:]:
-                if fut in [on_future, off_future]:
-                    self._waiters.remove((pattern, fut))
-            raise
+        await self._toggle_helper(
+            StormAudioCommands.MUTE_TOGGLE,
+            StormAudioResponses.MUTE_ON,
+            StormAudioResponses.MUTE_OFF,
+            "Timeout waiting for mute toggle response"
+        )
