@@ -8,7 +8,6 @@ forms for manual device entry and validation of device connections.
 """
 
 import logging
-from device import StormAudioDevice
 from typing import Any
 
 from const import StormAudioConfig
@@ -38,16 +37,9 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
         },
         {
             "field": {"text": {"value": ""}},
-            "id": "name",
-            "label": {
-                "en": "Device Name",
-            },
-        },
-        {
-            "field": {"text": {"value": ""}},
             "id": "address",
             "label": {
-                "en": "IP Address or Hostname",
+                "en": "IP Address",
             },
         },
     ],
@@ -102,7 +94,6 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
                  RequestUserInput to re-display the form
         """
         # Extract form values
-        name = input_values.get("name", "").strip()
         address = input_values.get("address", "").strip()
 
         # Validate required fields
@@ -110,18 +101,13 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
             _LOG.warning("Address is required, re-displaying form")
             return _MANUAL_INPUT_SCHEMA
 
-        # Use a default name if not provided
-        if not name:
-            name = f"Device ({address})"
+        name = f"StormAudio ISP ({address})"
 
         _LOG.debug("Attempting to connect to device at %s", address)
 
         try:
-            client = StormAudioDevice(address)
-            await client.connect()
-
             return StormAudioConfig(
-                identifier=input_values.get("name", address.replace(".", "_")),
+                identifier=address.replace(".", "_"),
                 name=name,
                 address=address,
             )
