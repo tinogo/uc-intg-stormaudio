@@ -16,11 +16,11 @@ services:
       - simulator-data:/data
 
   # Your integration service
-  intg-stormaudio:
+  uc-intg-stormaudio:
      build:
        context: ../
        dockerfile: ./dev/Dockerfile
-     hostname: template
+     hostname: uc-intg-stormaudio
      # nodemon watches for file changes and auto-restarts
      command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon -e py,json --exec 'python3 -u' intg-stormaudio/driver.py"
      volumes:
