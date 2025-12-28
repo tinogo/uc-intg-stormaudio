@@ -120,9 +120,9 @@ class StormAudioDevice(PersistentConnectionDevice):
 
             if state_resp:
                 if state_resp == "ssp.procstate.0":
-                    self._state = States.STANDBY
+                    self._state = States.OFF
                 elif state_resp == "ssp.procstate.1":
-                    self._state = States.STANDBY
+                    self._state = States.OFF
                 elif state_resp == "ssp.procstate.2":
                     self._state = States.ON
 
@@ -138,19 +138,88 @@ class StormAudioDevice(PersistentConnectionDevice):
         response = await self._wait_for_response("ssp.power.off")
 
         if response == "ssp.power.off":
-            await self._send_command("ssp.procstate")
-            state_resp = await self._wait_for_response("ssp.procstate")
+            self._state = States.OFF
 
-            if state_resp:
-                if state_resp == "ssp.procstate.0":
-                    self._state = States.STANDBY
-                elif state_resp == "ssp.procstate.1":
-                    self._state = States.STANDBY
-                elif state_resp == "ssp.procstate.2":
-                    self._state = States.ON
+            self.events.emit(
+                DeviceEvents.UPDATE,
+                self.identifier,
+                {"state": self._state}
+            )
+
+    async def power_toggle(self):
+        """Toggle power of the StormAudio processor."""
+        # Create futures for both possible responses
+        on_future = asyncio.get_running_loop().create_future()
+        off_future = asyncio.get_running_loop().create_future()
+        
+        # Add waiters BEFORE sending command to avoid race conditions
+        self._waiters.append(("ssp.power.on", on_future))
+        self._waiters.append(("ssp.power.off", off_future))
+
+        try:
+            await self._send_command("ssp.power.toggle")
+            
+            done, pending = await asyncio.wait(
+                [on_future, off_future],
+                return_when=asyncio.FIRST_COMPLETED,
+                timeout=5.0
+            )
+            
+            # Cleanup pending waiters
+            for p in pending:
+                p.cancel()
+                # Remove from self._waiters
+                for pattern, fut in self._waiters[:]:
+                    if fut == p:
+                        self._waiters.remove((pattern, fut))
+
+            if not done:
+                _LOG.warning("[%s] Timeout waiting for power toggle response", self.log_id)
+                # Cleanup the ones that timed out
+                for pattern, fut in self._waiters[:]:
+                    if fut in [on_future, off_future]:
+                        self._waiters.remove((pattern, fut))
+                return
+
+            result_future = done.pop()
+            response = result_future.result()
+
+            if response == "ssp.power.on":
+                # Robustly wait for procstate
+                proc_future = asyncio.get_running_loop().create_future()
+                self._waiters.append(("ssp.procstate", proc_future))
+                try:
+                    await self._send_command("ssp.procstate")
+                    state_resp = await asyncio.wait_for(proc_future, timeout=5.0)
+
+                    if state_resp:
+                        if state_resp == "ssp.procstate.0":
+                            self._state = States.OFF
+                        elif state_resp == "ssp.procstate.1":
+                            self._state = States.OFF
+                        elif state_resp == "ssp.procstate.2":
+                            self._state = States.ON
+
+                        self.events.emit(
+                            DeviceEvents.UPDATE,
+                            self.identifier,
+                            {"state": self._state}
+                        )
+                except asyncio.TimeoutError:
+                    _LOG.warning("[%s] Timeout waiting for procstate after toggle on", self.log_id)
+                    if ("ssp.procstate", proc_future) in self._waiters:
+                        self._waiters.remove(("ssp.procstate", proc_future))
+            elif response == "ssp.power.off":
+                self._state = States.OFF
 
                 self.events.emit(
                     DeviceEvents.UPDATE,
                     self.identifier,
                     {"state": self._state}
                 )
+        except Exception:
+            # Emergency cleanup of waiters if something fails before wait
+            for pattern, fut in self._waiters[:]:
+                if fut in [on_future, off_future]:
+                    self._waiters.remove((pattern, fut))
+            raise
