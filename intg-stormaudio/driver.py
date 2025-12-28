@@ -4,9 +4,6 @@ Remote Two/3 Integration Driver.
 This is the main entry point for the integration driver. It initializes
 the driver, sets up logging, and starts the integration API.
 
-TODO: Replace "YourDevice" references with your actual device name.
-
-:copyright: (c) 2025 by Your Name.
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
@@ -34,8 +31,6 @@ async def main():
     logging.getLogger("setup_flow").setLevel(level)
 
     # Initialize the integration driver
-    # TODO: Add additional entity classes if your device supports them
-    # Available entity types: MediaPlayer, Remote, Light, Switch, Climate, etc.
     driver = BaseIntegrationDriver(
         device_class=StormAudioDevice, entity_classes=[StormAudioMediaPlayer]
     )
