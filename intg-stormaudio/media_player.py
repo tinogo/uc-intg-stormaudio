@@ -23,6 +23,8 @@ FEATURES = [
     media_player.Features.VOLUME,
     media_player.Features.VOLUME_UP_DOWN,
     media_player.Features.MUTE,
+    media_player.Features.UNMUTE,
+    media_player.Features.MUTE_TOGGLE,
     media_player.Features.SELECT_SOUND_MODE,
     media_player.Features.SELECT_SOURCE,
 ]
@@ -96,6 +98,12 @@ class StormAudioMediaPlayer(MediaPlayer):
 
                 case media_player.Commands.VOLUME_DOWN:
                     await self._device.volume_down()
+
+                case media_player.Commands.MUTE:
+                    await self._device.mute_on()
+
+                case media_player.Commands.UNMUTE:
+                    await self._device.mute_off()
 
                 case media_player.Commands.MUTE_TOGGLE:
                     await self._device.mute_toggle()

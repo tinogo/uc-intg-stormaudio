@@ -83,20 +83,31 @@ class StormAudioDevice(PersistentConnectionDevice):
                     future.set_result(message)
                     self._waiters.remove((pattern, future))
 
-            if message == StormAudioResponses.PROC_STATE_OFF:
-                self._update_state(States.OFF)
-            elif message == StormAudioResponses.PROC_STATE_INITIALISING:
-                # Maps both initializing and shutting down to OFF
-                # as they are not "fully booted"
-                self._update_state(States.OFF)
-            elif message == StormAudioResponses.PROC_STATE_ON:
-                self._update_state(States.ON)
-            else:
-                self.events.emit(
-                    DeviceEvents.UPDATE,
-                    create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
-                    {"message": message}
-                )
+            match message:
+                case StormAudioResponses.PROC_STATE_ON:
+                    self._update_state(States.ON)
+                case StormAudioResponses.PROC_STATE_OFF | StormAudioResponses.PROC_STATE_INITIALISING:
+                    # Maps both initializing and shutting down to OFF
+                    # as they are not "fully booted"
+                    self._update_state(States.OFF)
+                case StormAudioResponses.MUTE_ON:
+                    self.events.emit(
+                        DeviceEvents.UPDATE,
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {MediaAttr.MUTED: True}
+                    )
+                case StormAudioResponses.MUTE_OFF:
+                    self.events.emit(
+                        DeviceEvents.UPDATE,
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {MediaAttr.MUTED: False}
+                    )
+                case _:
+                    self.events.emit(
+                        DeviceEvents.UPDATE,
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {"message": message}
+                    )
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
@@ -160,6 +171,58 @@ class StormAudioDevice(PersistentConnectionDevice):
                 timeout=5.0
             )
             
+            # Cleanup pending waiters
+            for p in pending:
+                p.cancel()
+                for pattern, fut in self._waiters[:]:
+                    if fut == p:
+                        self._waiters.remove((pattern, fut))
+
+            if not done:
+                _LOG.warning("[%s] Timeout waiting for power toggle response", self.log_id)
+                # Cleanup the ones that timed out
+                for pattern, fut in self._waiters[:]:
+                    if fut in [on_future, off_future]:
+                        self._waiters.remove((pattern, fut))
+                return
+
+            await done.pop()
+        except Exception:
+            # Emergency cleanup of waiters if something fails before wait
+            for pattern, fut in self._waiters[:]:
+                if fut in [on_future, off_future]:
+                    self._waiters.remove((pattern, fut))
+            raise
+
+    async def mute_on(self):
+        """Mute the StormAudio processor."""
+        await self._send_command(StormAudioCommands.MUTE_ON)
+        await self._wait_for_response(StormAudioResponses.MUTE_ON)
+
+    async def mute_off(self):
+        """Unmute the StormAudio processor."""
+        await self._send_command(StormAudioCommands.MUTE_OFF)
+        await self._wait_for_response(StormAudioResponses.MUTE_OFF)
+
+    async def mute_toggle(self):
+        """Toggle mute of the StormAudio processor."""
+        # Create futures for both possible responses
+        on_future = asyncio.get_running_loop().create_future()
+        off_future = asyncio.get_running_loop().create_future()
+
+        # Add waiters BEFORE sending command to avoid race conditions
+        self._waiters.append((StormAudioResponses.MUTE_ON, on_future))
+        self._waiters.append((StormAudioResponses.MUTE_OFF, off_future))
+
+        try:
+            await self._send_command(StormAudioCommands.MUTE_TOGGLE)
+
+            done, pending = await asyncio.wait(
+                [on_future, off_future],
+                return_when=asyncio.FIRST_COMPLETED,
+                timeout=5.0
+            )
+
             # Cleanup pending waiters
             for p in pending:
                 p.cancel()
