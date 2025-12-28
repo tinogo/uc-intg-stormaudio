@@ -14,8 +14,8 @@ import asyncio
 import logging
 import os
 
-from const import DeviceConfig
-from device import Device
+from const import StormAudioConfig
+from device import StormAudioDevice
 from discover import DeviceDiscovery
 from media_player import DeviceMediaPlayer
 from setup import DeviceSetupFlow
@@ -37,7 +37,7 @@ async def main():
     # TODO: Add additional entity classes if your device supports them
     # Available entity types: MediaPlayer, Remote, Light, Switch, Climate, etc.
     driver = BaseIntegrationDriver(
-        device_class=Device, entity_classes=[DeviceMediaPlayer]
+        device_class=StormAudioDevice, entity_classes=[DeviceMediaPlayer]
     )
 
     # Configure the device config manager
@@ -45,7 +45,7 @@ async def main():
         get_config_path(driver.api.config_dir_path),
         driver.on_device_added,
         driver.on_device_removed,
-        config_class=DeviceConfig,
+        config_class=StormAudioConfig,
     )
 
     # Register all configured devices from config file

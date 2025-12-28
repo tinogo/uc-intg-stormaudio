@@ -39,7 +39,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def establish_connection(self) -> Any:
         reader, writer = await open_connection(
-            self.address, 23 # StormAudio devices use the telnet port for their IP-protocol
+            self.address, self._device_config.port
         )
 
         return {"reader": reader, "writer": writer}

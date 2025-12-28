@@ -4,36 +4,33 @@ Setup Flow Module.
 This module handles the device setup and configuration process. It provides
 forms for manual device entry and validation of device connections.
 
-TODO: Customize the setup form fields and validation for your device.
-
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
 import logging
+from device import StormAudioDevice
 from typing import Any
 
-from const import DeviceConfig
+from const import StormAudioConfig
 from ucapi import IntegrationSetupError, RequestUserInput, SetupError
 from ucapi_framework import BaseSetupFlow
 
 _LOG = logging.getLogger(__name__)
 
-# TODO: Customize this form for your device's setup requirements
 # This form is displayed when the user chooses manual device entry
 _MANUAL_INPUT_SCHEMA = RequestUserInput(
-    {"en": "Device Setup"},  # TODO: Update title
+    {"en": "StormAudio Setup"},
     [
         {
             "id": "info",
             "label": {
-                "en": "Setup your Device",  # TODO: Update label
+                "en": "Setup your StormAudio processor",
             },
             "field": {
                 "label": {
                     "value": {
                         "en": (
                             "Please enter the connection details for your device."
-                            # TODO: Update help text
                         ),
                     }
                 }
@@ -53,33 +50,11 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
                 "en": "IP Address or Hostname",
             },
         },
-        # TODO: Add additional fields your device needs
-        # {
-        #     "field": {"number": {"value": 8080, "min": 1, "max": 65535}},
-        #     "id": "port",
-        #     "label": {
-        #         "en": "Port",
-        #     },
-        # },
-        # {
-        #     "field": {"text": {"value": ""}},
-        #     "id": "username",
-        #     "label": {
-        #         "en": "Username",
-        #     },
-        # },
-        # {
-        #     "field": {"password": {"value": ""}},
-        #     "id": "password",
-        #     "label": {
-        #         "en": "Password",
-        #     },
-        # },
     ],
 )
 
 
-class DeviceSetupFlow(BaseSetupFlow[DeviceConfig]):
+class DeviceSetupFlow(BaseSetupFlow[StormAudioConfig]):
     """
     Setup flow for device integration.
 
@@ -99,7 +74,7 @@ class DeviceSetupFlow(BaseSetupFlow[DeviceConfig]):
 
     async def query_device(
         self, input_values: dict[str, Any]
-    ) -> DeviceConfig | SetupError | RequestUserInput:
+    ) -> StormAudioConfig | SetupError | RequestUserInput:
         """
         Create device configuration from user input.
 
@@ -114,10 +89,6 @@ class DeviceSetupFlow(BaseSetupFlow[DeviceConfig]):
         # Extract form values
         name = input_values.get("name", "").strip()
         address = input_values.get("address", "").strip()
-        # TODO: Extract additional fields
-        # port = input_values.get("port", 8080)
-        # username = input_values.get("username", "").strip()
-        # password = input_values.get("password", "").strip()
 
         # Validate required fields
         if not address:
@@ -131,34 +102,13 @@ class DeviceSetupFlow(BaseSetupFlow[DeviceConfig]):
         _LOG.debug("Attempting to connect to device at %s", address)
 
         try:
-            # TODO: Implement device connection validation
-            # This should:
-            # 1. Attempt to connect to the device
-            # 2. Verify it's the expected device type
-            # 3. Retrieve device info (identifier, model, etc.)
-            #
-            # Example:
-            # client = YourDeviceClient(address, port)
-            # try:
-            #     await client.connect()
-            #     info = await client.get_device_info()
-            # finally:
-            #     await client.disconnect()
-            #
-            # identifier = info.get("serial", info.get("mac", address))
+            client = StormAudioDevice(address)
+            await client.connect()
 
-            # Placeholder: Generate identifier from address
-            # TODO: Replace with actual device identifier retrieval
-            identifier = address.replace(".", "_").replace(":", "_")
-
-            return DeviceConfig(
-                identifier=identifier,
+            return StormAudioConfig(
+                identifier=input_values.get("name", address.replace(".", "_")),
                 name=name,
                 address=address,
-                # TODO: Add additional config fields
-                # port=port,
-                # username=username,
-                # password=password,
             )
 
         except ConnectionError as ex:

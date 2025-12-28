@@ -17,7 +17,7 @@ from ucapi import MediaPlayer, media_player, EntityTypes
 from ucapi.media_player import DeviceClasses, Attributes
 
 import device
-from const import DeviceConfig, SimpleCommands
+from const import StormAudioConfig, SimpleCommands
 from ucapi_framework import create_entity_id
 
 _LOG = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class DeviceMediaPlayer(MediaPlayer):
     This class handles all media player commands and maintains the entity state.
     """
 
-    def __init__(self, config_device: DeviceConfig, device_instance: device.Device):
+    def __init__(self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice):
         """
         Initialize the media player entity.
 

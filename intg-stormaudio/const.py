@@ -12,7 +12,7 @@ from enum import StrEnum
 
 
 @dataclass
-class DeviceConfig:
+class StormAudioConfig:
     """
     Device configuration dataclass.
 
@@ -29,14 +29,11 @@ class DeviceConfig:
     address: str
     """IP address or hostname of the device."""
 
+    port: int = 23
+    """Port number for device communication."""
+
     # TODO: Add any additional configuration fields your device needs
     # Examples:
-    # port: int = 8080
-    # """Port number for device communication."""
-    # username: str = ""
-    # """Username for authentication (if required)."""
-    # password: str = ""
-    # """Password for authentication (if required)."""
     # model: str = ""
     # """Device model for feature detection."""
 

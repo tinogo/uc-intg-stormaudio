@@ -5,8 +5,6 @@ This module handles automatic device discovery on the local network.
 It uses mDNS (Multicast DNS) by default, but can be
 modified to use other discovery protocols like SSDP, SDDP, etc.
 
-TODO: Customize the discovery logic for your device's discovery protocol.
-
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
