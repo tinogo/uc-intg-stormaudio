@@ -20,7 +20,6 @@ _LOG = logging.getLogger(__name__)
 FEATURES = [
     media_player.Features.ON_OFF,
     media_player.Features.TOGGLE,
-    media_player.Features.VOLUME,
     media_player.Features.VOLUME_UP_DOWN,
     media_player.Features.MUTE,
     media_player.Features.UNMUTE,
