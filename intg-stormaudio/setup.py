@@ -54,7 +54,7 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
 )
 
 
-class DeviceSetupFlow(BaseSetupFlow[StormAudioConfig]):
+class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
     """
     Setup flow for device integration.
 
