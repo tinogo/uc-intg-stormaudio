@@ -16,7 +16,7 @@ import os
 
 from const import StormAudioConfig
 from device import StormAudioDevice
-from discover import DeviceDiscovery
+from discover import StormAudioDiscovery
 from media_player import DeviceMediaPlayer
 from setup import DeviceSetupFlow
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
@@ -52,8 +52,7 @@ async def main():
     await driver.register_all_configured_devices()
 
     # Set up device discovery (optional - remove if not using discovery)
-    # TODO: Update the discovery parameters for your device's discovery protocol
-    discovery = DeviceDiscovery(timeout=1, service_type="_yourdevice._tcp.local.")
+    discovery = StormAudioDiscovery(timeout=5, service_type="_stormaudio._tcp.local.")
     setup_handler = DeviceSetupFlow.create_handler(driver, discovery=discovery)
 
     # Initialize the API with the driver configuration
