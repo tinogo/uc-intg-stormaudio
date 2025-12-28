@@ -1,6 +1,6 @@
-# Unfolded Circle Integration Template
+# Unfolded Circle Integration StormAudio
 
-A template repository for creating [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) integration drivers using the [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
+A repository for creating [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) the StormAudio integration drivers using the [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
 ## Project Structure
 
@@ -23,6 +23,7 @@ A template repository for creating [Unfolded Circle Remote Two/3](https://www.un
 ### Prerequisites
 
 - Python 3.11+
+- uv
 - Docker (optional, for containerized deployment)
 
 ### Local Development
@@ -65,7 +66,7 @@ A template repository for creating [Unfolded Circle Remote Two/3](https://www.un
 
 ```bash
 docker run -d \
-  --name=uc-intg-yourdevice \
+  --name=uc-intg-stormaudio \
   --network host \
   -v $(pwd)/config:/config \
   --restart unless-stopped \
@@ -84,33 +85,6 @@ services:
       - ./config:/config
     restart: unless-stopped
 ```
-
-## Customization Guide
-
-### Adding Entity Types
-
-The template includes a Media Player entity. To add additional entity types:
-
-1. Create a new entity file (e.g., `light.py`, `switch.py`, `climate.py`)
-2. Import and add the entity class to `driver.py`:
-   ```python
-   driver = BaseIntegrationDriver(
-       device_class=Device, entity_classes=[DeviceMediaPlayer, DeviceLight]
-   )
-   ```
-
-### Implementing Device Communication
-
-In `device.py`, implement the communication methods for your device:
-
-1. `connect()` - Establish connection to the device
-2. `disconnect()` - Clean up connection
-3. `verify_connection()` - Check device availability and get current state
-4. Device-specific methods (power control, volume, etc.)
-
-### Customizing the Setup Flow
-
-In `setup.py`, modify the `_MANUAL_INPUT_SCHEMA` to add fields for your device's configuration (IP, port, credentials, etc.).
 
 ## Resources
 
