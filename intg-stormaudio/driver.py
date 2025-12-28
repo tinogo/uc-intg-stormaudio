@@ -17,7 +17,7 @@ import os
 from const import StormAudioConfig
 from device import StormAudioDevice
 from discover import StormAudioDiscovery
-from media_player import DeviceMediaPlayer
+from media_player import StormAudioMediaPlayer
 from setup import StormAudioSetupFlow
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
 
@@ -37,7 +37,7 @@ async def main():
     # TODO: Add additional entity classes if your device supports them
     # Available entity types: MediaPlayer, Remote, Light, Switch, Climate, etc.
     driver = BaseIntegrationDriver(
-        device_class=StormAudioDevice, entity_classes=[DeviceMediaPlayer]
+        device_class=StormAudioDevice, entity_classes=[StormAudioMediaPlayer]
     )
 
     # Configure the device config manager
