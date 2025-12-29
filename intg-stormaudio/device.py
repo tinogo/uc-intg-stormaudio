@@ -21,6 +21,8 @@ from const import StormAudioCommands, StormAudioResponses
 
 _LOG = logging.getLogger(__name__)
 
+_min_volume = 0
+_max_volume = 100
 
 class StormAudioDevice(PersistentConnectionDevice):
     def __init__(self, *args, **kwargs):
@@ -105,7 +107,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes only support relative volume scales for now.
                     # That's why we need to convert the absolute values from the ISPs.
-                    volume = int(float(message[9:-1])) + 100
+                    volume = int(float(message[9:-1])) + _max_volume
 
                     self.events.emit(
                         DeviceEvents.UPDATE,
@@ -238,6 +240,12 @@ class StormAudioDevice(PersistentConnectionDevice):
             "Timeout waiting for mute toggle response"
         )
 
+    async def volume(self, volume):
+        # The UC remotes only support relative volume scales for now.
+        # That's why we need to convert the absolute values from the ISPs.
+        sanitized_volume = max(_min_volume, min(_max_volume, int(volume))) - _max_volume
+        await self._send_command(StormAudioCommands.VOLUME_X.format(sanitized_volume))
+
     async def volume_up(self):
         """Increase the volume of the StormAudio processor by 1dB."""
         await self._send_command(StormAudioCommands.VOLUME_UP)
@@ -245,3 +253,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
+
+    async def select_source(self, source):
+        pass

@@ -20,6 +20,7 @@ _LOG = logging.getLogger(__name__)
 FEATURES = [
     media_player.Features.ON_OFF,
     media_player.Features.TOGGLE,
+    media_player.Features.VOLUME,
     media_player.Features.VOLUME_UP_DOWN,
     media_player.Features.MUTE,
     media_player.Features.UNMUTE,
@@ -91,6 +92,10 @@ class StormAudioMediaPlayer(MediaPlayer):
 
                 case media_player.Commands.TOGGLE:
                     await self._device.power_toggle()
+
+                case media_player.Commands.VOLUME:
+                    volume = params.get("volume") if params else None
+                    await self._device.volume(volume)
 
                 case media_player.Commands.VOLUME_UP:
                     await self._device.volume_up()

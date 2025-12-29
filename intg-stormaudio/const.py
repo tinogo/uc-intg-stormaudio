@@ -66,6 +66,7 @@ class StormAudioCommands(StrEnum):
     MUTE_ON = "ssp.mute.on"
     MUTE_OFF = "ssp.mute.off"
     MUTE_TOGGLE = "ssp.mute.toggle"
+    VOLUME_X = "ssp.vol.[{}]"
     VOLUME_DOWN = "ssp.vol.down"
     VOLUME_UP = "ssp.vol.up"
 
