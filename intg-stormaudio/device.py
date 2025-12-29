@@ -32,6 +32,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._state = States.UNKNOWN
         self._source_list = self._device_config.input_list
         self._sound_mode_list = {"Native": 0, "Stereo Downmix": 1, "Dolby Surround": 2, 'DTS Neural:X': 3, 'Auro-Matic': 4}
+        self._entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
     @property
     def state(self) -> States:
@@ -111,13 +112,13 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.MUTE_ON:
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        self._entity_id,
                         {MediaAttr.MUTED: True}
                     )
                 case StormAudioResponses.MUTE_OFF:
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        self._entity_id,
                         {MediaAttr.MUTED: False}
                     )
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
@@ -127,7 +128,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        self._entity_id,
                         {MediaAttr.VOLUME: volume}
                     )
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
@@ -138,13 +139,13 @@ class StormAudioDevice(PersistentConnectionDevice):
 
                         self.events.emit(
                             DeviceEvents.UPDATE,
-                            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                            self._entity_id,
                             {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
                         )
                 case _:
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        self._entity_id,
                         {"message": message}
                     )
 
@@ -177,7 +178,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._state = state
         self.events.emit(
             DeviceEvents.UPDATE,
-            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+            self._entity_id,
             {MediaAttr.STATE: self._state}
         )
 
