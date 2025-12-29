@@ -2,8 +2,8 @@
   "driver_id": "integration-stormaudio-ng",
   "version": "0.1.0",
   "min_core_api": "0.20.0",
-  "name": { "en": "StormAudio" },
-  "icon": "uc:integration",
+  "name": { "en": "StormAudio ISP" },
+  "icon": "uc:music",
   "description": {
     "en": "Control your StormAudio AV-Processor/-Receiver.",
     "de": "Steuere deinen StormAudio AV-Prozessor/-Receiver."
@@ -23,13 +23,14 @@
       {
         "id": "info",
         "label": {
-          "en": "Setup process",
-          "de": "Setup Fortschritt"
+          "en": "Integration setup",
+          "de": "Integrationssetup"
         },
         "field": {
           "label": {
             "value": {
-              "en": "This integration will allow you to control your device from your Unfolded Circle Remote."
+              "en": "This integration will allow you to control your StormAudio Processor from your Unfolded Circle Remote.",
+              "de": "Diese Integration erlaubt die Steuerung deines StormAudio AV-Prozessors mit deiner Unfolded Circle Remote."
             }
           }
         }

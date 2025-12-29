@@ -29,7 +29,10 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
                 "label": {
                     "value": {
                         "en": (
-                            "Please enter the connection details for your device."
+                            "Please enter the IP Address of your StormAudio processor/receiver."
+                        ),
+                        "de": (
+                            "Bitte gebe die IP-Adresse deines StormAudio Prozessors/Receivers an."
                         ),
                     }
                 }
@@ -40,6 +43,7 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
             "id": "address",
             "label": {
                 "en": "IP Address",
+                "de": "IP-Adresse",
             },
         },
     ],
