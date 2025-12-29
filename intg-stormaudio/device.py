@@ -77,9 +77,6 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {"reader": reader, "writer": writer}
 
     async def close_connection(self) -> None:
-        await self._send_command(StormAudioCommands.CLOSE)
-        await self._wait_for_response(StormAudioResponses.CLOSE)
-
         if self._connection:
             self._connection["writer"].close()
             await self._connection["writer"].wait_closed()

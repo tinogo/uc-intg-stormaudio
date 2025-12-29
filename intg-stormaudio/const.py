@@ -65,7 +65,6 @@ class SimpleCommands(StrEnum):
 class StormAudioCommands(StrEnum):
     """Telnet commands for StormAudio device."""
 
-    CLOSE = "ssp.close"
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
     POWER_TOGGLE = "ssp.power.toggle"
@@ -104,7 +103,6 @@ class StormAudioCommands(StrEnum):
 class StormAudioResponses(StrEnum):
     """Telnet responses from StormAudio device."""
 
-    CLOSE = 'ssp.close'
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
     PROC_STATE_OFF = "ssp.procstate.[0]"
@@ -112,6 +110,6 @@ class StormAudioResponses(StrEnum):
     PROC_STATE_ON = "ssp.procstate.[2]"
     MUTE_ON = "ssp.mute.on"
     MUTE_OFF = "ssp.mute.off"
-    VOLUME_X = 'ssp.vol.['
-    INPUT_LIST_X = 'ssp.input.list.'
-    SURROUND_MODE_X = 'ssp.surroundmode.'
+    VOLUME_X = "ssp.vol.["
+    INPUT_LIST_X = "ssp.input.list."
+    SURROUND_MODE_X = "ssp.surroundmode."
