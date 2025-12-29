@@ -139,12 +139,6 @@ class StormAudioDevice(PersistentConnectionDevice):
                             self._entity_id,
                             {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
                         )
-                case _:
-                    self.events.emit(
-                        DeviceEvents.UPDATE,
-                        self._entity_id,
-                        {"message": message}
-                    )
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
