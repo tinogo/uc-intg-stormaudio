@@ -55,6 +55,7 @@ class StormAudioMediaPlayer(MediaPlayer):
             FEATURES,
             attributes={
                 Attributes.STATE: device_instance.state,
+                Attributes.SOURCE_LIST: list(device_instance.source_list.keys()),
             },
             device_class=DeviceClasses.RECEIVER,
             options={

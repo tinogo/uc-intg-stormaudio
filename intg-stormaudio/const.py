@@ -7,8 +7,9 @@ the integration. Customize these for your specific device.
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import Dict
 
 
 @dataclass
@@ -32,10 +33,8 @@ class StormAudioConfig:
     port: int = 23
     """Port number for device communication."""
 
-    # TODO: Add any additional configuration fields your device needs
-    # Examples:
-    # model: str = ""
-    # """Device model for feature detection."""
+    input_list: Dict[str, int] = field(default_factory=dict)
+    """List of inputs for the device, if available."""
 
 
 class SimpleCommands(StrEnum):
@@ -59,6 +58,7 @@ class SimpleCommands(StrEnum):
 class StormAudioCommands(StrEnum):
     """Telnet commands for StormAudio device."""
 
+    CLOSE = "ssp.close"
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
     POWER_TOGGLE = "ssp.power.toggle"
@@ -69,11 +69,13 @@ class StormAudioCommands(StrEnum):
     VOLUME_X = "ssp.vol.[{}]"
     VOLUME_DOWN = "ssp.vol.down"
     VOLUME_UP = "ssp.vol.up"
+    INPUT_X = "ssp.input.[{}]"
 
 
 class StormAudioResponses(StrEnum):
     """Telnet responses from StormAudio device."""
 
+    CLOSE = 'ssp.close'
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
     PROC_STATE_OFF = "ssp.procstate.[0]"
@@ -82,3 +84,4 @@ class StormAudioResponses(StrEnum):
     MUTE_ON = "ssp.mute.on"
     MUTE_OFF = "ssp.mute.off"
     VOLUME_X = 'ssp.vol.[-'
+    INPUT_LIST_X = 'ssp.input.list.'

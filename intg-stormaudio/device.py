@@ -10,7 +10,8 @@ sends commands, and tracks the device state.
 import asyncio
 import logging
 import telnetlib3
-from typing import Any
+import json
+from typing import Any, Dict
 
 from ucapi import EntityTypes
 from ucapi.media_player import States, Attributes as MediaAttr
@@ -29,11 +30,17 @@ class StormAudioDevice(PersistentConnectionDevice):
         super().__init__(*args, **kwargs)
         self._waiters: list[tuple[str, asyncio.Future[str]]] = []
         self._state = States.UNKNOWN
+        self._source_list = self._device_config.input_list
 
     @property
     def state(self) -> States:
         """Return the current device state."""
         return self._state
+
+    @property
+    def source_list(self) -> Dict[str, int]:
+        """Returns a dictionary of available input sources."""
+        return self._source_list
 
     @property
     def identifier(self) -> str:
@@ -63,6 +70,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {"reader": reader, "writer": writer}
 
     async def close_connection(self) -> None:
+        await self._send_command(StormAudioCommands.CLOSE)
+        await self._wait_for_response(StormAudioResponses.CLOSE)
+
         if self._connection:
             self._connection["writer"].close()
             await self._connection["writer"].wait_closed()
@@ -114,6 +124,18 @@ class StormAudioDevice(PersistentConnectionDevice):
                         create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
                         {MediaAttr.VOLUME: volume}
                     )
+                case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
+                    _LOG.debug("[%s] Received input list: %s", self.log_id, message)
+                    input_json = json.loads(message[15:])
+
+                    if input_json[0] not in self._source_list:
+                        self._source_list.update({input_json[0]: input_json[1]})
+
+                        self.events.emit(
+                            DeviceEvents.UPDATE,
+                            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                            {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
+                        )
                 case _:
                     self.events.emit(
                         DeviceEvents.UPDATE,
@@ -255,4 +277,5 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
 
     async def select_source(self, source):
-        pass
+        """Decrease the volume of the StormAudio processor by 1dB."""
+        await self._send_command(StormAudioCommands.INPUT_X.format(self.source_list.get(source)))
