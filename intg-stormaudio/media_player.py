@@ -128,6 +128,18 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case SimpleCommands.PRESET_PREV.value:
                     await self._device.preset_prev()
 
+                case SimpleCommands.LOUDNESS_OFF.value:
+                    await self._device.loudness_off()
+
+                case SimpleCommands.LOUDNESS_LOW.value:
+                    await self._device.loudness_low()
+
+                case SimpleCommands.LOUDNESS_MEDIUM.value:
+                    await self._device.loudness_medium()
+
+                case SimpleCommands.LOUDNESS_FULL.value:
+                    await self._device.loudness_full()
+
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)

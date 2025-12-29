@@ -47,6 +47,10 @@ class SimpleCommands(StrEnum):
 
     PRESET_NEXT = "Preset: next"
     PRESET_PREV = "Preset: previous"
+    LOUDNESS_OFF = "Loudness: off"
+    LOUDNESS_LOW = "Loudness: low"
+    LOUDNESS_MEDIUM = "Loudness: medium"
+    LOUDNESS_FULL = "Loudness: full"
 
 
 class StormAudioCommands(StrEnum):
@@ -67,6 +71,10 @@ class StormAudioCommands(StrEnum):
     SURROUND_MODE_X = "ssp.surroundmode.[{}]"
     PRESET_NEXT = "ssp.preset.next"
     PRESET_PREV = "ssp.preset.prev"
+    LOUDNESS_OFF = "ssp.loudness.[0]"
+    LOUDNESS_LOW = "ssp.loudness.[1]"
+    LOUDNESS_MEDIUM = "ssp.loudness.[2]"
+    LOUDNESS_FULL = "ssp.loudness.[3]"
 
 
 class StormAudioResponses(StrEnum):

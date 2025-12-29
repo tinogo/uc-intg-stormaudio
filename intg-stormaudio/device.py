@@ -233,3 +233,16 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def preset_prev(self):
         await self._send_command(StormAudioCommands.PRESET_PREV)
+
+    async def loudness_off(self):
+        await self._send_command(StormAudioCommands.LOUDNESS_OFF)
+
+    async def loudness_low(self):
+        await self._send_command(StormAudioCommands.LOUDNESS_LOW)
+
+    async def loudness_medium(self):
+        await self._send_command(StormAudioCommands.LOUDNESS_MEDIUM)
+
+    async def loudness_full(self):
+        await self._send_command(StormAudioCommands.LOUDNESS_FULL)
+
