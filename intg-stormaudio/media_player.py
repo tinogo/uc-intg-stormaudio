@@ -140,6 +140,33 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case SimpleCommands.LOUDNESS_FULL.value:
                     await self._device.loudness_full()
 
+                case SimpleCommands.BASS_UP.value:
+                    await self._device.bass_up()
+
+                case SimpleCommands.BASS_DOWN.value:
+                    await self._device.bass_down()
+
+                case SimpleCommands.BASS_RESET.value:
+                    await self._device.bass_reset()
+
+                case SimpleCommands.TREBLE_UP.value:
+                    await self._device.treble_up()
+
+                case SimpleCommands.TREBLE_DOWN.value:
+                    await self._device.treble_down()
+
+                case SimpleCommands.TREBLE_RESET.value:
+                    await self._device.treble_reset()
+
+                case SimpleCommands.BRIGHTNESS_UP.value:
+                    await self._device.brightness_up()
+
+                case SimpleCommands.BRIGHTNESS_DOWN.value:
+                    await self._device.brightness_down()
+
+                case SimpleCommands.BRIGHTNESS_RESET.value:
+                    await self._device.brightness_reset()
+
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)

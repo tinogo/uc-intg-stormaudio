@@ -247,3 +247,30 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def loudness_full(self):
         await self._send_command(StormAudioCommands.LOUDNESS_FULL)
 
+    async def bass_up(self):
+        await self._send_command(StormAudioCommands.BASS_UP)
+
+    async def bass_down(self):
+        await self._send_command(StormAudioCommands.BASS_DOWN)
+
+    async def bass_reset(self):
+        await self._send_command(StormAudioCommands.BASS_RESET)
+
+    async def treble_up(self):
+        await self._send_command(StormAudioCommands.TREBLE_UP)
+
+    async def treble_down(self):
+        await self._send_command(StormAudioCommands.TREBLE_DOWN)
+
+    async def treble_reset(self):
+        await self._send_command(StormAudioCommands.TREBLE_RESET)
+
+    async def brightness_up(self):
+        await self._send_command(StormAudioCommands.BRIGHTNESS_UP)
+
+    async def brightness_down(self):
+        await self._send_command(StormAudioCommands.BRIGHTNESS_DOWN)
+
+    async def brightness_reset(self):
+        await self._send_command(StormAudioCommands.BRIGHTNESS_RESET)
+

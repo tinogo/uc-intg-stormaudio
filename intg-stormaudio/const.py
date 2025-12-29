@@ -51,6 +51,15 @@ class SimpleCommands(StrEnum):
     LOUDNESS_LOW = "Loudness: low"
     LOUDNESS_MEDIUM = "Loudness: medium"
     LOUDNESS_FULL = "Loudness: full"
+    BASS_UP = "Bass: +1dB"
+    BASS_DOWN = "Bass: -1dB"
+    BASS_RESET = "Bass: 0dB"
+    TREBLE_UP = "Treble: +1dB"
+    TREBLE_DOWN = "Treble: -1dB"
+    TREBLE_RESET = "Treble: 0dB"
+    BRIGHTNESS_UP = "Brightness: +1dB"
+    BRIGHTNESS_DOWN = "Brightness: -1dB"
+    BRIGHTNESS_RESET = "Brightness: 0dB"
 
 
 class StormAudioCommands(StrEnum):
@@ -75,6 +84,15 @@ class StormAudioCommands(StrEnum):
     LOUDNESS_LOW = "ssp.loudness.[1]"
     LOUDNESS_MEDIUM = "ssp.loudness.[2]"
     LOUDNESS_FULL = "ssp.loudness.[3]"
+    BASS_UP = "ssp.bass.up"
+    BASS_DOWN = "ssp.bass.down"
+    BASS_RESET = "ssp.bass.[0]"
+    TREBLE_UP = "ssp.treble.up"
+    TREBLE_DOWN = "ssp.treble.down"
+    TREBLE_RESET = "ssp.treble.[0]"
+    BRIGHTNESS_UP = "ssp.brightness.up"
+    BRIGHTNESS_DOWN = "ssp.brightness.down"
+    BRIGHTNESS_RESET = "ssp.brightness.[0]"
 
 
 class StormAudioResponses(StrEnum):
