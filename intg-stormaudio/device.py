@@ -226,3 +226,10 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def select_sound_mode(self, mode):
         """Set the surround mode of the StormAudio processor."""
         await self._send_command(StormAudioCommands.SURROUND_MODE_X.format(self.sound_mode_list.get(mode)))
+
+    # --- simple commands ---
+    async def preset_next(self):
+        await self._send_command(StormAudioCommands.PRESET_NEXT)
+
+    async def preset_prev(self):
+        await self._send_command(StormAudioCommands.PRESET_PREV)

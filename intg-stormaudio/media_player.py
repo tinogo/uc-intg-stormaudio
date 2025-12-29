@@ -120,6 +120,15 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case media_player.Commands.SELECT_SOUND_MODE:
                     mode = params.get("mode") if params else None
                     await self._device.select_sound_mode(mode)
+
+                # --- Simple commands ---
+                case SimpleCommands.PRESET_NEXT.value:
+                    await self._device.preset_next()
+
+                case SimpleCommands.PRESET_PREV.value:
+                    await self._device.preset_prev()
+
+                # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
                     return ucapi.StatusCodes.NOT_IMPLEMENTED

@@ -43,16 +43,10 @@ class SimpleCommands(StrEnum):
 
     Simple commands appear in the UI as buttons the user can press.
     Add commands specific to your device here.
-
-    Example:
-        PRESET_1 = "Preset 1"
-        PRESET_2 = "Preset 2"
-        NIGHT_MODE = "Night Mode"
     """
 
-    # TODO: Define simple commands for your device
-    # EXAMPLE_COMMAND = "Example Command"
-    pass
+    PRESET_NEXT = "Preset: next"
+    PRESET_PREV = "Preset: previous"
 
 
 class StormAudioCommands(StrEnum):
@@ -71,6 +65,8 @@ class StormAudioCommands(StrEnum):
     VOLUME_UP = "ssp.vol.up"
     INPUT_X = "ssp.input.[{}]"
     SURROUND_MODE_X = "ssp.surroundmode.[{}]"
+    PRESET_NEXT = "ssp.preset.next"
+    PRESET_PREV = "ssp.preset.prev"
 
 
 class StormAudioResponses(StrEnum):
