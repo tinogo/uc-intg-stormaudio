@@ -1,6 +1,8 @@
 # Unfolded Circle Integration StormAudio
 
-A repository for creating [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) the StormAudio integration drivers using the [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
+This repository contains the source code for the [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) integration driver for StormAudio devices.
+
+The integration is based on the amazing work of JackJPowell's [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
 ## Project Structure
 
@@ -24,7 +26,7 @@ A repository for creating [Unfolded Circle Remote Two/3](https://www.unfoldedcir
 
 - Python 3.11+
 - uv
-- Docker (optional, for containerized deployment)
+- Docker, Docker Compose
 
 ### Local Development
 
@@ -61,6 +63,13 @@ A repository for creating [Unfolded Circle Remote Two/3](https://www.unfoldedcir
 1. Build the integration package (tar.gz file)
 2. Upload via the Remote's web configurator under Integrations
 3. Configure your device through the setup wizard
+
+### Updating the integration on the Remote
+
+1. Build the integration package (tar.gz file)
+2. Remove the existing integration from the Remote (twice) → no worries, all your settings will still be there.
+3. Update via the Remote's web configurator under Integrations
+4. Configure your device through the setup wizard
 
 ### Docker
 
