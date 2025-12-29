@@ -19,9 +19,11 @@ _LOG = logging.getLogger(__name__)
 
 FEATURES = [
     media_player.Features.ON_OFF,
+    media_player.Features.DPAD,
     media_player.Features.TOGGLE,
     media_player.Features.VOLUME,
     media_player.Features.VOLUME_UP_DOWN,
+    media_player.Features.HOME,
     media_player.Features.MUTE,
     media_player.Features.UNMUTE,
     media_player.Features.MUTE_TOGGLE,
@@ -120,6 +122,27 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case media_player.Commands.SELECT_SOUND_MODE:
                     mode = params.get("mode") if params else None
                     await self._device.select_sound_mode(mode)
+
+                case media_player.Commands.CURSOR_UP:
+                    await self._device.cursor_up()
+
+                case media_player.Commands.CURSOR_DOWN:
+                    await self._device.cursor_down()
+
+                case media_player.Commands.CURSOR_LEFT:
+                    await self._device.cursor_left()
+
+                case media_player.Commands.CURSOR_RIGHT:
+                    await self._device.cursor_right()
+
+                case media_player.Commands.CURSOR_ENTER:
+                    await self._device.cursor_enter()
+
+                case media_player.Commands.BACK:
+                    await self._device.back()
+
+                case media_player.Commands.HOME:
+                    await self._device.back()
 
                 # --- Simple commands ---
                 case SimpleCommands.PRESET_NEXT.value:

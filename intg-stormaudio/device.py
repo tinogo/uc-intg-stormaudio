@@ -228,6 +228,24 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Set the surround mode of the StormAudio processor."""
         await self._send_command(StormAudioCommands.SURROUND_MODE_X.format(self.sound_mode_list.get(mode)))
 
+    async def cursor_up(self):
+        await self._send_command(StormAudioCommands.NAV_UP)
+
+    async def cursor_down(self):
+        await self._send_command(StormAudioCommands.NAV_DOWN)
+
+    async def cursor_left(self):
+        await self._send_command(StormAudioCommands.NAV_LEFT)
+
+    async def cursor_right(self):
+        await self._send_command(StormAudioCommands.NAV_RIGHT)
+
+    async def cursor_enter(self):
+        await self._send_command(StormAudioCommands.NAV_OK)
+
+    async def back(self):
+        await self._send_command(StormAudioCommands.NAV_BACK)
+
     # --- simple commands ---
     async def preset_next(self):
         await self._send_command(StormAudioCommands.PRESET_NEXT)
@@ -273,4 +291,3 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def brightness_reset(self):
         await self._send_command(StormAudioCommands.BRIGHTNESS_RESET)
-
