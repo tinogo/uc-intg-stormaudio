@@ -70,7 +70,7 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
         return {
             "identifier": device.identifier,
             "name": device.name,
-            "host": device.address,
+            "address": device.address,
         }
 
     def get_manual_entry_form(self) -> RequestUserInput:
