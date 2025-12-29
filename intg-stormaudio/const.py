@@ -84,6 +84,6 @@ class StormAudioResponses(StrEnum):
     PROC_STATE_ON = "ssp.procstate.[2]"
     MUTE_ON = "ssp.mute.on"
     MUTE_OFF = "ssp.mute.off"
-    VOLUME_X = 'ssp.vol.[-'
+    VOLUME_X = 'ssp.vol.['
     INPUT_LIST_X = 'ssp.input.list.'
     SURROUND_MODE_X = 'ssp.surroundmode.'

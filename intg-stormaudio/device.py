@@ -121,9 +121,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                         {MediaAttr.MUTED: False}
                     )
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
-                    # The UC remotes only support relative volume scales for now.
+                    # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
-                    volume = int(float(message[9:-1])) + _max_volume
+                    volume = int(float(message[len(StormAudioResponses.VOLUME_X):-1])) + _max_volume
 
                     self.events.emit(
                         DeviceEvents.UPDATE,
@@ -187,54 +187,6 @@ class StormAudioDevice(PersistentConnectionDevice):
             {MediaAttr.STATE: self._state}
         )
 
-    async def _toggle_helper(
-        self, 
-        command: str, 
-        response_a: str, 
-        response_b: str, 
-        timeout_msg: str
-    ) -> None:
-        """Generic helper for toggle commands with two possible responses."""
-        # Create futures for both possible responses
-        future_a = asyncio.get_running_loop().create_future()
-        future_b = asyncio.get_running_loop().create_future()
-
-        # Add waiters BEFORE sending command to avoid race conditions
-        self._waiters.append((response_a, future_a))
-        self._waiters.append((response_b, future_b))
-
-        try:
-            await self._send_command(command)
-
-            done, pending = await asyncio.wait(
-                [future_a, future_b],
-                return_when=asyncio.FIRST_COMPLETED,
-                timeout=5.0
-            )
-
-            # Cleanup pending waiters
-            for p in pending:
-                p.cancel()
-                for pattern, fut in self._waiters[:]:
-                    if fut == p:
-                        self._waiters.remove((pattern, fut))
-
-            if not done:
-                _LOG.warning("[%s] %s", self.log_id, timeout_msg)
-                # Cleanup the ones that timed out
-                for pattern, fut in self._waiters[:]:
-                    if fut in [future_a, future_b]:
-                        self._waiters.remove((pattern, fut))
-                return
-
-            await done.pop()
-        except Exception:
-            # Emergency cleanup of waiters if something fails before wait
-            for pattern, fut in self._waiters[:]:
-                if fut in [future_a, future_b]:
-                    self._waiters.remove((pattern, fut))
-            raise
-
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_ON)
@@ -245,12 +197,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
-        await self._toggle_helper(
-            StormAudioCommands.POWER_TOGGLE,
-            StormAudioResponses.POWER_ON,
-            StormAudioResponses.POWER_OFF,
-            "Timeout waiting for power toggle response"
-        )
+        await self._send_command(StormAudioCommands.POWER_TOGGLE)
 
     async def mute_on(self):
         """Mute the StormAudio processor."""
@@ -262,12 +209,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def mute_toggle(self):
         """Toggle mute of the StormAudio processor."""
-        await self._toggle_helper(
-            StormAudioCommands.MUTE_TOGGLE,
-            StormAudioResponses.MUTE_ON,
-            StormAudioResponses.MUTE_OFF,
-            "Timeout waiting for mute toggle response"
-        )
+        await self._send_command(StormAudioCommands.MUTE_TOGGLE)
 
     async def volume(self, volume):
         # The UC remotes only support relative volume scales for now.
