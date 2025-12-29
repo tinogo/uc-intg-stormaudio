@@ -218,6 +218,18 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case SimpleCommands.LFE_ENHANCE_RESET.value:
                     await self._device.lfe_enhance_reset()
 
+                case SimpleCommands.DOLBY_MODE_OFF.value:
+                    await self._device.dolby_mode_off()
+
+                case SimpleCommands.DOLBY_MODE_MOVIE.value:
+                    await self._device.dolby_mode_movie()
+
+                case SimpleCommands.DOLBY_MODE_MUSIC.value:
+                    await self._device.dolby_mode_music()
+
+                case SimpleCommands.DOLBY_MODE_NIGHT.value:
+                    await self._device.dolby_mode_night()
+
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)

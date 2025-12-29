@@ -69,6 +69,10 @@ class SimpleCommands(StrEnum):
     LFE_ENHANCE_UP = "LFE-Enhance: +1dB"
     LFE_ENHANCE_DOWN = "LFE-Enhance: -1dB"
     LFE_ENHANCE_RESET = "LFE-Enhance: 0dB"
+    DOLBY_MODE_OFF = "Dolby mode: off"
+    DOLBY_MODE_MOVIE = "Dolby mode: Movie"
+    DOLBY_MODE_MUSIC = "Dolby mode: Music"
+    DOLBY_MODE_NIGHT = "Dolby mode: Night"
 
 
 class StormAudioCommands(StrEnum):
@@ -116,6 +120,10 @@ class StormAudioCommands(StrEnum):
     LFE_ENHANCE_UP = "ssp.lfe_en.up"
     LFE_ENHANCE_DOWN = "ssp.lfe_en.down"
     LFE_ENHANCE_RESET = "ssp.lfe_en.[0]"
+    DOLBY_MODE_OFF = "ssp.dolbymode.[0]"
+    DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
+    DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
+    DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"
 
 
 class StormAudioResponses(StrEnum):
@@ -141,3 +149,7 @@ class StormAudioResponses(StrEnum):
     NAV_BACK = "ssp.nav.back"
     INPUT_LIST_X = "ssp.input.list."
     SURROUND_MODE_X = "ssp.surroundmode."
+    DOLBY_MODE_OFF = "ssp.dolbymode.[0]"
+    DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
+    DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
+    DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"

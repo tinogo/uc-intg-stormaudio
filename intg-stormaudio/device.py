@@ -348,3 +348,19 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def lfe_enhance_reset(self):
         await self._send_command(StormAudioCommands.LFE_ENHANCE_RESET)
 
+    async def dolby_mode_off(self):
+        await self._send_command(StormAudioCommands.DOLBY_MODE_OFF)
+        await self._wait_for_response(StormAudioResponses.DOLBY_MODE_OFF)
+
+    async def dolby_mode_movie(self):
+        await self._send_command(StormAudioCommands.DOLBY_MODE_MOVIE)
+        await self._wait_for_response(StormAudioResponses.DOLBY_MODE_MOVIE)
+
+    async def dolby_mode_music(self):
+        await self._send_command(StormAudioCommands.DOLBY_MODE_MUSIC)
+        await self._wait_for_response(StormAudioResponses.DOLBY_MODE_MUSIC)
+
+    async def dolby_mode_night(self):
+        await self._send_command(StormAudioCommands.DOLBY_MODE_NIGHT)
+        await self._wait_for_response(StormAudioResponses.DOLBY_MODE_NIGHT)
+
