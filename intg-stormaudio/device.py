@@ -33,6 +33,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._source_list = self._device_config.input_list
         self._sound_mode_list = {"Native": 0, "Stereo Downmix": 1, "Dolby Surround": 2, 'DTS Neural:X': 3, 'Auro-Matic': 4}
         self._entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
+        self._volume: int = 0
 
     @property
     def state(self) -> States:
@@ -43,6 +44,11 @@ class StormAudioDevice(PersistentConnectionDevice):
     def source_list(self) -> Dict[str, int]:
         """Returns a dictionary of available input sources."""
         return self._source_list
+
+    @property
+    def volume(self) -> int:
+        """Returns the current device volume."""
+        return self._volume
 
     @property
     def sound_mode_list(self) -> Dict[str, int]:
@@ -121,12 +127,12 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
-                    volume = int(float(message[len(StormAudioResponses.VOLUME_X):-1])) + _max_volume
+                    self._volume = int(float(message[len(StormAudioResponses.VOLUME_X):-1])) + _max_volume
 
                     self.events.emit(
                         DeviceEvents.UPDATE,
                         self._entity_id,
-                        {MediaAttr.VOLUME: volume}
+                        {MediaAttr.VOLUME: self._volume}
                     )
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *tail = json.loads(message[len(StormAudioResponses.INPUT_LIST_X):])
@@ -176,40 +182,62 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_ON)
+        await self._send_command(StormAudioCommands.PROC_STATE)
+        await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, 20)
 
     async def power_off(self):
         """Power off the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_OFF)
+        await self._send_command(StormAudioCommands.PROC_STATE)
+        await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
+        current_power_state = self.state
+
         await self._send_command(StormAudioCommands.POWER_TOGGLE)
+        await self._send_command(StormAudioCommands.PROC_STATE)
+
+        if current_power_state == States.ON:
+            await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
+        else:
+            await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, 20)
 
     async def mute_on(self):
         """Mute the StormAudio processor."""
         await self._send_command(StormAudioCommands.MUTE_ON)
+        await self._wait_for_response(StormAudioResponses.MUTE_ON)
 
     async def mute_off(self):
         """Unmute the StormAudio processor."""
         await self._send_command(StormAudioCommands.MUTE_OFF)
+        await self._wait_for_response(StormAudioResponses.MUTE_OFF)
 
     async def mute_toggle(self):
         """Toggle mute of the StormAudio processor."""
         await self._send_command(StormAudioCommands.MUTE_TOGGLE)
 
-    async def volume(self, volume):
+    async def volume_x(self, volume):
         # The UC remotes only support relative volume scales for now.
         # That's why we need to convert the absolute values from the ISPs.
-        sanitized_volume = max(_min_volume, min(_max_volume, int(volume))) - _max_volume
-        await self._send_command(StormAudioCommands.VOLUME_X.format(sanitized_volume))
+        sanitized_volume = max(_min_volume, min(_max_volume, int(volume)))
+        absolute_volume = sanitized_volume - _max_volume
+        await self._send_command(StormAudioCommands.VOLUME_X.format(absolute_volume))
+        await self._wait_for_response(StormAudioCommands.VOLUME_X.format(sanitized_volume))
 
     async def volume_up(self):
         """Increase the volume of the StormAudio processor by 1dB."""
+        target_volume = float(self.volume - _max_volume + 1)
+
         await self._send_command(StormAudioCommands.VOLUME_UP)
+        await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
 
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
+        target_volume = float(self.volume - _max_volume - 1)
+
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
+        await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
 
     async def select_source(self, source):
         """Decrease the volume of the StormAudio processor by 1dB."""
@@ -221,21 +249,27 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def cursor_up(self):
         await self._send_command(StormAudioCommands.NAV_UP)
+        await self._wait_for_response(StormAudioResponses.NAV_UP)
 
     async def cursor_down(self):
         await self._send_command(StormAudioCommands.NAV_DOWN)
+        await self._wait_for_response(StormAudioResponses.NAV_DOWN)
 
     async def cursor_left(self):
         await self._send_command(StormAudioCommands.NAV_LEFT)
+        await self._wait_for_response(StormAudioResponses.NAV_LEFT)
 
     async def cursor_right(self):
         await self._send_command(StormAudioCommands.NAV_RIGHT)
+        await self._wait_for_response(StormAudioResponses.NAV_RIGHT)
 
     async def cursor_enter(self):
         await self._send_command(StormAudioCommands.NAV_OK)
+        await self._wait_for_response(StormAudioResponses.NAV_OK)
 
     async def back(self):
         await self._send_command(StormAudioCommands.NAV_BACK)
+        await self._wait_for_response(StormAudioResponses.NAV_BACK)
 
     # --- simple commands ---
     async def preset_next(self):
@@ -246,15 +280,19 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def loudness_off(self):
         await self._send_command(StormAudioCommands.LOUDNESS_OFF)
+        await self._wait_for_response(StormAudioResponses.LOUDNESS_OFF)
 
     async def loudness_low(self):
         await self._send_command(StormAudioCommands.LOUDNESS_LOW)
+        await self._wait_for_response(StormAudioResponses.LOUDNESS_LOW)
 
     async def loudness_medium(self):
         await self._send_command(StormAudioCommands.LOUDNESS_MEDIUM)
+        await self._wait_for_response(StormAudioResponses.LOUDNESS_MEDIUM)
 
     async def loudness_full(self):
         await self._send_command(StormAudioCommands.LOUDNESS_FULL)
+        await self._wait_for_response(StormAudioResponses.LOUDNESS_FULL)
 
     async def bass_up(self):
         await self._send_command(StormAudioCommands.BASS_UP)

@@ -58,7 +58,8 @@ class StormAudioMediaPlayer(MediaPlayer):
             attributes={
                 Attributes.STATE: device_instance.state,
                 Attributes.SOURCE_LIST: list(device_instance.source_list.keys()),
-                Attributes.SOUND_MODE_LIST: list(device_instance.sound_mode_list.keys())
+                Attributes.SOUND_MODE_LIST: list(device_instance.sound_mode_list.keys()),
+                Attributes.VOLUME: device_instance.volume
             },
             device_class=DeviceClasses.RECEIVER,
             options={
@@ -98,7 +99,7 @@ class StormAudioMediaPlayer(MediaPlayer):
 
                 case media_player.Commands.VOLUME:
                     volume = params.get("volume") if params else None
-                    await self._device.volume(volume)
+                    await self._device.volume_x(volume)
 
                 case media_player.Commands.VOLUME_UP:
                     await self._device.volume_up()
