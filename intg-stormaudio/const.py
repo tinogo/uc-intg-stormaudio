@@ -70,6 +70,7 @@ class StormAudioCommands(StrEnum):
     VOLUME_DOWN = "ssp.vol.down"
     VOLUME_UP = "ssp.vol.up"
     INPUT_X = "ssp.input.[{}]"
+    SURROUND_MODE_X = "ssp.surroundmode.[{}]"
 
 
 class StormAudioResponses(StrEnum):
@@ -85,3 +86,4 @@ class StormAudioResponses(StrEnum):
     MUTE_OFF = "ssp.mute.off"
     VOLUME_X = 'ssp.vol.[-'
     INPUT_LIST_X = 'ssp.input.list.'
+    SURROUND_MODE_X = 'ssp.surroundmode.'

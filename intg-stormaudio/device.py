@@ -31,6 +31,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._waiters: list[tuple[str, asyncio.Future[str]]] = []
         self._state = States.UNKNOWN
         self._source_list = self._device_config.input_list
+        self._sound_mode_list = {"Native": 0, "Stereo Downmix": 1, "Dolby Surround": 2, 'DTS Neural:X': 3, 'Auro-Matic': 4}
 
     @property
     def state(self) -> States:
@@ -41,6 +42,11 @@ class StormAudioDevice(PersistentConnectionDevice):
     def source_list(self) -> Dict[str, int]:
         """Returns a dictionary of available input sources."""
         return self._source_list
+
+    @property
+    def sound_mode_list(self) -> Dict[str, int]:
+        """Returns a dictionary of available sound modes."""
+        return self._sound_mode_list
 
     @property
     def identifier(self) -> str:
@@ -125,17 +131,22 @@ class StormAudioDevice(PersistentConnectionDevice):
                         {MediaAttr.VOLUME: volume}
                     )
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
-                    _LOG.debug("[%s] Received input list: %s", self.log_id, message)
-                    input_json = json.loads(message[15:])
+                    input_name, input_id, *tail = json.loads(message[len(StormAudioResponses.INPUT_LIST_X):])
 
-                    if input_json[0] not in self._source_list:
-                        self._source_list.update({input_json[0]: input_json[1]})
+                    if input_name not in self._source_list:
+                        self._source_list.update({input_name: input_id})
 
                         self.events.emit(
                             DeviceEvents.UPDATE,
                             create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
                             {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
                         )
+                case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
+                    self.events.emit(
+                        DeviceEvents.UPDATE,
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {MediaAttr.SOUND_MODE_LIST: list(self.sound_mode_list.keys())}
+                    )
                 case _:
                     self.events.emit(
                         DeviceEvents.UPDATE,
@@ -279,3 +290,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def select_source(self, source):
         """Decrease the volume of the StormAudio processor by 1dB."""
         await self._send_command(StormAudioCommands.INPUT_X.format(self.source_list.get(source)))
+
+    async def select_sound_mode(self, mode):
+        """Set the surround mode of the StormAudio processor."""
+        await self._send_command(StormAudioCommands.SURROUND_MODE_X.format(self.sound_mode_list.get(mode)))

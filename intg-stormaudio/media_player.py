@@ -83,7 +83,6 @@ class StormAudioMediaPlayer(MediaPlayer):
         _LOG.info("Received command: %s %s", cmd_id, params if params else "")
 
         try:
-            # TODO: Implement command handling for your device
             match cmd_id:
                 case media_player.Commands.ON:
                     await self._device.power_on()
@@ -117,6 +116,9 @@ class StormAudioMediaPlayer(MediaPlayer):
                     source = params.get("source") if params else None
                     await self._device.select_source(source)
 
+                case media_player.Commands.SELECT_SOUND_MODE:
+                    mode = params.get("mode") if params else None
+                    await self._device.select_sound_mode(mode)
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
                     return ucapi.StatusCodes.NOT_IMPLEMENTED
