@@ -47,8 +47,8 @@ async def main():
     await driver.register_all_configured_devices()
 
     # Set up device discovery (optional - remove if not using discovery)
-    discovery = StormAudioDiscovery(timeout=5, service_type="_stormaudio._tcp.local.")
-    setup_handler = StormAudioSetupFlow.create_handler(driver, discovery=discovery)
+    # discovery = StormAudioDiscovery(timeout=5, service_type="_stormaudio._tcp.local.")
+    setup_handler = StormAudioSetupFlow.create_handler(driver)
 
     # Initialize the API with the driver configuration
     await driver.api.init("driver.json", setup_handler)
