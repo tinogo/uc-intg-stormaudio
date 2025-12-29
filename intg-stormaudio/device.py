@@ -86,8 +86,8 @@ class StormAudioDevice(PersistentConnectionDevice):
             match message:
                 case StormAudioResponses.PROC_STATE_ON:
                     self._update_state(States.ON)
-                case StormAudioResponses.PROC_STATE_OFF | StormAudioResponses.PROC_STATE_INITIALISING:
-                    # Maps both initializing and shutting down to OFF
+                case StormAudioResponses.PROC_STATE_OFF | StormAudioResponses.PROC_STATE_INDETERMINATE:
+                    # Maps both the initialization and the process of shutting down to OFF
                     # as they are not "fully booted"
                     self._update_state(States.OFF)
                 case StormAudioResponses.MUTE_ON:
@@ -101,6 +101,16 @@ class StormAudioDevice(PersistentConnectionDevice):
                         DeviceEvents.UPDATE,
                         create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
                         {MediaAttr.MUTED: False}
+                    )
+                case message if message.startswith(StormAudioResponses.VOLUME_X):
+                    # The UC remotes only support relative volume scales for now.
+                    # That's why we need to convert the absolute values from the ISPs.
+                    volume = int(float(message[9:-1])) + 100
+
+                    self.events.emit(
+                        DeviceEvents.UPDATE,
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {MediaAttr.VOLUME: volume}
                     )
                 case _:
                     self.events.emit(
@@ -227,3 +237,11 @@ class StormAudioDevice(PersistentConnectionDevice):
             StormAudioResponses.MUTE_OFF,
             "Timeout waiting for mute toggle response"
         )
+
+    async def volume_up(self):
+        """Increase the volume of the StormAudio processor by 1dB."""
+        await self._send_command(StormAudioCommands.VOLUME_UP)
+
+    async def volume_down(self):
+        """Decrease the volume of the StormAudio processor by 1dB."""
+        await self._send_command(StormAudioCommands.VOLUME_DOWN)
