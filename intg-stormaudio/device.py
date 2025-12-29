@@ -320,3 +320,31 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def brightness_reset(self):
         await self._send_command(StormAudioCommands.BRIGHTNESS_RESET)
+
+    async def center_enhance_up(self):
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE_UP)
+
+    async def center_enhance_down(self):
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE_DOWN)
+
+    async def center_enhance_reset(self):
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE_RESET)
+
+    async def surround_enhance_up(self):
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE_UP)
+
+    async def surround_enhance_down(self):
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE_DOWN)
+
+    async def surround_enhance_reset(self):
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE_RESET)
+
+    async def lfe_enhance_up(self):
+        await self._send_command(StormAudioCommands.LFE_ENHANCE_UP)
+
+    async def lfe_enhance_down(self):
+        await self._send_command(StormAudioCommands.LFE_ENHANCE_DOWN)
+
+    async def lfe_enhance_reset(self):
+        await self._send_command(StormAudioCommands.LFE_ENHANCE_RESET)
+

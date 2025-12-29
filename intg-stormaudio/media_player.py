@@ -191,6 +191,33 @@ class StormAudioMediaPlayer(MediaPlayer):
                 case SimpleCommands.BRIGHTNESS_RESET.value:
                     await self._device.brightness_reset()
 
+                case SimpleCommands.CENTER_ENHANCE_UP.value:
+                    await self._device.center_enhance_up()
+
+                case SimpleCommands.CENTER_ENHANCE_DOWN.value:
+                    await self._device.center_enhance_down()
+
+                case SimpleCommands.CENTER_ENHANCE_RESET.value:
+                    await self._device.center_enhance_reset()
+
+                case SimpleCommands.SURROUND_ENHANCE_UP.value:
+                    await self._device.surround_enhance_up()
+
+                case SimpleCommands.SURROUND_ENHANCE_DOWN.value:
+                    await self._device.surround_enhance_down()
+
+                case SimpleCommands.SURROUND_ENHANCE_RESET.value:
+                    await self._device.surround_enhance_reset()
+
+                case SimpleCommands.LFE_ENHANCE_UP.value:
+                    await self._device.lfe_enhance_up()
+
+                case SimpleCommands.LFE_ENHANCE_DOWN.value:
+                    await self._device.lfe_enhance_down()
+
+                case SimpleCommands.LFE_ENHANCE_RESET.value:
+                    await self._device.lfe_enhance_reset()
+
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)

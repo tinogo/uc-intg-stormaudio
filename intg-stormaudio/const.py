@@ -60,6 +60,15 @@ class SimpleCommands(StrEnum):
     BRIGHTNESS_UP = "Brightness: +1dB"
     BRIGHTNESS_DOWN = "Brightness: -1dB"
     BRIGHTNESS_RESET = "Brightness: 0dB"
+    CENTER_ENHANCE_UP = "Center-Enhance: +1dB"
+    CENTER_ENHANCE_DOWN = "Center-Enhance: -1dB"
+    CENTER_ENHANCE_RESET = "Center-Enhance: 0dB"
+    SURROUND_ENHANCE_UP = "Surround-Enhance: +1dB"
+    SURROUND_ENHANCE_DOWN = "Surround-Enhance: -1dB"
+    SURROUND_ENHANCE_RESET = "Surround-Enhance: 0dB"
+    LFE_ENHANCE_UP = "LFE-Enhance: +1dB"
+    LFE_ENHANCE_DOWN = "LFE-Enhance: -1dB"
+    LFE_ENHANCE_RESET = "LFE-Enhance: 0dB"
 
 
 class StormAudioCommands(StrEnum):
@@ -98,6 +107,15 @@ class StormAudioCommands(StrEnum):
     BRIGHTNESS_UP = "ssp.brightness.up"
     BRIGHTNESS_DOWN = "ssp.brightness.down"
     BRIGHTNESS_RESET = "ssp.brightness.[0]"
+    CENTER_ENHANCE_UP = "ssp.c_en.up"
+    CENTER_ENHANCE_DOWN = "ssp.c_en.down"
+    CENTER_ENHANCE_RESET = "ssp.c_en.[0]"
+    SURROUND_ENHANCE_UP = "ssp.s_en.up"
+    SURROUND_ENHANCE_DOWN = "ssp.s_en.down"
+    SURROUND_ENHANCE_RESET = "ssp.s_en.[0]"
+    LFE_ENHANCE_UP = "ssp.lfe_en.up"
+    LFE_ENHANCE_DOWN = "ssp.lfe_en.down"
+    LFE_ENHANCE_RESET = "ssp.lfe_en.[0]"
 
 
 class StormAudioResponses(StrEnum):
