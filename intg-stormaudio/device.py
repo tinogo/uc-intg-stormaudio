@@ -238,12 +238,10 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_ON)
-        await self._wait_for_response(StormAudioResponses.POWER_ON)
 
     async def power_off(self):
         """Power off the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_OFF)
-        await self._wait_for_response(StormAudioResponses.POWER_OFF)
 
     async def power_toggle(self):
         """Toggle power of the StormAudio processor."""
@@ -257,12 +255,10 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def mute_on(self):
         """Mute the StormAudio processor."""
         await self._send_command(StormAudioCommands.MUTE_ON)
-        await self._wait_for_response(StormAudioResponses.MUTE_ON)
 
     async def mute_off(self):
         """Unmute the StormAudio processor."""
         await self._send_command(StormAudioCommands.MUTE_OFF)
-        await self._wait_for_response(StormAudioResponses.MUTE_OFF)
 
     async def mute_toggle(self):
         """Toggle mute of the StormAudio processor."""
