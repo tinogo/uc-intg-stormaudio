@@ -141,12 +141,6 @@ class StormAudioDevice(PersistentConnectionDevice):
                             create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
                             {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
                         )
-                case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
-                    self.events.emit(
-                        DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
-                        {MediaAttr.SOUND_MODE_LIST: list(self.sound_mode_list.keys())}
-                    )
                 case _:
                     self.events.emit(
                         DeviceEvents.UPDATE,
