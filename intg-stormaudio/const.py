@@ -36,6 +36,9 @@ class StormAudioConfig:
     input_list: Dict[str, int] = field(default_factory=dict)
     """List of inputs for the device, if available."""
 
+    surroundmode_list: Dict[str, int] = field(default_factory=dict)
+    """List of supported surround modes for the device."""
+
 
 class SimpleCommands(StrEnum):
     """

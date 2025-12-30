@@ -32,13 +32,6 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         self._state = States.UNKNOWN
         self._source_list = self.device_config.input_list
-        self._sound_mode_list = {
-            "Native": 0,
-            "Stereo Downmix": 1,
-            "Dolby Surround": 2,
-            "DTS Neural:X": 3,
-            "Auro-Matic": 4,
-        }
         self._volume: int = 40
         self._client = StormAudioClient(self.address, self.device_config.port)
 
@@ -60,7 +53,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def sound_mode_list(self) -> Dict[str, int]:
         """Returns a dictionary of available sound modes."""
-        return self._sound_mode_list
+        return self.device_config.surroundmode_list
 
     @property
     def identifier(self) -> str:
@@ -100,6 +93,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.PROC_STATE_ON:
                     self._state = States.ON
                     self._update_attributes()
+
                 case (
                     StormAudioResponses.PROC_STATE_OFF
                     | StormAudioResponses.PROC_STATE_INDETERMINATE
@@ -108,12 +102,14 @@ class StormAudioDevice(PersistentConnectionDevice):
                     # as they are not "fully booted"
                     self._state = States.OFF
                     self._update_attributes()
+
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
                     self.events.emit(
                         DeviceEvents.UPDATE,
                         self.entity_id,
                         {MediaAttr.MUTED: message == StormAudioResponses.MUTE_ON},
                     )
+
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
@@ -122,14 +118,17 @@ class StormAudioDevice(PersistentConnectionDevice):
                         + MAX_VOLUME
                     )
                     self._update_attributes()
+
                 case StormAudioResponses.INPUT_LIST_START:
                     self._source_list.clear()
+
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *tail = json.loads(
                         message[len(StormAudioResponses.INPUT_LIST_X) :]
                     )
 
                     self._source_list.update({input_name: input_id})
+
                 case StormAudioResponses.INPUT_LIST_END:
                     self.update_config(input_list=self._source_list)
                     self._update_attributes()

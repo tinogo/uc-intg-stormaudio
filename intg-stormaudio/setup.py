@@ -113,6 +113,13 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
                 identifier=address.replace(".", "_"),
                 name=name,
                 address=address,
+                surroundmode_list={
+                    "Native": 0,
+                    "Stereo Downmix": 1,
+                    "Dolby Surround": 2,
+                    "DTS Neural:X": 3,
+                    "Auro-Matic": 4,
+                },
             )
 
             await self.test_connection(config)
