@@ -43,7 +43,7 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
    2. via Compose:
       ```bash
       cd dev
-      docker compose up -d
+      docker compose up -d --remove-orphans --build
       ```
 
 ### Environment Variables
