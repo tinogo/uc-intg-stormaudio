@@ -19,7 +19,7 @@ jobs:
     outputs:
       version: ${{ steps.get-version-and-id.outputs.VERSION }}
       driver_id: ${{ steps.get-version-and-id.outputs.DRIVER_ID }}
-      artifact_name: ${{ steps.prepare-artifacts.outputs.ARTIFACT_NAME }}
+      artifact_name: ${{ steps.get-version-and-id.outputs.ARTIFACT_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 200
 
       - name: Get version and id
-        #Id needed for env output variable
+        # Id needed for env output variable
         id: get-version-and-id
         run: |
           # Extract version from git tag (remove 'v' prefix)
@@ -38,6 +38,7 @@ jobs:
           # Save to Github output to later use it in Create Release job
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_OUTPUT
+          echo "ARTIFACT_NAME=uc-intg-$DRIVER_ID-$VERSION-aarch64" >> $GITHUB_ENV
 
       - name: Build
         run: |
@@ -55,15 +56,13 @@ jobs:
               pyinstaller --clean --onedir --name intg-${DRIVER_ID} --collect-all zeroconf intg-${INTG_NAME}/driver.py"
 
       - name: Prepare artifacts
-        id: prepare-artifacts
         shell: bash
         run: |
           mkdir -p artifacts/bin
           mv dist/intg-${{ env.DRIVER_ID }}/* artifacts/bin
           mv artifacts/bin/intg-${{ env.DRIVER_ID }} artifacts/bin/driver
           cp driver.json artifacts/
-          echo "ARTIFACT_NAME=uc-intg-${{ env.DRIVER_ID }}-${{ env.VERSION }}-aarch64" >> $GITHUB_ENV
-          
+
       - name: Create upload artifact archive
         shell: bash
         run: | 
