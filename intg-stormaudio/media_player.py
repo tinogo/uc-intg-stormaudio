@@ -7,13 +7,11 @@ Media Player Entity.
 import logging
 from typing import Any
 
-import ucapi
-from ucapi import MediaPlayer, media_player, EntityTypes
-from ucapi.media_player import DeviceClasses, Attributes
-
 import device
-from const import StormAudioConfig, SimpleCommands
-from ucapi_framework import create_entity_id
+import ucapi
+from const import SimpleCommands, StormAudioConfig
+from ucapi import MediaPlayer, media_player
+from ucapi.media_player import Attributes, DeviceClasses
 
 _LOG = logging.getLogger(__name__)
 
@@ -39,7 +37,9 @@ class StormAudioMediaPlayer(MediaPlayer):
     This class handles all media player commands and maintains the entity state.
     """
 
-    def __init__(self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice):
+    def __init__(
+        self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice
+    ):
         """
         Initialize the media player entity.
 
@@ -47,19 +47,18 @@ class StormAudioMediaPlayer(MediaPlayer):
         :param device_instance: The device instance to control
         """
         self._device = device_instance
-        entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, config_device.identifier)
 
-        _LOG.debug("Initializing media player entity: %s", entity_id)
+        _LOG.debug("Initializing media player entity: %s", self._device.entity_id)
 
         super().__init__(
-            entity_id,
-            config_device.name,
+            self._device.entity_id,
+            self._device.name,
             FEATURES,
             attributes={
-                Attributes.STATE: device_instance.state,
-                Attributes.SOURCE_LIST: list(device_instance.source_list.keys()),
-                Attributes.SOUND_MODE_LIST: list(device_instance.sound_mode_list.keys()),
-                Attributes.VOLUME: device_instance.volume
+                Attributes.STATE: self._device.state,
+                Attributes.SOURCE_LIST: list(self._device.source_list.keys()),
+                Attributes.SOUND_MODE_LIST: list(self._device.sound_mode_list.keys()),
+                Attributes.VOLUME: self._device.volume,
             },
             device_class=DeviceClasses.RECEIVER,
             options={
