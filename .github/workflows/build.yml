@@ -19,7 +19,6 @@ jobs:
     outputs:
       version: ${{ steps.get-version-and-id.outputs.VERSION }}
       driver_id: ${{ steps.get-version-and-id.outputs.DRIVER_ID }}
-      artifact_name: ${{ steps.get-version-and-id.outputs.ARTIFACT_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -38,7 +37,6 @@ jobs:
           # Save to Github output to later use it in Create Release job
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_OUTPUT
-          echo "ARTIFACT_NAME=uc-intg-$DRIVER_ID-$VERSION-aarch64" >> $GITHUB_ENV
 
       - name: Build
         run: |
@@ -62,6 +60,7 @@ jobs:
           mv dist/intg-${{ env.DRIVER_ID }}/* artifacts/bin
           mv artifacts/bin/intg-${{ env.DRIVER_ID }} artifacts/bin/driver
           cp driver.json artifacts/
+          echo "ARTIFACT_NAME=uc-intg-${{ env.DRIVER_ID }}-${{ env.VERSION }}-aarch64" >> $GITHUB_ENV
 
       - name: Create upload artifact archive
         shell: bash
@@ -126,7 +125,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v7
         with:
-          name: ${{needs.build.outputs.artifact_name}}
+          name: uc-intg-${{needs.build.outputs.driver_id}}-${{needs.build.outputs.version}}-aarch64
 
       - name: Extract build archives from downloaded files
         run: |
