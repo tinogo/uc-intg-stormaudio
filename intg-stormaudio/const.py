@@ -148,6 +148,7 @@ class StormAudioResponses(StrEnum):
     NAV_OK = "ssp.nav.ok"
     NAV_BACK = "ssp.nav.back"
     INPUT_LIST_X = "ssp.input.list."
+    INPUT_X = "ssp.input.[{}]"
     SURROUND_MODE_X = "ssp.surroundmode."
     DOLBY_MODE_OFF = "ssp.dolbymode.[0]"
     DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"

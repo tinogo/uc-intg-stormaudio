@@ -233,8 +233,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
 
     async def select_source(self, source):
-        """Decrease the volume of the StormAudio processor by 1dB."""
+        """Select the input of the StormAudio processor."""
         await self._send_command(StormAudioCommands.INPUT_X.format(self.source_list.get(source)))
+        await self._wait_for_response(StormAudioResponses.INPUT_X.format(self.source_list.get(source)))
 
     async def select_sound_mode(self, mode):
         """Set the surround mode of the StormAudio processor."""
