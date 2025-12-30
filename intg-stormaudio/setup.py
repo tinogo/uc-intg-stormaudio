@@ -10,6 +10,8 @@ forms for manual device entry and validation of device connections.
 import logging
 from typing import Any
 
+from device import StormAudioDevice
+
 from const import StormAudioConfig
 from ucapi import IntegrationSetupError, RequestUserInput, SetupError
 from ucapi_framework import BaseSetupFlow, DiscoveredDevice
@@ -107,14 +109,16 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
 
         name = f"StormAudio ISP ({address})"
 
-        _LOG.debug("Attempting to connect to device at %s", address)
-
         try:
-            return StormAudioConfig(
+            config = StormAudioConfig(
                 identifier=address.replace(".", "_"),
                 name=name,
                 address=address,
             )
+
+            await self.test_connection(config)
+
+            return config
 
         except ConnectionError as ex:
             _LOG.error("Connection refused to %s: %s", address, ex)
@@ -128,3 +132,14 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
             _LOG.error("Failed to connect to %s: %s", address, ex)
             _LOG.info("Please verify the device address and try again")
             return SetupError(IntegrationSetupError.CONNECTION_REFUSED)
+
+    async def test_connection(self, config: StormAudioConfig):
+        """Try to connect to the added device. If it works, it is most probably a StormAudio device"""
+
+        _LOG.debug("Attempting to connect to device at %s", config.address)
+
+        device = StormAudioDevice(
+            device_config=config
+        )
+        await device.connect()
+        await device.disconnect()
