@@ -22,18 +22,19 @@ from const import StormAudioCommands, StormAudioResponses
 
 _LOG = logging.getLogger(__name__)
 
-_min_volume = 0
-_max_volume = 100
+MIN_VOLUME = 0
+MAX_VOLUME = 100
+MAX_TIME_OUT = 20
 
 class StormAudioDevice(PersistentConnectionDevice):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self._waiters: list[tuple[str, asyncio.Future[str]]] = []
         self._state = States.UNKNOWN
-        self._source_list = self._device_config.input_list
+        self._source_list = self.device_config.input_list
         self._sound_mode_list = {"Native": 0, "Stereo Downmix": 1, "Dolby Surround": 2, 'DTS Neural:X': 3, 'Auro-Matic': 4}
-        self._entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
-        self._volume: int = 0
+        self._volume: int = 40
 
     @property
     def state(self) -> States:
@@ -88,6 +89,8 @@ class StormAudioDevice(PersistentConnectionDevice):
             await self._connection["writer"].wait_closed()
 
     async def maintain_connection(self) -> None:
+        self._update_attributes()
+
         reader = self._connection["reader"]
 
         while True:
@@ -107,44 +110,29 @@ class StormAudioDevice(PersistentConnectionDevice):
 
             match message:
                 case StormAudioResponses.PROC_STATE_ON:
-                    self._update_state(States.ON)
+                    self._state = States.ON
+                    self._update_attributes()
                 case StormAudioResponses.PROC_STATE_OFF | StormAudioResponses.PROC_STATE_INDETERMINATE:
                     # Maps both the initialization and the process of shutting down to OFF
                     # as they are not "fully booted"
-                    self._update_state(States.OFF)
-                case StormAudioResponses.MUTE_ON:
+                    self._state = States.OFF
+                    self._update_attributes()
+                case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        self._entity_id,
-                        {MediaAttr.MUTED: True}
-                    )
-                case StormAudioResponses.MUTE_OFF:
-                    self.events.emit(
-                        DeviceEvents.UPDATE,
-                        self._entity_id,
-                        {MediaAttr.MUTED: False}
+                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        {MediaAttr.MUTED: True if message == StormAudioResponses.MUTE_ON else False}
                     )
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
-                    self._volume = int(float(message[len(StormAudioResponses.VOLUME_X):-1])) + _max_volume
-
-                    self.events.emit(
-                        DeviceEvents.UPDATE,
-                        self._entity_id,
-                        {MediaAttr.VOLUME: self._volume}
-                    )
+                    self._volume = int(float(message[len(StormAudioResponses.VOLUME_X):-1])) + MAX_VOLUME
+                    self._update_attributes()
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *tail = json.loads(message[len(StormAudioResponses.INPUT_LIST_X):])
 
-                    if input_name not in self._source_list:
-                        self._source_list.update({input_name: input_id})
-
-                        self.events.emit(
-                            DeviceEvents.UPDATE,
-                            self._entity_id,
-                            {MediaAttr.SOURCE_LIST: list(self.source_list.keys())}
-                        )
+                    self._source_list.update({input_name: input_id})
+                    self._update_attributes()
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
@@ -170,20 +158,24 @@ class StormAudioDevice(PersistentConnectionDevice):
                 self._waiters.remove((pattern, future))
             return None
 
-    def _update_state(self, state: States) -> None:
-        """Update device state and emit event."""
-        self._state = state
+    def _update_attributes(self) -> None:
+        """Update the device attributes via an event."""
         self.events.emit(
             DeviceEvents.UPDATE,
-            self._entity_id,
-            {MediaAttr.STATE: self._state}
+            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+            {
+                MediaAttr.STATE: self._state,
+                MediaAttr.SOURCE_LIST: list(self.source_list.keys()),
+                MediaAttr.SOUND_MODE_LIST: list(self.sound_mode_list.keys()),
+                MediaAttr.VOLUME: self.volume
+            }
         )
 
     async def power_on(self):
         """Power on the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_ON)
         await self._send_command(StormAudioCommands.PROC_STATE)
-        await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, 20)
+        await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, MAX_TIME_OUT)
 
     async def power_off(self):
         """Power off the StormAudio processor."""
@@ -192,7 +184,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
 
     async def power_toggle(self):
-        """Toggle power of the StormAudio processor."""
+        """Toggle the power of the StormAudio processor."""
         current_power_state = self.state
 
         await self._send_command(StormAudioCommands.POWER_TOGGLE)
@@ -201,7 +193,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         if current_power_state == States.ON:
             await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
         else:
-            await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, 20)
+            await self._wait_for_response(StormAudioResponses.PROC_STATE_ON, MAX_TIME_OUT)
 
     async def mute_on(self):
         """Mute the StormAudio processor."""
@@ -220,21 +212,21 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def volume_x(self, volume):
         # The UC remotes only support relative volume scales for now.
         # That's why we need to convert the absolute values from the ISPs.
-        sanitized_volume = max(_min_volume, min(_max_volume, int(volume)))
-        absolute_volume = sanitized_volume - _max_volume
+        sanitized_volume = max(MIN_VOLUME, min(MAX_VOLUME, int(volume)))
+        absolute_volume = sanitized_volume - MAX_VOLUME
         await self._send_command(StormAudioCommands.VOLUME_X.format(absolute_volume))
         await self._wait_for_response(StormAudioCommands.VOLUME_X.format(sanitized_volume))
 
     async def volume_up(self):
         """Increase the volume of the StormAudio processor by 1dB."""
-        target_volume = float(self.volume - _max_volume + 1)
+        target_volume = float(self.volume - MAX_VOLUME + 1)
 
         await self._send_command(StormAudioCommands.VOLUME_UP)
         await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
 
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
-        target_volume = float(self.volume - _max_volume - 1)
+        target_volume = float(self.volume - MAX_VOLUME - 1)
 
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
         await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
