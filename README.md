@@ -69,6 +69,14 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 3. Update via the Remote's web configurator under Integrations
 4. Configure your device through the setup wizard
 
+## Versioning
+
+We use [SemVer](https://semver.org) for versioning. For the versions available, see the [tags and releases in this repository](https://github.com/tinogo/uc-intg-stormaudio/releases).
+
+## Changelog
+
+The major changes found in each new release are listed in the [changelog](https://github.com/tinogo/uc-intg-stormaudio/blob/main/CHANGELOG.md) and under the GitHub [releases](https://github.com/tinogo/uc-intg-stormaudio/releases).
+
 ## Resources
 
 - [UC Integration Python Library](https://github.com/aitatoi/integration-python-library)
