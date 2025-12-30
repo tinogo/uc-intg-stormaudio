@@ -1,0 +1,24 @@
+name: Lint Python code
+on:
+  pull_request:
+
+jobs:
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install the dependencies
+        run: uv sync
+
+      - name: Check import sorting
+        run: uv run -m isort intg-stormaudio/. --verbose
+
+      - name: Check code format
+        run: uv format --check
