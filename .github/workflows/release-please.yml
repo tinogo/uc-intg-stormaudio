@@ -39,9 +39,6 @@ jobs:
       - name: Get version and id
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          # Extract version from git tag (remove 'v' prefix)
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_ENV
 
       - name: Build
@@ -68,7 +65,7 @@ jobs:
           mv dist/intg-${{ env.DRIVER_ID }}/* artifacts/bin
           mv artifacts/bin/intg-${{ env.DRIVER_ID }} artifacts/bin/driver
           cp driver.json artifacts/
-          echo "ARTIFACT_NAME=uc-intg-${{ env.DRIVER_ID }}-${{ env.VERSION }}-aarch64" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=uc-intg-${{ env.DRIVER_ID }}-${{ steps.release.outputs.tag_name }}-aarch64" >> $GITHUB_ENV
 
       - name: Create upload artifact archive
         if: ${{ steps.release.outputs.release_created }}
@@ -81,4 +78,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GOOGLE_RELEASE_PLEASE_TOKEN }}
         run:
-          gh release upload ${{ env.ARTIFACT_NAME }} ${{ env.ARTIFACT_NAME }}.tar.gz
+          gh release upload ${{ steps.release.outputs.tag_name }} ${{ env.ARTIFACT_NAME }}.tar.gz
