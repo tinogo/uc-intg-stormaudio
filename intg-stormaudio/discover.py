@@ -20,15 +20,14 @@ class StormAudioDiscovery(MDNSDiscovery):
     Discover devices on the local network.
     """
 
-    def parse_mdns_service(
-        self, service_info: Any
-    ) -> DiscoveredDevice | None:
+    def parse_mdns_service(self, service_info: Any) -> DiscoveredDevice | None:
         """Parse mDNS service info."""
         if not service_info.addresses:
             return None
 
         # Get first IPv4 address
         import socket
+
         address = socket.inet_ntoa(service_info.addresses[0])
 
         # Extract name and properties
@@ -42,5 +41,5 @@ class StormAudioDiscovery(MDNSDiscovery):
             identifier=service_info.name,
             name=name,
             address=address,
-            extra_data=properties
+            extra_data=properties,
         )

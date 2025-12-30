@@ -38,7 +38,9 @@ class StormAudioMediaPlayer(MediaPlayer):
     This class handles all media player commands and maintains the entity state.
     """
 
-    def __init__(self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice):
+    def __init__(
+        self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice
+    ):
         """
         Initialize the media player entity.
 
@@ -57,7 +59,7 @@ class StormAudioMediaPlayer(MediaPlayer):
                 Attributes.STATE: self._device.state,
                 Attributes.SOURCE_LIST: list(self._device.source_list.keys()),
                 Attributes.SOUND_MODE_LIST: list(self._device.sound_mode_list.keys()),
-                Attributes.VOLUME: self._device.volume
+                Attributes.VOLUME: self._device.volume,
             },
             device_class=DeviceClasses.RECEIVER,
             options={

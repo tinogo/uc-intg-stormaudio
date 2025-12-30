@@ -5,6 +5,7 @@ from asyncio import StreamReader, StreamWriter
 
 _LOG = logging.getLogger(__name__)
 
+
 class StormAudioClient:
     def __init__(self, address: str, port: int):
         self._waiters: list[tuple[str, asyncio.Future[str]]] = []
@@ -16,10 +17,8 @@ class StormAudioClient:
         """Return a log identifier for debugging."""
         return f"{self._address}:{self._port}"
 
-    async def connect(self) ->  dict[str, StreamReader | StreamWriter]:
-        reader, writer = await asyncio.open_connection(
-            self._address, self._port
-        )
+    async def connect(self) -> dict[str, StreamReader | StreamWriter]:
+        reader, writer = await asyncio.open_connection(self._address, self._port)
 
         return {"reader": reader, "writer": writer}
 
@@ -27,7 +26,9 @@ class StormAudioClient:
         connection["writer"].close()
         await connection["writer"].wait_closed()
 
-    async def send_command(self, connection: dict[str, StreamReader | StreamWriter], command: str) -> None:
+    async def send_command(
+        self, connection: dict[str, StreamReader | StreamWriter], command: str
+    ) -> None:
         """Send a command to the device."""
 
         writer: StreamWriter = connection["writer"]
@@ -55,13 +56,15 @@ class StormAudioClient:
                 future.set_result(message)
                 self._waiters.remove((pattern, future))
 
-    async def parse_response_messages(self, connection: dict[str, StreamReader | StreamWriter], message_handler = None) -> None:
+    async def parse_response_messages(
+        self, connection: dict[str, StreamReader | StreamWriter], message_handler=None
+    ) -> None:
         reader = connection["reader"]
 
         while True:
             data = await reader.readline()
             if not data:
-                break # Connection closed
+                break  # Connection closed
 
             # Process message
             message = data.decode().strip()

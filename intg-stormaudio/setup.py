@@ -138,8 +138,6 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
 
         _LOG.debug("Attempting to connect to device at %s", config.address)
 
-        device = StormAudioDevice(
-            device_config=config
-        )
+        device = StormAudioDevice(device_config=config)
         await device.connect()
         await device.disconnect()
