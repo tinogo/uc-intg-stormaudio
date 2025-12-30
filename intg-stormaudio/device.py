@@ -9,7 +9,8 @@ sends commands, and tracks the device state.
 
 import asyncio
 import logging
-from asyncio import StreamWriter
+
+from stormaudio import StormAudioClient
 
 import json
 from typing import Any, Dict
@@ -36,6 +37,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._source_list = self.device_config.input_list
         self._sound_mode_list = {"Native": 0, "Stereo Downmix": 1, "Dolby Surround": 2, 'DTS Neural:X': 3, 'Auro-Matic': 4}
         self._volume: int = 40
+        self._client = StormAudioClient(self.address, self.device_config.port)
 
     @property
     def state(self) -> States:
@@ -77,38 +79,20 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Return a log identifier for debugging."""
         return self.name if self.name else self.identifier
 
-    async def establish_connection(self) -> Any:
-        reader, writer = await asyncio.open_connection(
-            self.address, self._device_config.port
-        )
+    @property
+    def entity_id(self) -> str:
+        """Returns the unique entity-ID."""
+        return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
-        return {"reader": reader, "writer": writer}
+    async def establish_connection(self) -> Any:
+        return await self._client.connect()
 
     async def close_connection(self) -> None:
         if self._connection:
-            self._connection["writer"].close()
-            await self._connection["writer"].wait_closed()
+            await self._client.close(self._connection)
 
     async def maintain_connection(self) -> None:
-        self._update_attributes()
-
-        reader = self._connection["reader"]
-
-        while True:
-            data = await reader.readline()
-            if not data:
-                break  # Connection closed
-
-            # Process message
-            message = data.decode().strip()
-            _LOG.debug("[%s] Received: %s", self.log_id, message)
-
-            # Notify waiters
-            for pattern, future in self._waiters[:]:
-                if pattern in message and not future.done():
-                    future.set_result(message)
-                    self._waiters.remove((pattern, future))
-
+        def message_handler(message: str) -> None:
             match message:
                 case StormAudioResponses.PROC_STATE_ON:
                     self._state = States.ON
@@ -121,7 +105,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
                     self.events.emit(
                         DeviceEvents.UPDATE,
-                        create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+                        self.entity_id,
                         {MediaAttr.MUTED: True if message == StormAudioResponses.MUTE_ON else False}
                     )
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
@@ -135,35 +119,24 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._source_list.update({input_name: input_id})
                     self._update_attributes()
 
+        await self._client.parse_response_messages(self._connection, message_handler)
+
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
         if not self._connection:
             _LOG.error("[%s] Cannot send command, not connected", self.log_id)
             return
 
-        writer: StreamWriter = self._connection["writer"]
-        _LOG.debug("[%s] Sending: %s", self.log_id, command)
-        writer.write((command + "\n").encode())
-        await writer.drain()
+        await self._client.send_command(self._connection, command)
 
     async def _wait_for_response(self, pattern: str, timeout: float = 5.0) -> str | None:
-        """Wait for a specific response from the device."""
-        future = asyncio.get_running_loop().create_future()
-        self._waiters.append((pattern, future))
-
-        try:
-            return await asyncio.wait_for(future, timeout=timeout)
-        except asyncio.TimeoutError:
-            _LOG.warning("[%s] Timeout waiting for response: %s", self.log_id, pattern)
-            if (pattern, future) in self._waiters:
-                self._waiters.remove((pattern, future))
-            return None
+        await self._client.wait_for_response(pattern, timeout)
 
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
         self.events.emit(
             DeviceEvents.UPDATE,
-            create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier),
+            self.entity_id,
             {
                 MediaAttr.STATE: self._state,
                 MediaAttr.SOURCE_LIST: list(self.source_list.keys()),
