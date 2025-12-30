@@ -31,7 +31,7 @@
         "field": {
           "label": {
             "value": {
-              "en": "This integration will allow you to control your StormAudio Processor from your Unfolded Circle Remote.",
+              "en": "This integration allows you to control your StormAudio Processor from your Unfolded Circle Remote.",
               "de": "Diese Integration erlaubt die Steuerung deines StormAudio AV-Prozessors mit deiner Unfolded Circle Remote."
             }
           }
