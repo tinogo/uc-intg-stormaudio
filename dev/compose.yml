@@ -28,6 +28,8 @@ services:
      command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' intg-stormaudio/driver.py"
      volumes:
        - ../:/app
+       - integration-data:/config
 
 volumes:
   simulator-data:
+  integration-data:
