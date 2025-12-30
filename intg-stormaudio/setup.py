@@ -66,13 +66,13 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
         return []
 
     async def prepare_input_from_discovery(
-        self, device: DiscoveredDevice, additional_input: dict[str, Any]
+        self, discovered: DiscoveredDevice, additional_input: dict[str, Any]
     ) -> dict[str, Any]:
         """Convert discovered device to input values."""
         return {
-            "identifier": device.identifier,
-            "name": device.name,
-            "address": device.address,
+            "identifier": discovered.identifier,
+            "name": discovered.name,
+            "address": discovered.address,
         }
 
     def get_manual_entry_form(self) -> RequestUserInput:

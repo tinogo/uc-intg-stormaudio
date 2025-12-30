@@ -1,3 +1,11 @@
+"""
+Client Module.
+
+This module handles the TCP/Telnet connection to the StormAudio device.
+
+:license: Mozilla Public License Version 2.0, see LICENSE for more details.
+"""
+
 import asyncio
 import logging
 

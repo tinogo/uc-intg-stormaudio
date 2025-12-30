@@ -10,11 +10,10 @@ sends commands, and tracks the device state.
 import asyncio
 import logging
 
-from stormaudio import StormAudioClient
-
 import json
 from typing import Any, Dict
 
+from stormaudio import StormAudioClient
 from ucapi import EntityTypes
 from ucapi.media_player import States, Attributes as MediaAttr
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
@@ -117,9 +116,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                         DeviceEvents.UPDATE,
                         self.entity_id,
                         {
-                            MediaAttr.MUTED: True
-                            if message == StormAudioResponses.MUTE_ON
-                            else False
+                            MediaAttr.MUTED: message == StormAudioResponses.MUTE_ON
                         },
                     )
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
