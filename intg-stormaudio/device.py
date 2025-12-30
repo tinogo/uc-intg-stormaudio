@@ -9,7 +9,8 @@ sends commands, and tracks the device state.
 
 import asyncio
 import logging
-import telnetlib3
+from asyncio import StreamWriter
+
 import json
 from typing import Any, Dict
 
@@ -77,7 +78,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         return self.name if self.name else self.identifier
 
     async def establish_connection(self) -> Any:
-        reader, writer = await telnetlib3.open_connection(
+        reader, writer = await asyncio.open_connection(
             self.address, self._device_config.port
         )
 
@@ -99,7 +100,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 break  # Connection closed
 
             # Process message
-            message = data.strip()
+            message = data.decode().strip()
             _LOG.debug("[%s] Received: %s", self.log_id, message)
 
             # Notify waiters
@@ -140,9 +141,9 @@ class StormAudioDevice(PersistentConnectionDevice):
             _LOG.error("[%s] Cannot send command, not connected", self.log_id)
             return
 
-        writer = self._connection["writer"]
+        writer: StreamWriter = self._connection["writer"]
         _LOG.debug("[%s] Sending: %s", self.log_id, command)
-        writer.write(command + "\n")
+        writer.write((command + "\n").encode())
         await writer.drain()
 
     async def _wait_for_response(self, pattern: str, timeout: float = 5.0) -> str | None:

@@ -502,15 +502,6 @@ wheels = [
 ]
 
 [[package]]
-name = "telnetlib3"
-version = "2.0.8"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b7/12/305101cfdec4863c088e520cbb698b08ebd3396904ecfe0062612db77c66/telnetlib3-2.0.8.tar.gz", hash = "sha256:08a2a7a3a6790f89617442b7d491da8b531d87706fffd6a33eeff57ac440b752", size = 157753, upload-time = "2025-09-23T20:30:50.901Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/ba/3bc29b36aed7ed157d73ad8afb18b96c29199bfda53a418b828867e1fc70/telnetlib3-2.0.8-py2.py3-none-any.whl", hash = "sha256:9c5b762d359581af61b7872c5abd1aa82d8fd49044d12b4eb5a7c88660901dbd", size = 109725, upload-time = "2025-09-23T20:30:49.262Z" },
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -525,7 +516,6 @@ version = "0.4.2"
 source = { virtual = "." }
 dependencies = [
     { name = "pyee" },
-    { name = "telnetlib3" },
     { name = "ucapi" },
     { name = "ucapi-framework" },
 ]
@@ -533,7 +523,6 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pyee", specifier = ">=9.0" },
-    { name = "telnetlib3", specifier = ">=2.0.8" },
     { name = "ucapi", specifier = "==0.5.1" },
     { name = "ucapi-framework", specifier = "==1.4.0" },
 ]

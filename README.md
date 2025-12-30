@@ -30,6 +30,8 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 
 ### Local Development
 
+#### Running the integration
+
 1. Install dependencies:
    ```bash
    uv sync
@@ -45,6 +47,30 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
       cd dev
       docker compose up -d --remove-orphans --build
       ```
+
+#### Adding and removing dependencies
+
+##### Adding dependencies
+
+```bash
+uv add <dependency>
+uv export --format requirements.txt --output-file requirements.txt
+
+cd dev
+docker compose down
+docker compose up -d --remove-orphans --build
+```
+
+##### Removing dependencies
+
+```bash
+uv remove <dependency>
+uv export --format requirements.txt --output-file requirements.txt
+
+cd dev
+docker compose down
+docker compose up -d --remove-orphans --build
+```
 
 ### Environment Variables
 

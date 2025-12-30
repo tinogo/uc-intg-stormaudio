@@ -18,6 +18,4 @@ dependencies = [
     "ucapi==0.5.1",
     "ucapi-framework==1.4.0",
     "pyee>=9.0",
-    # Discovery protocols
-    "telnetlib3>=2.0.8",
 ]
