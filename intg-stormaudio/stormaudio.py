@@ -8,7 +8,6 @@ This module handles the TCP/Telnet connection to the StormAudio device.
 
 import asyncio
 import logging
-
 from asyncio import StreamReader, StreamWriter
 
 _LOG = logging.getLogger(__name__)

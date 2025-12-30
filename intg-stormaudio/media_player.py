@@ -7,12 +7,11 @@ Media Player Entity.
 import logging
 from typing import Any
 
-import ucapi
-from ucapi import MediaPlayer, media_player
-from ucapi.media_player import DeviceClasses, Attributes
-
 import device
-from const import StormAudioConfig, SimpleCommands
+import ucapi
+from const import SimpleCommands, StormAudioConfig
+from ucapi import MediaPlayer, media_player
+from ucapi.media_player import Attributes, DeviceClasses
 
 _LOG = logging.getLogger(__name__)
 
