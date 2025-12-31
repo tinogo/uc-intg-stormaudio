@@ -7,7 +7,6 @@ sends commands, and tracks the device state.
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
-import asyncio
 import json
 import logging
 from typing import Any, Dict
@@ -31,7 +30,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._waiters: list[tuple[str, asyncio.Future[str]]] = []
         self._state = States.UNKNOWN
         self._source_list = self.device_config.input_list
         self._sound_mode_list = {
