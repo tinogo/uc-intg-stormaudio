@@ -18,7 +18,7 @@ jobs:
         run: uv sync
 
       - name: Check import sorting
-        run: uv run -m isort intg-stormaudio/. --verbose
+        run: uv run -m isort intg-stormaudio/. --check --verbose
 
       - name: Check code format
         run: uv format --check
