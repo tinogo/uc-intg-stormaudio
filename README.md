@@ -44,7 +44,6 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
       ```
    2. via Compose:
       ```bash
-      cd dev
       docker compose up -d --remove-orphans --build
       ```
 
@@ -56,7 +55,6 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 uv add <dependency>
 uv export --format requirements.txt --output-file requirements.txt
 
-cd dev
 docker compose down
 docker compose up -d --remove-orphans --build
 ```
@@ -67,7 +65,6 @@ docker compose up -d --remove-orphans --build
 uv remove <dependency>
 uv export --format requirements.txt --output-file requirements.txt
 
-cd dev
 docker compose down
 docker compose up -d --remove-orphans --build
 ```
