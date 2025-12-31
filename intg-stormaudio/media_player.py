@@ -9,11 +9,12 @@ from typing import Any
 
 import device
 import ucapi
-from const import SimpleCommands, StormAudioConfig
-from ucapi import MediaPlayer, media_player
+from const import Loggers, SimpleCommands, StormAudioConfig
+from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import Attributes, DeviceClasses
+from ucapi_framework import create_entity_id
 
-_LOG = logging.getLogger(__name__)
+_LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
 
 FEATURES = [
     media_player.Features.ON_OFF,
@@ -48,15 +49,17 @@ class StormAudioMediaPlayer(MediaPlayer):
         """
         self._device = device_instance
 
-        _LOG.debug("Initializing media player entity: %s", self._device.entity_id)
+        entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, config_device.identifier)
+
+        _LOG.debug("Initializing media player entity: %s", entity_id)
 
         super().__init__(
-            self._device.entity_id,
-            self._device.name,
+            entity_id,
+            config_device.name,
             FEATURES,
             attributes={
                 Attributes.STATE: self._device.state,
-                Attributes.SOURCE_LIST: list(self._device.source_list.keys()),
+                Attributes.SOURCE_LIST: list(config_device.input_list.keys()),
                 Attributes.SOUND_MODE_LIST: list(self._device.sound_mode_list.keys()),
                 Attributes.VOLUME: self._device.volume,
             },

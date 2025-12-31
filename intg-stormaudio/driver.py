@@ -11,7 +11,7 @@ import asyncio
 import logging
 import os
 
-from const import StormAudioConfig
+from const import Loggers, StormAudioConfig
 from device import StormAudioDevice
 from discover import StormAudioDiscovery
 from media_player import StormAudioMediaPlayer
@@ -25,10 +25,10 @@ async def main():
 
     # Configure logging level from environment variable
     level = os.getenv("UC_LOG_LEVEL", "DEBUG").upper()
-    logging.getLogger("driver").setLevel(level)
-    logging.getLogger("media_player").setLevel(level)
-    logging.getLogger("device").setLevel(level)
-    logging.getLogger("setup_flow").setLevel(level)
+    logging.getLogger(Loggers.DRIVER).setLevel(level)
+    logging.getLogger(Loggers.MEDIA_PLAYER).setLevel(level)
+    logging.getLogger(Loggers.DEVICE).setLevel(level)
+    logging.getLogger(Loggers.SETUP_FLOW).setLevel(level)
 
     # Initialize the integration driver
     driver = BaseIntegrationDriver(

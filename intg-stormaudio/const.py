@@ -156,3 +156,10 @@ class StormAudioResponses(StrEnum):
     DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
     DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
     DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"
+
+
+class Loggers(StrEnum):
+    DRIVER = "driver"
+    MEDIA_PLAYER = "media_player"
+    DEVICE = "device"
+    SETUP_FLOW = "setup_flow"

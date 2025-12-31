@@ -9,10 +9,11 @@ This module handles automatic device discovery on the local network. It uses mDN
 import logging
 from typing import Any
 
+from const import Loggers
 from ucapi_framework import DiscoveredDevice
 from ucapi_framework.discovery import MDNSDiscovery
 
-_LOG = logging.getLogger(__name__)
+_LOG = logging.getLogger(Loggers.SETUP_FLOW)
 
 
 class StormAudioDiscovery(MDNSDiscovery):

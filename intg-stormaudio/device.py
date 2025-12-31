@@ -11,7 +11,7 @@ import json
 import logging
 from typing import Any, Dict
 
-from const import StormAudioCommands, StormAudioResponses
+from const import Loggers, StormAudioCommands, StormAudioResponses
 from stormaudio import StormAudioClient
 from ucapi import EntityTypes
 from ucapi.media_player import Attributes as MediaAttr
@@ -19,7 +19,7 @@ from ucapi.media_player import States
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
-_LOG = logging.getLogger(__name__)
+_LOG = logging.getLogger(Loggers.DEVICE)
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
