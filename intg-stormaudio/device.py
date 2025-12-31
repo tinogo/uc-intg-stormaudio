@@ -124,12 +124,16 @@ class StormAudioDevice(PersistentConnectionDevice):
                         + MAX_VOLUME
                     )
                     self._update_attributes()
+                case StormAudioResponses.INPUT_LIST_START:
+                    self._source_list.clear()
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *tail = json.loads(
                         message[len(StormAudioResponses.INPUT_LIST_X) :]
                     )
 
                     self._source_list.update({input_name: input_id})
+                case StormAudioResponses.INPUT_LIST_END:
+                    self.update_config(input_list=self._source_list)
                     self._update_attributes()
 
         await self._client.parse_response_messages(self._connection, message_handler)

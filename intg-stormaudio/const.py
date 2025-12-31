@@ -147,6 +147,8 @@ class StormAudioResponses(StrEnum):
     NAV_RIGHT = "ssp.nav.right"
     NAV_OK = "ssp.nav.ok"
     NAV_BACK = "ssp.nav.back"
+    INPUT_LIST_START = "ssp.input.start"
+    INPUT_LIST_END = "ssp.input.end"
     INPUT_LIST_X = "ssp.input.list."
     INPUT_X = "ssp.input.[{}]"
     SURROUND_MODE_X = "ssp.surroundmode."
