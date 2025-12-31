@@ -31,16 +31,13 @@ class StormAudioClient:
 
         return {"reader": reader, "writer": writer}
 
-    async def close(self, connection: dict[str, StreamReader | StreamWriter]) -> None:
-        connection["writer"].close()
-        await connection["writer"].wait_closed()
+    async def close(self, writer: StreamWriter) -> None:
+        writer.close()
+        await writer.wait_closed()
 
-    async def send_command(
-        self, connection: dict[str, StreamReader | StreamWriter], command: str
-    ) -> None:
+    async def send_command(self, writer: StreamWriter, command: str) -> None:
         """Send a command to the device."""
 
-        writer: StreamWriter = connection["writer"]
         _LOG.debug("[%s] Sending: %s", self.log_id, command)
         writer.write((command + "\n").encode())
         await writer.drain()
@@ -66,10 +63,8 @@ class StormAudioClient:
                 self._waiters.remove((pattern, future))
 
     async def parse_response_messages(
-        self, connection: dict[str, StreamReader | StreamWriter], message_handler=None
+        self, reader: StreamReader, message_handler=None
     ) -> None:
-        reader = connection["reader"]
-
         while True:
             data = await reader.readline()
             if not data:

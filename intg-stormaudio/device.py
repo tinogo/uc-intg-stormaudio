@@ -85,7 +85,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def close_connection(self) -> None:
         if self._connection:
-            await self._client.close(self._connection)
+            await self._client.close(self._connection["writer"])
 
     async def maintain_connection(self) -> None:
         def message_handler(message: str) -> None:
@@ -133,7 +133,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self.update_config(input_list=self._source_list)
                     self._update_attributes()
 
-        await self._client.parse_response_messages(self._connection, message_handler)
+        await self._client.parse_response_messages(
+            self._connection["reader"], message_handler
+        )
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
@@ -141,7 +143,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             _LOG.error("[%s] Cannot send command, not connected", self.log_id)
             return
 
-        await self._client.send_command(self._connection, command)
+        await self._client.send_command(self._connection["writer"], command)
 
     async def _wait_for_response(
         self, pattern: str, timeout: float = 5.0
