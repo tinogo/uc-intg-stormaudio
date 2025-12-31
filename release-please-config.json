@@ -17,6 +17,11 @@
       "hidden": false
     },
     {
+      "type": "refactor",
+      "section": "Miscellaneous",
+      "hidden": false
+    },
+    {
       "type": "revert",
       "section": "Reverts",
       "hidden": false
