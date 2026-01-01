@@ -11,6 +11,15 @@ _Changes in the next release_
 
 ---
 
+## [0.8.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.8.0...v0.8.1) (2026-01-01)
+
+
+### Miscellaneous
+
+* **deps:** bump ucapi-framework from 1.4.0 to 1.4.1 ([#23](https://github.com/tinogo/uc-intg-stormaudio/issues/23)) ([6f5c534](https://github.com/tinogo/uc-intg-stormaudio/commit/6f5c5345164440b85deb655e3fe217c2c43aa6b2))
+* **deps:** Update the uv.lock ([b866eb5](https://github.com/tinogo/uc-intg-stormaudio/commit/b866eb5ad9da71c03772994de5737998ae3120c3))
+* Use the StormAudioClient instead of instantiating the complete device ([89e9636](https://github.com/tinogo/uc-intg-stormaudio/commit/89e963618755748f8c0e6d17e9f11dd17d56dd05))
+
 ## [0.8.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.7.0...v0.8.0) (2025-12-31)
 
 
