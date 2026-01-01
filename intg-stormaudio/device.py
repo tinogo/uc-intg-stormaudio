@@ -80,6 +80,15 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Returns the unique entity-ID."""
         return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
+    async def connect(self) -> bool:
+        if not await super().connect():
+            return False
+
+        if await self._wait_for_response(StormAudioResponses.ZONE_PROFILES_END) is None:
+            return False
+
+        return True
+
     async def establish_connection(self) -> Any:
         return await self._client.connect()
 
@@ -146,7 +155,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def _wait_for_response(
         self, pattern: str, timeout: float = 5.0
     ) -> str | None:
-        await self._client.wait_for_response(pattern, timeout)
+        return await self._client.wait_for_response(pattern, timeout)
 
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
