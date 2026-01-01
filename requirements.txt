@@ -449,9 +449,9 @@ ucapi==0.5.1 \
     # via
     #   uc-intg-stormaudio
     #   ucapi-framework
-ucapi-framework==1.4.0 \
-    --hash=sha256:c40026f221282639edc6a5e334b2603c6e0e6d3f2a31c494668215b083b281f8 \
-    --hash=sha256:cea3e82b1011ee819154b88bd754ba5a5b2807d11c34c80b8650e8002b7d9421
+ucapi-framework==1.4.1 \
+    --hash=sha256:29e525bd402aaa4db035f1988caf8f0bff04f5b9f49eed10eef0bbb1a01005e4 \
+    --hash=sha256:34254b447a16c4f9b6494e8e7e2cf015dfc0bee2e6ab4118f52db3630ee6317a
     # via uc-intg-stormaudio
 websockets==15.0.1 \
     --hash=sha256:0701bc3cfcb9164d04a14b149fd74be7347a530ad3bbf15ab2c678a2cd3dd9a2 \
