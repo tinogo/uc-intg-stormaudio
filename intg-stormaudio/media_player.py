@@ -54,9 +54,9 @@ class StormAudioMediaPlayer(MediaPlayer):
         _LOG.debug("Initializing media player entity: %s", entity_id)
 
         super().__init__(
-            entity_id,
-            config_device.name,
-            FEATURES,
+            identifier=entity_id,
+            name=config_device.name,
+            features=FEATURES,
             attributes={
                 Attributes.STATE: self._device.state,
                 Attributes.SOURCE_LIST: list(config_device.input_list.keys()),
