@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from const import Loggers, StormAudioConfig
-from device import StormAudioDevice
+from stormaudio import StormAudioClient
 from ucapi import IntegrationSetupError, RequestUserInput, SetupError
 from ucapi_framework import BaseSetupFlow, DiscoveredDevice
 
@@ -144,6 +144,6 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
 
         _LOG.debug("Attempting to connect to device at %s", config.address)
 
-        device = StormAudioDevice(device_config=config)
-        await device.connect()
-        await device.disconnect()
+        client = StormAudioClient(address=config.address, port=config.port)
+        connection = await client.connect()
+        await client.close(connection)
