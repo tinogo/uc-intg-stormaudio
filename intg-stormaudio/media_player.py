@@ -86,7 +86,9 @@ class StormAudioMediaPlayer(MediaPlayer):
         :param params: Optional command parameters
         :return: Status code indicating success or failure
         """
-        _LOG.info("[%s] Received command: %s %s", entity.id, cmd_id, params if params else "")
+        _LOG.info(
+            "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
+        )
 
         try:
             match cmd_id:
