@@ -11,6 +11,23 @@ _Changes in the next release_
 
 ---
 
+## [0.10.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.9.0...v0.10.0) (2026-01-02)
+
+
+### Features
+
+* **ci:** Check the code against flake8 ([#28](https://github.com/tinogo/uc-intg-stormaudio/issues/28)) ([be69f78](https://github.com/tinogo/uc-intg-stormaudio/commit/be69f78a8ef95f15e43925c6966b36f5ee342d45))
+
+
+### Bug Fixes
+
+* **docs:** Fix the coding guidelines ([430870f](https://github.com/tinogo/uc-intg-stormaudio/commit/430870fbc94f7aeeb950c56293e6638b53bfa8ee))
+
+
+### Reverts
+
+* Revert the changes related to the connection handling ([b84c858](https://github.com/tinogo/uc-intg-stormaudio/commit/b84c858af58d5dc4aebaaf3c2059c9f520f2c8ba))
+
 ## [0.9.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.8.1...v0.9.0) (2026-01-02)
 
 
