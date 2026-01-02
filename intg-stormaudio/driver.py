@@ -22,7 +22,10 @@ from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config
 class StormAudioIntegrationDriver(
     BaseIntegrationDriver[StormAudioDevice, StormAudioConfig]
 ):
+    """StormAudio Integration Driver."""
+
     def __init__(self):
+        """Initialize the integration driver."""
         super().__init__(
             device_class=StormAudioDevice,
             entity_classes=[StormAudioMediaPlayer],
@@ -32,6 +35,7 @@ class StormAudioIntegrationDriver(
     async def async_register_available_entities(
         self, device_config: StormAudioConfig, device: StormAudioDevice
     ) -> None:
+        """Register available entities for a device (async version)."""
         entity = StormAudioMediaPlayer(
             config_device=device_config,
             device_instance=device,

@@ -163,6 +163,8 @@ class StormAudioResponses(StrEnum):
 
 
 class Loggers(StrEnum):
+    """Defines the various logger types."""
+
     DRIVER = "driver"
     MEDIA_PLAYER = "media_player"
     DEVICE = "device"

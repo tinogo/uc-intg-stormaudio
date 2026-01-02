@@ -60,6 +60,7 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
     """
 
     async def discover_devices(self) -> list[DiscoveredDevice]:
+        """Perform device discovery."""
         if self.discovery:
             return await self.discovery.discover()
         return []
@@ -140,8 +141,7 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
             return SetupError(IntegrationSetupError.CONNECTION_REFUSED)
 
     async def test_connection(self, config: StormAudioConfig):
-        """Try to connect to the added device. If it works, it is most probably a StormAudio device"""
-
+        """Try to connect to the added device. If it works, it is most probably a StormAudio device."""
         _LOG.debug("Attempting to connect to device at %s", config.address)
 
         client = StormAudioClient(address=config.address, port=config.port)

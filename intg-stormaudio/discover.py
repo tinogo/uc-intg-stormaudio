@@ -18,9 +18,7 @@ _LOG = logging.getLogger(Loggers.SETUP_FLOW)
 
 
 class StormAudioDiscovery(MDNSDiscovery):
-    """
-    Discover devices on the local network.
-    """
+    """Discover devices on the local network."""
 
     def parse_mdns_service(self, service_info: Any) -> DiscoveredDevice | None:
         """Parse mDNS service info."""
