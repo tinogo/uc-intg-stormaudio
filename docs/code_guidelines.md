@@ -20,9 +20,9 @@ The following tests are run as GitHub action for each push on the main branch an
 They can also be run anytime on a local developer machine:
 
 ```shell
-ux rn -m pylint intg-stormaudio
-ux rn -m flake8 intg-stormaudio --count --show-source --statistics
-ux rn -m isort intg-stormaudio/. --check --verbose
+uv run -m pylint intg-stormaudio
+uv run -m flake8 intg-stormaudio --count --show-source --statistics
+uv run -m isort intg-stormaudio/. --check --verbose
 ```
 
 Linting integration in PyCharm/IntelliJ IDEA:
