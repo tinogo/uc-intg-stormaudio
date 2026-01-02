@@ -19,6 +19,31 @@ from setup import StormAudioSetupFlow
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
 
 
+class StormAudioIntegrationDriver(
+    BaseIntegrationDriver[StormAudioDevice, StormAudioConfig]
+):
+    """StormAudio Integration Driver."""
+
+    def __init__(self):
+        """Initialize the integration driver."""
+        super().__init__(
+            device_class=StormAudioDevice,
+            entity_classes=[StormAudioMediaPlayer],
+            require_connection_before_registry=True,
+        )
+
+    async def async_register_available_entities(
+        self, device_config: StormAudioConfig, device: StormAudioDevice
+    ) -> None:
+        """Register available entities for a device (async version)."""
+        entity = StormAudioMediaPlayer(
+            config_device=device_config,
+            device_instance=device,
+        )
+
+        self.api.available_entities.add(entity)
+
+
 async def main():
     """Start the Remote Two integration driver."""
     logging.basicConfig()
@@ -31,9 +56,7 @@ async def main():
     logging.getLogger(Loggers.SETUP_FLOW).setLevel(level)
 
     # Initialize the integration driver
-    driver = BaseIntegrationDriver[StormAudioDevice, StormAudioConfig](
-        device_class=StormAudioDevice, entity_classes=[StormAudioMediaPlayer]
-    )
+    driver = StormAudioIntegrationDriver()
 
     # Configure the device config manager
     driver.config_manager = BaseConfigManager(

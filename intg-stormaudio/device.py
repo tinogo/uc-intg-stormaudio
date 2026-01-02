@@ -84,7 +84,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
     async def establish_connection(self) -> Any:
-        """Establish connection to device."""
+        """Establish connection to the device."""
         return await self._client.connect()
 
     async def close_connection(self) -> None:
@@ -127,7 +127,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case StormAudioResponses.INPUT_LIST_START:
-                    self._source_list.clear()
+                    self._source_list = {}
 
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *_tail = json.loads(
