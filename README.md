@@ -53,7 +53,7 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 
 ```bash
 uv add <dependency>
-uv export --format requirements.txt --output-file requirements.txt
+uv export --format requirements.txt --no-group dev --output-file requirements.txt
 
 docker compose down
 docker compose up -d --remove-orphans --build
@@ -63,7 +63,7 @@ docker compose up -d --remove-orphans --build
 
 ```bash
 uv remove <dependency>
-uv export --format requirements.txt --output-file requirements.txt
+uv export --format requirements.txt --no-group dev --output-file requirements.txt
 
 docker compose down
 docker compose up -d --remove-orphans --build
