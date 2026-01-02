@@ -16,7 +16,10 @@ _LOG = logging.getLogger(Loggers.DEVICE)
 
 
 class StormAudioClient:
+    """TCP-Client for interacting with the StormAudio device."""
+
     def __init__(self, address: str, port: int):
+        """Initialize the client."""
         self._waiters: list[tuple[str, asyncio.Future[str]]] = []
         self._address = address
         self._port = port
@@ -27,11 +30,13 @@ class StormAudioClient:
         return f"{self._address}:{self._port}"
 
     async def connect(self) -> dict[str, StreamReader | StreamWriter]:
+        """Establish a TCP connection to the device."""
         reader, writer = await asyncio.open_connection(self._address, self._port)
 
         return {"reader": reader, "writer": writer}
 
     async def close(self, connection: dict[str, StreamReader | StreamWriter]) -> None:
+        """Close the TCP connection."""
         connection["writer"].close()
         await connection["writer"].wait_closed()
 
@@ -39,7 +44,6 @@ class StormAudioClient:
         self, connection: dict[str, StreamReader | StreamWriter], command: str
     ) -> None:
         """Send a command to the device."""
-
         writer: StreamWriter = connection["writer"]
         _LOG.debug("[%s] Sending: %s", self.log_id, command)
         writer.write((command + "\n").encode())
@@ -47,7 +51,6 @@ class StormAudioClient:
 
     async def wait_for_response(self, pattern: str, timeout: float = 5.0) -> str | None:
         """Wait for a specific response from the device."""
-
         future = asyncio.get_running_loop().create_future()
         self._waiters.append((pattern, future))
 
@@ -68,6 +71,7 @@ class StormAudioClient:
     async def parse_response_messages(
         self, connection: dict[str, StreamReader | StreamWriter], message_handler=None
     ) -> None:
+        """Retrieve and process the response messages from the TCP connection."""
         reader = connection["reader"]
 
         while True:
