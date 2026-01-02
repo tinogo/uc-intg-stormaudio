@@ -22,3 +22,6 @@ jobs:
 
       - name: Check code format
         run: uv format --check
+
+      - name: Check code linting
+        run: uv run -m pylint intg-stormaudio
