@@ -22,7 +22,7 @@ from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config
 class StormAudioIntegrationDriver(
     BaseIntegrationDriver[StormAudioDevice, StormAudioConfig]
 ):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super().__init__(
             device_class=StormAudioDevice,
             entity_classes=[StormAudioMediaPlayer],

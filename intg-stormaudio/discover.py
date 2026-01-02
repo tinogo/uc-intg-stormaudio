@@ -7,6 +7,7 @@ This module handles automatic device discovery on the local network. It uses mDN
 """
 
 import logging
+import socket
 from typing import Any
 
 from const import Loggers
@@ -27,8 +28,6 @@ class StormAudioDiscovery(MDNSDiscovery):
             return None
 
         # Get first IPv4 address
-        import socket
-
         address = socket.inet_ntoa(service_info.addresses[0])
 
         # Extract name and properties

@@ -134,7 +134,7 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
             _LOG.error("Connection timeout to %s: %s", address, ex)
             return SetupError(IntegrationSetupError.TIMEOUT)
 
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Failed to connect to %s: %s", address, ex)
             _LOG.info("Please verify the device address and try again")
             return SetupError(IntegrationSetupError.CONNECTION_REFUSED)

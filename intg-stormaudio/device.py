@@ -132,7 +132,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._source_list.clear()
 
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
-                    input_name, input_id, *tail = json.loads(
+                    input_name, input_id, *_tail = json.loads(
                         message[len(StormAudioResponses.INPUT_LIST_X) :]
                     )
 
