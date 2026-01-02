@@ -11,6 +11,30 @@ _Changes in the next release_
 
 ---
 
+## [0.9.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.8.1...v0.9.0) (2026-01-02)
+
+
+### Features
+
+* **#5:** Prepare the Zone-Management ([3e0798b](https://github.com/tinogo/uc-intg-stormaudio/commit/3e0798b0593326485ae523107d288c4c6fbd9dfa))
+* Make the establishing the connection even more robust ([5dcde83](https://github.com/tinogo/uc-intg-stormaudio/commit/5dcde83aca03ea887c3ae3212526a014c47be4ae))
+
+
+### Bug Fixes
+
+* add a missing Response constant ([9bce8ad](https://github.com/tinogo/uc-intg-stormaudio/commit/9bce8ad103fb88608502f7cb5c79c3d3e5e329ce))
+
+
+### Miscellaneous
+
+* **ci:** Lint the code against Pylint within the CI-Pipeline ([2f5f57c](https://github.com/tinogo/uc-intg-stormaudio/commit/2f5f57c7845add11b46819715df56c15356cdee1))
+* consistently use positional parameters in the media_player ([b555e1a](https://github.com/tinogo/uc-intg-stormaudio/commit/b555e1a388f9b1b468703e499683ecd075d6db10))
+* Format the code ([cd745d0](https://github.com/tinogo/uc-intg-stormaudio/commit/cd745d0e715f3ff4c98cf8820b3ac16f5a4b0e89))
+* Make use of the entity argument ([4dc81da](https://github.com/tinogo/uc-intg-stormaudio/commit/4dc81dab16f33ae4c4c2ab3dd69067d9743a0fdc))
+* Reduce the code complexity within the media player ([40cc0fa](https://github.com/tinogo/uc-intg-stormaudio/commit/40cc0fa62c29d5b98149684ee6ed8d9d4738d8a1))
+* Remove the black package ([c934701](https://github.com/tinogo/uc-intg-stormaudio/commit/c9347012e87d0dca9b3f148e53d635c7a811a5ea))
+* Satisfy Pylint ([7fc8847](https://github.com/tinogo/uc-intg-stormaudio/commit/7fc8847151a8c1766b0dfac8e9c61173bde59898))
+
 ## [0.8.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.8.0...v0.8.1) (2026-01-01)
 
 
