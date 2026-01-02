@@ -83,16 +83,6 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Returns the unique entity-ID."""
         return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
-    async def connect(self) -> bool:
-        """Establish persistent connection with reconnection logic."""
-        if not await super().connect():
-            return False
-
-        if await self._wait_for_response(StormAudioResponses.ZONE_PROFILES_END) is None:
-            return False
-
-        return True
-
     async def establish_connection(self) -> Any:
         """Establish connection to device."""
         return await self._client.connect()
