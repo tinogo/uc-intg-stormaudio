@@ -90,35 +90,61 @@ class StormAudioMediaPlayer(MediaPlayer):
             "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
         )
 
+        command_map = {
+            media_player.Commands.ON.value: self._device.power_on,
+            media_player.Commands.OFF.value: self._device.power_off,
+            media_player.Commands.TOGGLE.value: self._device.power_toggle,
+            media_player.Commands.VOLUME_UP.value: self._device.volume_up,
+            media_player.Commands.VOLUME_DOWN.value: self._device.volume_down,
+            media_player.Commands.MUTE.value: self._device.mute_on,
+            media_player.Commands.UNMUTE.value: self._device.mute_off,
+            media_player.Commands.MUTE_TOGGLE.value: self._device.mute_toggle,
+            media_player.Commands.CURSOR_UP.value: self._device.cursor_up,
+            media_player.Commands.CURSOR_DOWN.value: self._device.cursor_down,
+            media_player.Commands.CURSOR_LEFT.value: self._device.cursor_left,
+            media_player.Commands.CURSOR_RIGHT.value: self._device.cursor_right,
+            media_player.Commands.CURSOR_ENTER.value: self._device.cursor_enter,
+            media_player.Commands.BACK.value: self._device.back,
+            media_player.Commands.HOME.value: self._device.back,
+            SimpleCommands.PRESET_NEXT.value: self._device.preset_next,
+            SimpleCommands.PRESET_PREV.value: self._device.preset_prev,
+            SimpleCommands.LOUDNESS_OFF.value: self._device.loudness_off,
+            SimpleCommands.LOUDNESS_LOW.value: self._device.loudness_low,
+            SimpleCommands.LOUDNESS_MEDIUM.value: self._device.loudness_medium,
+            SimpleCommands.LOUDNESS_FULL.value: self._device.loudness_full,
+            SimpleCommands.BASS_UP.value: self._device.bass_up,
+            SimpleCommands.BASS_DOWN.value: self._device.bass_down,
+            SimpleCommands.BASS_RESET.value: self._device.bass_reset,
+            SimpleCommands.TREBLE_UP.value: self._device.treble_up,
+            SimpleCommands.TREBLE_DOWN.value: self._device.treble_down,
+            SimpleCommands.TREBLE_RESET.value: self._device.treble_reset,
+            SimpleCommands.BRIGHTNESS_UP.value: self._device.brightness_up,
+            SimpleCommands.BRIGHTNESS_DOWN.value: self._device.brightness_down,
+            SimpleCommands.BRIGHTNESS_RESET.value: self._device.brightness_reset,
+            SimpleCommands.CENTER_ENHANCE_UP.value: self._device.center_enhance_up,
+            SimpleCommands.CENTER_ENHANCE_DOWN.value: self._device.center_enhance_down,
+            SimpleCommands.CENTER_ENHANCE_RESET.value: self._device.center_enhance_reset,
+            SimpleCommands.SURROUND_ENHANCE_UP.value: self._device.surround_enhance_up,
+            SimpleCommands.SURROUND_ENHANCE_DOWN.value: self._device.surround_enhance_down,
+            SimpleCommands.SURROUND_ENHANCE_RESET.value: self._device.surround_enhance_reset,
+            SimpleCommands.LFE_ENHANCE_UP.value: self._device.lfe_enhance_up,
+            SimpleCommands.LFE_ENHANCE_DOWN.value: self._device.lfe_enhance_down,
+            SimpleCommands.LFE_ENHANCE_RESET.value: self._device.lfe_enhance_reset,
+            SimpleCommands.DOLBY_MODE_OFF.value: self._device.dolby_mode_off,
+            SimpleCommands.DOLBY_MODE_MOVIE.value: self._device.dolby_mode_movie,
+            SimpleCommands.DOLBY_MODE_MUSIC.value: self._device.dolby_mode_music,
+            SimpleCommands.DOLBY_MODE_NIGHT.value: self._device.dolby_mode_night,
+        }
+
         try:
             match cmd_id:
-                case media_player.Commands.ON:
-                    await self._device.power_on()
+                case cmd_id if cmd_id in command_map:
+                    await command_map[cmd_id]()
 
-                case media_player.Commands.OFF:
-                    await self._device.power_off()
-
-                case media_player.Commands.TOGGLE:
-                    await self._device.power_toggle()
-
+                # complex commands (with parameters)
                 case media_player.Commands.VOLUME:
                     volume = params.get("volume") if params else None
                     await self._device.volume_x(volume)
-
-                case media_player.Commands.VOLUME_UP:
-                    await self._device.volume_up()
-
-                case media_player.Commands.VOLUME_DOWN:
-                    await self._device.volume_down()
-
-                case media_player.Commands.MUTE:
-                    await self._device.mute_on()
-
-                case media_player.Commands.UNMUTE:
-                    await self._device.mute_off()
-
-                case media_player.Commands.MUTE_TOGGLE:
-                    await self._device.mute_toggle()
 
                 case media_player.Commands.SELECT_SOURCE:
                     source = params.get("source") if params else None
@@ -128,112 +154,6 @@ class StormAudioMediaPlayer(MediaPlayer):
                     mode = params.get("mode") if params else None
                     await self._device.select_sound_mode(mode)
 
-                case media_player.Commands.CURSOR_UP:
-                    await self._device.cursor_up()
-
-                case media_player.Commands.CURSOR_DOWN:
-                    await self._device.cursor_down()
-
-                case media_player.Commands.CURSOR_LEFT:
-                    await self._device.cursor_left()
-
-                case media_player.Commands.CURSOR_RIGHT:
-                    await self._device.cursor_right()
-
-                case media_player.Commands.CURSOR_ENTER:
-                    await self._device.cursor_enter()
-
-                case media_player.Commands.BACK:
-                    await self._device.back()
-
-                case media_player.Commands.HOME:
-                    await self._device.back()
-
-                # --- Simple commands ---
-                case SimpleCommands.PRESET_NEXT.value:
-                    await self._device.preset_next()
-
-                case SimpleCommands.PRESET_PREV.value:
-                    await self._device.preset_prev()
-
-                case SimpleCommands.LOUDNESS_OFF.value:
-                    await self._device.loudness_off()
-
-                case SimpleCommands.LOUDNESS_LOW.value:
-                    await self._device.loudness_low()
-
-                case SimpleCommands.LOUDNESS_MEDIUM.value:
-                    await self._device.loudness_medium()
-
-                case SimpleCommands.LOUDNESS_FULL.value:
-                    await self._device.loudness_full()
-
-                case SimpleCommands.BASS_UP.value:
-                    await self._device.bass_up()
-
-                case SimpleCommands.BASS_DOWN.value:
-                    await self._device.bass_down()
-
-                case SimpleCommands.BASS_RESET.value:
-                    await self._device.bass_reset()
-
-                case SimpleCommands.TREBLE_UP.value:
-                    await self._device.treble_up()
-
-                case SimpleCommands.TREBLE_DOWN.value:
-                    await self._device.treble_down()
-
-                case SimpleCommands.TREBLE_RESET.value:
-                    await self._device.treble_reset()
-
-                case SimpleCommands.BRIGHTNESS_UP.value:
-                    await self._device.brightness_up()
-
-                case SimpleCommands.BRIGHTNESS_DOWN.value:
-                    await self._device.brightness_down()
-
-                case SimpleCommands.BRIGHTNESS_RESET.value:
-                    await self._device.brightness_reset()
-
-                case SimpleCommands.CENTER_ENHANCE_UP.value:
-                    await self._device.center_enhance_up()
-
-                case SimpleCommands.CENTER_ENHANCE_DOWN.value:
-                    await self._device.center_enhance_down()
-
-                case SimpleCommands.CENTER_ENHANCE_RESET.value:
-                    await self._device.center_enhance_reset()
-
-                case SimpleCommands.SURROUND_ENHANCE_UP.value:
-                    await self._device.surround_enhance_up()
-
-                case SimpleCommands.SURROUND_ENHANCE_DOWN.value:
-                    await self._device.surround_enhance_down()
-
-                case SimpleCommands.SURROUND_ENHANCE_RESET.value:
-                    await self._device.surround_enhance_reset()
-
-                case SimpleCommands.LFE_ENHANCE_UP.value:
-                    await self._device.lfe_enhance_up()
-
-                case SimpleCommands.LFE_ENHANCE_DOWN.value:
-                    await self._device.lfe_enhance_down()
-
-                case SimpleCommands.LFE_ENHANCE_RESET.value:
-                    await self._device.lfe_enhance_reset()
-
-                case SimpleCommands.DOLBY_MODE_OFF.value:
-                    await self._device.dolby_mode_off()
-
-                case SimpleCommands.DOLBY_MODE_MOVIE.value:
-                    await self._device.dolby_mode_movie()
-
-                case SimpleCommands.DOLBY_MODE_MUSIC.value:
-                    await self._device.dolby_mode_music()
-
-                case SimpleCommands.DOLBY_MODE_NIGHT.value:
-                    await self._device.dolby_mode_night()
-
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
@@ -241,6 +161,6 @@ class StormAudioMediaPlayer(MediaPlayer):
 
             return ucapi.StatusCodes.OK
 
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
             return ucapi.StatusCodes.BAD_REQUEST
