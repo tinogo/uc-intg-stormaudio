@@ -1,13 +1,33 @@
 import asyncio
+import os
+from asyncio import StreamWriter
+from typing import AsyncIterator
+
+CHUNK_SIZE = 100
+
+async def readlines(reader: asyncio.StreamReader) -> AsyncIterator[bytes]:
+    while line := await read_until_eol(reader):
+        yield line
 
 
-async def handle_echo(reader, writer):
-    addr = writer.get_extra_info("peername")
+async def read_until_eol(reader: asyncio.StreamReader) -> bytes | None:
+    """Returns a line of text or empty bytes object if EOF is received.
+    """
+    data = b''
+    sep = os.linesep.encode()
+    while data := data + await reader.read(CHUNK_SIZE):
+        if sep in data:
+            message, _, data = data.partition(sep)
+            return message + sep
 
-    print(f"Connected to: {addr!r}")
+def send_initial_data_burst(writer: StreamWriter, powered_on: bool = False) -> None:
+    if powered_on:
+        writer.write(("ssp.power.on" + "\n").encode())
+        writer.write(("ssp.procstate.[2]" + "\n").encode())
+    else:
+        writer.write(("ssp.power.off" + "\n").encode())
+        writer.write(("ssp.procstate.[0]" + "\n").encode())
 
-    writer.write(("ssp.power.off" + "\n").encode())
-    writer.write(("ssp.procstate.[0]" + "\n").encode())
     writer.write(('ssp.brand.["StormAudio"]' + "\n").encode())
     writer.write(('ssp.model.["ISP Core 16"]' + "\n").encode())
     writer.write(("ssp.speaker.[3]" + "\n").encode())
@@ -104,8 +124,8 @@ async def handle_echo(reader, writer):
     writer.write(("ssp.zones.start" + "\n").encode())
     writer.write(
         (
-            'ssp.zones.list.[1, "Digital Zone2", 2000, 1, 0, -75, 0.0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
-            + "\n"
+                'ssp.zones.list.[1, "Digital Zone2", 2000, 1, 0, -75, 0.0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
+                + "\n"
         ).encode()
     )
     writer.write(("ssp.zones.end" + "\n").encode())
@@ -123,11 +143,38 @@ async def handle_echo(reader, writer):
         ('ssp.zones.profiles.list.[3, 312, "ARTopt-LW", 1, 0, 0, 0, 0]' + "\n").encode()
     )
     writer.write(("ssp.zones.profiles.end" + "\n").encode())
+
+async def handle_connection(reader, writer):
+    addr = writer.get_extra_info("peername")
+
+    print(f"Connected to: {addr!r}")
+
+    send_initial_data_burst(writer)
     await writer.drain()
+
+    async for data in readlines(reader):
+        message = data.decode().strip()
+        print(f"Message from client: {message!r}")
+
+        match message:
+            case "ssp.power.on":
+                send_initial_data_burst(writer, True)
+                await writer.drain()
+
+            case "ssp.power.off":
+                writer.write(("ssp.power.off" + "\n").encode())
+                writer.write(("ssp.procstate.[0]" + "\n").encode())
+                await writer.drain()
+
+            case "ssp.procstate":
+                writer.write(("ssp.procstate.[2]" + "\n").encode())
+                await writer.drain()
+
+    print(f'{addr}: Connection closed by the remote peer.')
 
 
 async def main():
-    server = await asyncio.start_server(handle_echo, "0.0.0.0", 23)
+    server = await asyncio.start_server(handle_connection, "0.0.0.0", 23)
 
     addrs = ", ".join(str(sock.getsockname()) for sock in server.sockets)
     print(f"Serving on {addrs}")
