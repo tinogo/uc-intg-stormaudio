@@ -29,6 +29,15 @@ services:
        - .:/app
        - integration-data:/config
 
+  echo-server:
+     build:
+       dockerfile: ./server.Dockerfile
+     hostname: echo-server
+     # nodemon watches for file changes and auto-restarts
+     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' server.py"
+     volumes:
+       - .:/app
+
 volumes:
   simulator-data:
   integration-data:

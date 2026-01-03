@@ -46,7 +46,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def source_list(self) -> Dict[str, int]:
         """Returns a dictionary of available input sources."""
-        return self._source_list
+        return {"HDMI1": 1, "HDMI 2": 2}
 
     @property
     def volume(self) -> int:
