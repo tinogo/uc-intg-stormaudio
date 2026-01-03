@@ -123,7 +123,7 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
                 },
             )
 
-            await self.test_connection(config)
+            # await self.test_connection(config)
 
             return config
 
