@@ -3,8 +3,6 @@ import os
 from asyncio import StreamWriter
 from typing import AsyncIterator
 
-CHUNK_SIZE = 100
-
 async def readlines(reader: asyncio.StreamReader) -> AsyncIterator[bytes]:
     while line := await read_until_eol(reader):
         yield line
@@ -15,10 +13,12 @@ async def read_until_eol(reader: asyncio.StreamReader) -> bytes | None:
     """
     data = b''
     sep = os.linesep.encode()
-    while data := data + await reader.read(CHUNK_SIZE):
+    while data := data + await reader.readline():
         if sep in data:
             message, _, data = data.partition(sep)
             return message + sep
+    return None
+
 
 def send_initial_data_burst(writer: StreamWriter, powered_on: bool = False) -> None:
     if powered_on:
