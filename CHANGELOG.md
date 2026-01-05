@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.10.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.0...v0.10.1) (2026-01-05)
+
+
+### Bug Fixes
+
+* **#8:** Fix device initialization ([#29](https://github.com/tinogo/uc-intg-stormaudio/issues/29)) ([9308398](https://github.com/tinogo/uc-intg-stormaudio/commit/93083988d3032ac18a3b164a60423c936c486219))
+
 ## [0.10.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.9.0...v0.10.0) (2026-01-02)
 
 
