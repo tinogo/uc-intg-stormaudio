@@ -9,7 +9,7 @@ sends commands, and tracks the device state.
 
 import json
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from const import Loggers, StormAudioCommands, StormAudioResponses
 from stormaudio import StormAudioClient
@@ -34,8 +34,16 @@ class StormAudioDevice(PersistentConnectionDevice):
         super().__init__(*args, **kwargs)
 
         self._state = States.UNKNOWN
-        self._source_list = self.device_config.input_list
+        self._sources: dict[str, int] = {}
+        self._surround_modes: dict[str, int] = {
+            "Native": 0,
+            "Stereo Downmix": 1,
+            "Dolby Surround": 2,
+            "DTS Neural:X": 3,
+            "Auro-Matic": 4,
+        }
         self._volume: int = 40
+        self._muted: bool = False
         self._client = StormAudioClient(self.address, self.device_config.port)
 
     @property
@@ -44,9 +52,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         return self._state
 
     @property
-    def source_list(self) -> Dict[str, int]:
-        """Returns a dictionary of available input sources."""
-        return self._source_list
+    def source_list(self) -> list[str]:
+        """Returns a list of the available input sources."""
+        return list(self._sources.keys())
 
     @property
     def volume(self) -> int:
@@ -54,9 +62,14 @@ class StormAudioDevice(PersistentConnectionDevice):
         return self._volume
 
     @property
-    def sound_mode_list(self) -> Dict[str, int]:
-        """Returns a dictionary of available sound modes."""
-        return self.device_config.surroundmode_list
+    def muted(self) -> bool:
+        """Returns whether the device is currently muted or not."""
+        return self._muted
+
+    @property
+    def sound_mode_list(self) -> list[str]:
+        """Returns a list of the available sound modes."""
+        return list(self._surround_modes.keys())
 
     @property
     def identifier(self) -> str:
@@ -111,11 +124,8 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
-                    self.events.emit(
-                        DeviceEvents.UPDATE,
-                        self.entity_id,
-                        {MediaAttr.MUTED: message == StormAudioResponses.MUTE_ON},
-                    )
+                    self._muted = message == StormAudioResponses.MUTE_ON
+                    self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
@@ -127,17 +137,16 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case StormAudioResponses.INPUT_LIST_START:
-                    self._source_list = {}
+                    self._sources = {}
 
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *_tail = json.loads(
                         message[len(StormAudioResponses.INPUT_LIST_X) :]  # noqa: E203
                     )
 
-                    self._source_list.update({input_name: input_id})
+                    self._sources.update({input_name: input_id})
 
                 case StormAudioResponses.INPUT_LIST_END:
-                    self.update_config(input_list=self._source_list)
                     self._update_attributes()
 
         await self._client.parse_response_messages(self._connection, message_handler)
@@ -162,9 +171,10 @@ class StormAudioDevice(PersistentConnectionDevice):
             self.entity_id,
             {
                 MediaAttr.STATE: self._state,
-                MediaAttr.SOURCE_LIST: list(self.source_list.keys()),
-                MediaAttr.SOUND_MODE_LIST: list(self.sound_mode_list.keys()),
+                MediaAttr.SOURCE_LIST: self.source_list,
+                MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
                 MediaAttr.VOLUME: self.volume,
+                MediaAttr.MUTED: self.muted,
             },
         )
 
@@ -236,16 +246,16 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def select_source(self, source):
         """Select the input of the StormAudio processor."""
         await self._send_command(
-            StormAudioCommands.INPUT_X.format(self.source_list.get(source))
+            StormAudioCommands.INPUT_X.format(self._sources.get(source))
         )
         await self._wait_for_response(
-            StormAudioResponses.INPUT_X.format(self.source_list.get(source))
+            StormAudioResponses.INPUT_X.format(self._sources.get(source))
         )
 
     async def select_sound_mode(self, mode):
         """Set the surround mode of the StormAudio processor."""
         await self._send_command(
-            StormAudioCommands.SURROUND_MODE_X.format(self.sound_mode_list.get(mode))
+            StormAudioCommands.SURROUND_MODE_X.format(self._surround_modes.get(mode))
         )
 
     async def cursor_up(self):

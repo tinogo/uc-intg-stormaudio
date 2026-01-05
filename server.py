@@ -3,15 +3,15 @@ import os
 from asyncio import StreamWriter
 from typing import AsyncIterator
 
+
 async def readlines(reader: asyncio.StreamReader) -> AsyncIterator[bytes]:
     while line := await read_until_eol(reader):
         yield line
 
 
 async def read_until_eol(reader: asyncio.StreamReader) -> bytes | None:
-    """Returns a line of text or empty bytes object if EOF is received.
-    """
-    data = b''
+    """Returns a line of text or empty bytes object if EOF is received."""
+    data = b""
     sep = os.linesep.encode()
     while data := data + await reader.readline():
         if sep in data:
@@ -124,8 +124,8 @@ def send_initial_data_burst(writer: StreamWriter, powered_on: bool = False) -> N
     writer.write(("ssp.zones.start" + "\n").encode())
     writer.write(
         (
-                'ssp.zones.list.[1, "Digital Zone2", 2000, 1, 0, -75, 0.0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
-                + "\n"
+            'ssp.zones.list.[1, "Digital Zone2", 2000, 1, 0, -75, 0.0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]'
+            + "\n"
         ).encode()
     )
     writer.write(("ssp.zones.end" + "\n").encode())
@@ -143,6 +143,7 @@ def send_initial_data_burst(writer: StreamWriter, powered_on: bool = False) -> N
         ('ssp.zones.profiles.list.[3, 312, "ARTopt-LW", 1, 0, 0, 0, 0]' + "\n").encode()
     )
     writer.write(("ssp.zones.profiles.end" + "\n").encode())
+
 
 async def handle_connection(reader, writer):
     addr = writer.get_extra_info("peername")
@@ -170,7 +171,7 @@ async def handle_connection(reader, writer):
                 writer.write(("ssp.procstate.[2]" + "\n").encode())
                 await writer.drain()
 
-    print(f'{addr}: Connection closed by the remote peer.')
+    print(f"{addr}: Connection closed by the remote peer.")
 
 
 async def main():

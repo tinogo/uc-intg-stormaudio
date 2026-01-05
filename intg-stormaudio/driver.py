@@ -16,6 +16,7 @@ from device import StormAudioDevice
 from discover import StormAudioDiscovery
 from media_player import StormAudioMediaPlayer
 from setup import StormAudioSetupFlow
+from ucapi import EntityTypes, media_player
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
 
 
@@ -31,6 +32,41 @@ class StormAudioIntegrationDriver(
             entity_classes=[StormAudioMediaPlayer],
             require_connection_before_registry=True,
         )
+
+    async def refresh_entity_state(self, entity_id):
+        """Refresh the state of a configured entity by querying the device."""
+        await super().refresh_entity_state(entity_id)
+
+        device_id = self.device_from_entity_id(entity_id)
+        if device_id is None:
+            logging.getLogger(Loggers.DRIVER).debug(
+                "Entity %s is not a device entity", entity_id
+            )
+            return
+
+        device = self._configured_devices.get(device_id)
+        if device is None:
+            logging.getLogger(Loggers.DRIVER).warning(
+                "Device %s not found for entity %s", device_id, entity_id
+            )
+            return
+
+        configured_entity = self.api.configured_entities.get(entity_id)
+        if configured_entity is None:
+            logging.getLogger(Loggers.DRIVER).debug(
+                "Entity %s is not configured, ignoring", entity_id
+            )
+            return
+
+        match configured_entity.entity_type:
+            case EntityTypes.MEDIA_PLAYER:
+                self.api.configured_entities.update_attributes(
+                    entity_id,
+                    {
+                        media_player.Attributes.SOURCE_LIST: device.source_list,
+                        media_player.Attributes.SOUND_MODE_LIST: device.sound_mode_list,
+                    },
+                )
 
     async def async_register_available_entities(
         self, device_config: StormAudioConfig, device: StormAudioDevice
