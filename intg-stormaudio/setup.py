@@ -30,10 +30,10 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
                 "label": {
                     "value": {
                         "en": (
-                            "Please enter the IP Address of your StormAudio processor/receiver."
+                            "Please enter the IP Address or hostname of your StormAudio processor/receiver."
                         ),
                         "de": (
-                            "Bitte gebe die IP-Adresse deines StormAudio Prozessors/Receivers an."
+                            "Bitte gebe die IP-Adresse oder den Hostnamen deines StormAudio Prozessors/Receivers an."
                         ),
                     }
                 }
@@ -43,8 +43,8 @@ _MANUAL_INPUT_SCHEMA = RequestUserInput(
             "field": {"text": {"value": ""}},
             "id": "address",
             "label": {
-                "en": "IP Address",
-                "de": "IP-Adresse",
+                "en": "IP Address or hostname",
+                "de": "IP-Adresse oder Hostname",
             },
         },
     ],
@@ -114,13 +114,6 @@ class StormAudioSetupFlow(BaseSetupFlow[StormAudioConfig]):
                 identifier=address.replace(".", "_"),
                 name=name,
                 address=address,
-                surroundmode_list={
-                    "Native": 0,
-                    "Stereo Downmix": 1,
-                    "Dolby Surround": 2,
-                    "DTS Neural:X": 3,
-                    "Auro-Matic": 4,
-                },
             )
 
             await self.test_connection(config)

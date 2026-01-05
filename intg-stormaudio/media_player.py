@@ -44,7 +44,7 @@ class StormAudioMediaPlayer(MediaPlayer):
         """
         Initialize the media player entity.
 
-        :param config_device: Device configuration from setup
+        :param config_device: Device configuration from the setup
         :param device_instance: The device instance to control
         """
         self._device = device_instance
@@ -59,8 +59,6 @@ class StormAudioMediaPlayer(MediaPlayer):
             features=FEATURES,
             attributes={
                 Attributes.STATE: self._device.state,
-                Attributes.SOURCE_LIST: list(config_device.input_list.keys()),
-                Attributes.SOUND_MODE_LIST: list(self._device.sound_mode_list.keys()),
                 Attributes.VOLUME: self._device.volume,
             },
             device_class=DeviceClasses.RECEIVER,
