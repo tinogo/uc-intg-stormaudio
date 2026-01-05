@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.10.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.1...v0.10.2) (2026-01-05)
+
+
+### Bug Fixes
+
+* **#8:** Revert the multiple connections prevention ([1730c6e](https://github.com/tinogo/uc-intg-stormaudio/commit/1730c6effc3918a948009b57d8fc8ad8e59e0c9a))
+
 ## [0.10.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.0...v0.10.1) (2026-01-05)
 
 
