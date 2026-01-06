@@ -11,6 +11,24 @@ _Changes in the next release_
 
 ---
 
+## [0.10.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.3...v0.10.4) (2026-01-06)
+
+
+### Bug Fixes
+
+* Force a connection to the device during entity registration ([48568dc](https://github.com/tinogo/uc-intg-stormaudio/commit/48568dc01786f5e78b0cbfa9b710fd09eee0bc87))
+
+
+### Miscellaneous
+
+* **docs:** Adds docs for updating all dependencies ([59a2445](https://github.com/tinogo/uc-intg-stormaudio/commit/59a24454ff7fe34d70f389d488de66dbaad6403b))
+* Format the code ([45acff4](https://github.com/tinogo/uc-intg-stormaudio/commit/45acff48021d2912bb4469dc50badd5a237b1d8a))
+
+
+### Reverts
+
+* Remove the websocket parameter from the handle_command method again ([6e2acf8](https://github.com/tinogo/uc-intg-stormaudio/commit/6e2acf8e8eea56e20915c20d3d04f9c0b48698ab))
+
 ## [0.10.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.2...v0.10.3) (2026-01-06)
 
 
