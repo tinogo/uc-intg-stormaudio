@@ -69,6 +69,16 @@ docker compose down
 docker compose up -d --remove-orphans --build
 ```
 
+##### Updating all dependencies
+
+```bash
+uv lock --upgrade
+uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
+
+docker compose down
+docker compose up -d --remove-orphans --build
+```
+
 ### Environment Variables
 
 | Variable                   | Description                                 | Default   |
