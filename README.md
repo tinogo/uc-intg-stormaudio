@@ -4,7 +4,30 @@ This repository contains the source code for the [Unfolded Circle Remote Two/3](
 
 The integration is based on the amazing work of JackJPowell's [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
-## Project Structure
+## Installing the integration on the Remote
+
+1. Download the integration package (tar.gz file) from the [Releases](https://github.com/tinogo/uc-intg-stormaudio/releases) page
+2. Upload via the Remote's web configurator under Integrations
+3. Configure your device through the setup wizard
+
+## Updating the integration on the Remote
+
+1. Download the integration package (tar.gz file) from the [Releases](https://github.com/tinogo/uc-intg-stormaudio/releases) page
+2. Remove the existing integration from the Remote (twice) → no worries, all your configured activity settings will still be there.
+3. Update via the Remote's web configurator under Integrations
+4. Configure your device through the setup wizard
+
+## Versioning
+
+We use [SemVer](https://semver.org) for versioning. For the versions available, see the [tags and releases in this repository](https://github.com/tinogo/uc-intg-stormaudio/releases).
+
+## Changelog
+
+The major changes found in each new release are listed in the [changelog](https://github.com/tinogo/uc-intg-stormaudio/blob/main/CHANGELOG.md) and under the GitHub [releases](https://github.com/tinogo/uc-intg-stormaudio/releases).
+
+## Development
+
+### Project Structure
 
 ```
 ├── driver.json              # Integration metadata and configuration
@@ -20,17 +43,13 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 └── requirements.txt         # Python dependencies
 ```
 
-## Development
-
 ### Prerequisites
 
 - Python 3.11+
 - uv
 - Docker, Docker Compose
 
-### Local Development
-
-#### Running the integration
+### Running the integration
 
 1. Install dependencies:
    ```bash
@@ -44,39 +63,31 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
       ```
    2. via Compose:
       ```bash
-      docker compose up -d --remove-orphans --build
+      docker compose up --remove-orphans --build --watch
       ```
 
-#### Adding and removing dependencies
+### Adding and removing dependencies
 
-##### Adding dependencies
+#### Adding dependencies
 
 ```bash
 uv add <dependency>
 uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
-
-docker compose down
-docker compose up -d --remove-orphans --build
 ```
 
-##### Removing dependencies
+#### Removing dependencies
 
 ```bash
 uv remove <dependency>
 uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
 
-docker compose down
-docker compose up -d --remove-orphans --build
 ```
 
-##### Updating all dependencies
+#### Updating all dependencies
 
 ```bash
 uv lock --upgrade
 uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
-
-docker compose down
-docker compose up -d --remove-orphans --build
 ```
 
 ### Environment Variables
@@ -89,26 +100,6 @@ docker compose up -d --remove-orphans --build
 | `UC_INTEGRATION_HTTP_PORT` | HTTP port for the integration               | `9090`    |
 | `UC_DISABLE_MDNS_PUBLISH`  | Disable mDNS advertisement                  | `false`   |
 
-## Install on Remote
-
-1. Build or download the integration package (tar.gz file)
-2. Upload via the Remote's web configurator under Integrations
-3. Configure your device through the setup wizard
-
-## Updating the integration on the Remote
-
-1. Build or download the integration package (tar.gz file)
-2. Remove the existing integration from the Remote (twice) → no worries, all your configured activity settings will still be there.
-3. Update via the Remote's web configurator under Integrations
-4. Configure your device through the setup wizard
-
-## Versioning
-
-We use [SemVer](https://semver.org) for versioning. For the versions available, see the [tags and releases in this repository](https://github.com/tinogo/uc-intg-stormaudio/releases).
-
-## Changelog
-
-The major changes found in each new release are listed in the [changelog](https://github.com/tinogo/uc-intg-stormaudio/blob/main/CHANGELOG.md) and under the GitHub [releases](https://github.com/tinogo/uc-intg-stormaudio/releases).
 
 ## Resources
 
