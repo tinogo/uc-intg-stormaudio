@@ -10,9 +10,8 @@ from typing import Any
 import device
 import ucapi
 from const import Loggers, SimpleCommands, StormAudioConfig
-from ucapi import EntityTypes, MediaPlayer, media_player
-from ucapi.media_player import Attributes, DeviceClasses
-from ucapi_framework import create_entity_id
+from ucapi import MediaPlayer, media_player
+from ucapi.media_player import DeviceClasses
 
 _LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
 
@@ -49,18 +48,13 @@ class StormAudioMediaPlayer(MediaPlayer):
         """
         self._device = device_instance
 
-        entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, config_device.identifier)
-
-        _LOG.debug("Initializing media player entity: %s", entity_id)
+        _LOG.debug("Initializing media player entity: %s", device_instance.entity_id)
 
         super().__init__(
-            identifier=entity_id,
+            identifier=device_instance.entity_id,
             name=config_device.name,
             features=FEATURES,
-            attributes={
-                Attributes.STATE: self._device.state,
-                Attributes.VOLUME: self._device.volume,
-            },
+            attributes=device_instance.get_device_attributes(device_instance.entity_id),
             device_class=DeviceClasses.RECEIVER,
             options={
                 media_player.Options.SIMPLE_COMMANDS: [
@@ -71,7 +65,11 @@ class StormAudioMediaPlayer(MediaPlayer):
         )
 
     async def handle_command(
-        self, entity: MediaPlayer, cmd_id: str, params: dict[str, Any] | None
+        self,
+        entity: MediaPlayer,
+        cmd_id: str,
+        params: dict[str, Any] | None,
+        _websocket: Any,
     ) -> ucapi.StatusCodes:
         """
         Handle media player commands from the remote.
@@ -82,6 +80,8 @@ class StormAudioMediaPlayer(MediaPlayer):
         :param entity: The media player entity receiving the command
         :param cmd_id: The command identifier
         :param params: Optional command parameters
+        :param _websocket: Optional websocket
+
         :return: Status code indicating success or failure
         """
         _LOG.info(
