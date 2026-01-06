@@ -11,6 +11,20 @@ _Changes in the next release_
 
 ---
 
+## [0.10.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.2...v0.10.3) (2026-01-06)
+
+
+### Bug Fixes
+
+* **deps:** Update the requirements.txt ([d1f0f0c](https://github.com/tinogo/uc-intg-stormaudio/commit/d1f0f0cdff99e4a7698efd00db160b43c4db51e5))
+
+
+### Miscellaneous
+
+* **deps:** bump aiohttp from 3.13.2 to 3.13.3 ([#30](https://github.com/tinogo/uc-intg-stormaudio/issues/30)) ([06cbfd4](https://github.com/tinogo/uc-intg-stormaudio/commit/06cbfd49d2bc6c6d83455d1761c34d272ec4903a))
+* **deps:** Update integration for 1.4.2 ucapi-framework ([#33](https://github.com/tinogo/uc-intg-stormaudio/issues/33)) ([d42f89f](https://github.com/tinogo/uc-intg-stormaudio/commit/d42f89f46e21d96db39b2ad241bf22ec91712ac2))
+* Reuse some more code from the device within the media_player ([237d5b8](https://github.com/tinogo/uc-intg-stormaudio/commit/237d5b80ed9e2c07aa9d408938c7292672cfd009))
+
 ## [0.10.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.1...v0.10.2) (2026-01-05)
 
 
