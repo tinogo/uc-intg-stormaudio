@@ -34,7 +34,7 @@ async def main():
     driver = BaseIntegrationDriver(
         device_class=StormAudioDevice,
         entity_classes=[StormAudioMediaPlayer],
-        require_connection_before_registry=True
+        require_connection_before_registry=True,
     )
 
     # Configure the device config manager
