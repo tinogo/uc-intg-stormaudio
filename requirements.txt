@@ -449,7 +449,7 @@ ucapi==0.5.1 \
     # via
     #   uc-intg-stormaudio
     #   ucapi-framework
-ucapi-framework==1.4.1 \
+ucapi-framework==1.4.2 \
     --hash=sha256:29e525bd402aaa4db035f1988caf8f0bff04f5b9f49eed10eef0bbb1a01005e4 \
     --hash=sha256:34254b447a16c4f9b6494e8e7e2cf015dfc0bee2e6ab4118f52db3630ee6317a
     # via uc-intg-stormaudio
