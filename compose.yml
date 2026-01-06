@@ -23,22 +23,38 @@ services:
      build:
        dockerfile: ./Dockerfile
      hostname: uc-intg-stormaudio
-     # nodemon watches for file changes and auto-restarts
-     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' intg-stormaudio/driver.py"
+     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) python3 -u intg-stormaudio/driver.py"
      volumes:
-       - .:/app
        - integration-data:/config
+     develop:
+       watch:
+         - path: ./requirements.txt
+           action: rebuild
+
+         - path: ./intg-stormaudio
+           target: /app/intg-stormaudio
+           action: sync+restart
+
+         - path: ./driver.json
+           target: /app/driver.json
+           action: sync+restart
+     depends_on:
+       - echo-server
 
   echo-server:
      build:
        dockerfile: ./server.Dockerfile
      hostname: echo-server
-     # nodemon watches for file changes and auto-restarts
-     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' server.py"
      ports:
        - 23:23
-     volumes:
-       - .:/app
+     develop:
+       watch:
+         - path: ./requirements.txt
+           action: rebuild
+
+         - path: ./server.py
+           target: /app/server.py
+           action: sync+restart
 
 volumes:
   simulator-data:
