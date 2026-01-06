@@ -35,6 +35,8 @@ services:
      hostname: echo-server
      # nodemon watches for file changes and auto-restarts
      command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) nodemon --verbose --ignore config/config.json -e py,json --exec 'python3 -u' server.py"
+     ports:
+       - 23:23
      volumes:
        - .:/app
 

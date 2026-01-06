@@ -169,14 +169,25 @@ class StormAudioDevice(PersistentConnectionDevice):
         self.events.emit(
             DeviceEvents.UPDATE,
             self.entity_id,
-            {
-                MediaAttr.STATE: self._state,
-                MediaAttr.SOURCE_LIST: self.source_list,
-                MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
-                MediaAttr.VOLUME: self.volume,
-                MediaAttr.MUTED: self.muted,
-            },
+            self.get_device_attributes(self.entity_id),
         )
+
+    def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
+        """Get the device attributes for the given entity ID."""
+        if entity_id != self.entity_id:
+            _LOG.error(
+                "[%s] Cannot get attributes for unknown entity ID: %s",
+                self.log_id,
+                entity_id,
+            )
+
+        return {
+            MediaAttr.STATE: self._state,
+            MediaAttr.SOURCE_LIST: self.source_list,
+            MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
+            MediaAttr.VOLUME: self.volume,
+            MediaAttr.MUTED: self.muted,
+        }
 
     async def power_on(self):
         """Power on the StormAudio processor."""
