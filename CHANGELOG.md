@@ -11,6 +11,18 @@ _Changes in the next release_
 
 ---
 
+## [0.10.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.3...v0.10.4) (2026-01-06)
+
+
+### Bug Fixes
+
+* Force a connection to the device during entity registration ([f3e9eef](https://github.com/tinogo/uc-intg-stormaudio/commit/f3e9eef3742eeff83758c8ee44c54a37753c04ff))
+
+
+### Miscellaneous
+
+* **docs:** Adds docs for updating all dependencies ([59a2445](https://github.com/tinogo/uc-intg-stormaudio/commit/59a24454ff7fe34d70f389d488de66dbaad6403b))
+
 ## [0.10.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.2...v0.10.3) (2026-01-06)
 
 
