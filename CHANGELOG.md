@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.10.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.4...v0.10.5) (2026-01-07)
+
+
+### Bug Fixes
+
+* Reduce the maximum timeout for the power-on command ([#39](https://github.com/tinogo/uc-intg-stormaudio/issues/39)) ([6912372](https://github.com/tinogo/uc-intg-stormaudio/commit/691237260c0cb433d5db02350bea70f56cc32f31))
+
+
+### Miscellaneous
+
+* **docs:** Update the README ([991d767](https://github.com/tinogo/uc-intg-stormaudio/commit/991d767ceb7c9478a05e9af30aa3c5dcaa699aae))
+* Optimize the compose setup ([7d06df9](https://github.com/tinogo/uc-intg-stormaudio/commit/7d06df949d4cec7db6c954f6d8b5c3c6bf72fb02))
+
 ## [0.10.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.3...v0.10.4) (2026-01-06)
 
 
