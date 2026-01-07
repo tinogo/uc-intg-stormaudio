@@ -16,7 +16,27 @@ from device import StormAudioDevice
 from discover import StormAudioDiscovery
 from media_player import StormAudioMediaPlayer
 from setup import StormAudioSetupFlow
+from sensor import StormAudioSensor, create_sensors
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
+
+
+class StormAudioIntegrationDriver(
+    BaseIntegrationDriver[StormAudioDevice, StormAudioConfig]
+):
+    """StormAudio Integration Driver."""
+
+    async def async_register_available_entities(
+        self, device_config: StormAudioConfig, device: StormAudioDevice
+    ) -> None:
+        entities: list[StormAudioMediaPlayer | StormAudioSensor] = [
+            StormAudioMediaPlayer(device_config, device),
+            *create_sensors(device),
+        ]
+
+        for entity in entities:
+            if self.api.available_entities.contains(entity.id):
+                self.api.available_entities.remove(entity.id)
+            self.api.available_entities.add(entity)
 
 
 async def main():
@@ -31,9 +51,9 @@ async def main():
     logging.getLogger(Loggers.SETUP_FLOW).setLevel(level)
 
     # Initialize the integration driver
-    driver = BaseIntegrationDriver(
+    driver = StormAudioIntegrationDriver(
         device_class=StormAudioDevice,
-        entity_classes=[StormAudioMediaPlayer],
+        entity_classes=[StormAudioMediaPlayer, StormAudioSensor],
         require_connection_before_registry=True,
     )
 

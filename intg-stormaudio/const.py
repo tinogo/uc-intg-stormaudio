@@ -161,4 +161,12 @@ class Loggers(StrEnum):
     DRIVER = "driver"
     MEDIA_PLAYER = "media_player"
     DEVICE = "device"
+    SENSOR = "sensor"
     SETUP_FLOW = "setup_flow"
+
+
+class SensorType(StrEnum):
+    """Defines the supported sensor types for StormAudio devices."""
+
+    VOLUME_DB = "volume_db"
+    MUTE = "mute"
