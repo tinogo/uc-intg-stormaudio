@@ -23,7 +23,7 @@ _LOG = logging.getLogger(Loggers.DEVICE)
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-MAX_TIME_OUT = 20
+MAX_TIME_OUT = 9 # current command timeout is 10 seconds, therefore we need to be below of that threshold.
 
 
 class StormAudioDevice(PersistentConnectionDevice):
