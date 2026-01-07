@@ -11,11 +11,12 @@ import json
 import logging
 from typing import Any
 
-from const import Loggers, StormAudioCommands, StormAudioResponses
+from const import Loggers, SensorType, StormAudioCommands, StormAudioResponses
 from stormaudio import StormAudioClient
 from ucapi import EntityTypes
 from ucapi.media_player import Attributes as MediaAttr
 from ucapi.media_player import States
+from ucapi.sensor import Attributes
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
@@ -170,6 +171,33 @@ class StormAudioDevice(PersistentConnectionDevice):
             DeviceEvents.UPDATE,
             self.entity_id,
             self.get_device_attributes(self.entity_id),
+        )
+
+        # Handle sensors
+        self.events.emit(
+            DeviceEvents.UPDATE,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+            ),
+            {
+                Attributes.STATE: States.ON
+                if self.state == States.ON
+                else States.UNAVAILABLE,
+                Attributes.VALUE: self.volume - 100,
+                Attributes.UNIT: "dB",
+            },
+        )
+        self.events.emit(
+            DeviceEvents.UPDATE,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
+            ),
+            {
+                Attributes.STATE: States.ON
+                if self.state == States.ON
+                else States.UNAVAILABLE,
+                Attributes.VALUE: "on" if self.muted else "off",
+            },
         )
 
     def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
