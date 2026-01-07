@@ -16,7 +16,7 @@ from ucapi_framework import create_entity_id
 _LOG = logging.getLogger(Loggers.SENSOR)
 
 
-class StormAudioSensor(Sensor):
+class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
     """Sensor for the StormAudio ISPs."""
 
     def __init__(self, device_instance: StormAudioDevice, sensor_type: SensorType):
@@ -48,54 +48,38 @@ class StormAudioSensor(Sensor):
         sensor = {}
         match sensor_type:
             case SensorType.VOLUME_DB:
+                sensor_entity_id = create_entity_id(
+                    EntityTypes.SENSOR,
+                    device.identifier,
+                    SensorType.VOLUME_DB.value,
+                )
                 sensor = {
-                    "identifier": create_entity_id(
-                        EntityTypes.SENSOR,
-                        device.identifier,
-                        SensorType.VOLUME_DB.value,
-                    ),
+                    "identifier": sensor_entity_id,
                     "name": f"{device.name} Volume",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",
                         Options.DECIMALS: 1,
                     },
-                    "attributes": self.get_sensor_attributes(),
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
             case SensorType.MUTE:
+                sensor_entity_id = create_entity_id(
+                    EntityTypes.SENSOR,
+                    device.identifier,
+                    SensorType.MUTE.value,
+                )
                 sensor = {
-                    "identifier": create_entity_id(
-                        EntityTypes.SENSOR, device.identifier, SensorType.MUTE.value
-                    ),
+                    "identifier": sensor_entity_id,
                     "name": f"{device.name} Mute Status",
                     "device_class": DeviceClasses.BINARY,
-                    "attributes": self.get_sensor_attributes(),
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
             case _:
                 raise ValueError(f"Unsupported sensor type: {sensor_type}")
         return sensor
-
-    def get_sensor_attributes(self) -> dict[str, Any]:
-        """Get sensor attributes based on type."""
-        match self._sensor_type:
-            case SensorType.VOLUME_DB:
-                return {
-                    Attributes.STATE: States.ON
-                    if self._device.state == States.ON
-                    else States.UNAVAILABLE,
-                    Attributes.VALUE: self._device.volume - 100,
-                    Attributes.UNIT: "dB",
-                }
-
-            case SensorType.MUTE:
-                return {
-                    Attributes.STATE: States.ON
-                    if self._device.state == States.ON
-                    else States.UNAVAILABLE,
-                    Attributes.VALUE: "on" if self._device.muted else "off",
-                }
 
 
 def create_sensors(device: StormAudioDevice) -> list[StormAudioSensor]:

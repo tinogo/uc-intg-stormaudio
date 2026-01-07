@@ -92,11 +92,6 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Return a log identifier for debugging."""
         return self.name if self.name else self.identifier
 
-    @property
-    def entity_id(self) -> str:
-        """Returns the unique entity-ID."""
-        return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
-
     async def establish_connection(self) -> Any:
         """Establish connection to the device."""
         return await self._client.connect()
@@ -167,54 +162,83 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
+        media_player_entity_id = create_entity_id(
+            EntityTypes.MEDIA_PLAYER, self.identifier
+        )
         self.events.emit(
             DeviceEvents.UPDATE,
-            self.entity_id,
-            self.get_device_attributes(self.entity_id),
+            media_player_entity_id,
+            self.get_device_attributes(media_player_entity_id),
         )
 
         # Handle sensors
-        self.events.emit(
-            DeviceEvents.UPDATE,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
-            ),
-            {
-                Attributes.STATE: States.ON
-                if self.state == States.ON
-                else States.UNAVAILABLE,
-                Attributes.VALUE: self.volume - 100,
-                Attributes.UNIT: "dB",
-            },
-        )
-        self.events.emit(
-            DeviceEvents.UPDATE,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
-            ),
-            {
-                Attributes.STATE: States.ON
-                if self.state == States.ON
-                else States.UNAVAILABLE,
-                Attributes.VALUE: "on" if self.muted else "off",
-            },
-        )
+        for sensor_type in SensorType:
+            sensor_entity_id = create_entity_id(
+                EntityTypes.SENSOR, self.identifier, sensor_type
+            )
+
+            self.events.emit(
+                DeviceEvents.UPDATE,
+                sensor_entity_id,
+                self.get_device_attributes(sensor_entity_id),
+            )
 
     def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
         """Get the device attributes for the given entity ID."""
-        if entity_id != self.entity_id:
-            _LOG.error(
-                "[%s] Cannot get attributes for unknown entity ID: %s",
-                self.log_id,
-                entity_id,
-            )
+        match entity_id:
+            case entity_id if (
+                create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier) == entity_id
+            ):
+                return self.get_media_player_attributes()
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+                )
+                == entity_id
+            ):
+                return self.get_volume_sensor_attributes()
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
+                )
+                == entity_id
+            ):
+                return self.get_mute_sensor_attributes()
+            case _:
+                _LOG.error(
+                    "[%s] Cannot get attributes for unknown entity ID: %s",
+                    self.log_id,
+                    entity_id,
+                )
+                return {}
 
+    def get_media_player_attributes(self) -> dict[str, Any]:
+        """Get the media player attributes."""
         return {
             MediaAttr.STATE: self._state,
             MediaAttr.SOURCE_LIST: self.source_list,
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
             MediaAttr.MUTED: self.muted,
+        }
+
+    def get_volume_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: self.volume - 100,
+            Attributes.UNIT: "dB",
+        }
+
+    def get_mute_sensor_attributes(self) -> dict[str, Any]:
+        """Get the mute sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: "on" if self.muted else "off",
         }
 
     async def power_on(self):

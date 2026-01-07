@@ -10,8 +10,9 @@ from typing import Any
 import device
 import ucapi
 from const import Loggers, SimpleCommands, StormAudioConfig
-from ucapi import MediaPlayer, media_player
+from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import DeviceClasses
+from ucapi_framework import create_entity_id
 
 _LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
 
@@ -48,13 +49,17 @@ class StormAudioMediaPlayer(MediaPlayer):
         """
         self._device = device_instance
 
-        _LOG.debug("Initializing media player entity: %s", device_instance.entity_id)
+        entity_id = create_entity_id(
+            EntityTypes.MEDIA_PLAYER, device_instance.identifier
+        )
+
+        _LOG.debug("Initializing media player entity: %s", entity_id)
 
         super().__init__(
-            identifier=device_instance.entity_id,
+            identifier=entity_id,
             name=config_device.name,
             features=FEATURES,
-            attributes=device_instance.get_device_attributes(device_instance.entity_id),
+            attributes=device_instance.get_device_attributes(entity_id),
             device_class=DeviceClasses.RECEIVER,
             options={
                 media_player.Options.SIMPLE_COMMANDS: [
