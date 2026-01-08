@@ -32,11 +32,7 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
             identifier=sensor_config["identifier"],
             name=sensor_config["name"],
             features=[],
-            attributes={
-                Attributes.STATE: States.UNAVAILABLE,
-                Attributes.VALUE: None,
-                Attributes.UNIT: sensor_config.get("unit"),
-            },
+            attributes=sensor_config['attributes'],
             device_class=sensor_config["device_class"],
             options=sensor_config.get("options", {}),
         )
