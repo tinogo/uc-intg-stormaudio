@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.11.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.5...v0.11.0) (2026-01-08)
+
+
+### Features
+
+* **#6:** Add support for sensors ([#40](https://github.com/tinogo/uc-intg-stormaudio/issues/40)) ([1b13f70](https://github.com/tinogo/uc-intg-stormaudio/commit/1b13f709e425c29ac53997c68dc6c56dd07cc674)), closes [#6](https://github.com/tinogo/uc-intg-stormaudio/issues/6)
+
 ## [0.10.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.4...v0.10.5) (2026-01-07)
 
 
