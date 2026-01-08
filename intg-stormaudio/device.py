@@ -63,11 +63,12 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def source(self) -> str | None:
         """Returns the current source."""
-        if self._source_id is not None and self.source_list:
+        try:
             return list(self._sources.keys())[
                 list(self._sources.values()).index(self._source_id)
             ]
-        return None
+        except ValueError:
+            return None
 
     @property
     def volume(self) -> int:
