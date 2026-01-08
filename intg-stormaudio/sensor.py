@@ -10,7 +10,7 @@ from typing import Any
 from const import Loggers, SensorType
 from device import StormAudioDevice
 from ucapi import EntityTypes, Sensor
-from ucapi.sensor import Attributes, DeviceClasses, Options, States
+from ucapi.sensor import DeviceClasses, Options
 from ucapi_framework import create_entity_id
 
 _LOG = logging.getLogger(Loggers.SENSOR)
@@ -32,7 +32,7 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
             identifier=sensor_config["identifier"],
             name=sensor_config["name"],
             features=[],
-            attributes=sensor_config['attributes'],
+            attributes=sensor_config["attributes"],
             device_class=sensor_config["device_class"],
             options=sensor_config.get("options", {}),
         )

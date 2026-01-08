@@ -36,6 +36,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         self._state = States.UNKNOWN
         self._sources: dict[str, int] = {}
+        self._source_id: int | None = None
         self._upmixer_modes: dict[str, int] = {
             "Native": 0,
             "Stereo Downmix": 1,
@@ -58,6 +59,15 @@ class StormAudioDevice(PersistentConnectionDevice):
     def source_list(self) -> list[str]:
         """Returns a list of the available input sources."""
         return list(self._sources.keys())
+
+    @property
+    def source(self) -> str | None:
+        """Returns the current source."""
+        if self._source_id is not None and self.source_list:
+            return list(self._sources.keys())[
+                list(self._sources.values()).index(self._source_id)
+            ]
+        return None
 
     @property
     def volume(self) -> int:
@@ -151,16 +161,22 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.INPUT_LIST_END:
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.INPUT_X):
+                    input_id, *_tail = json.loads(
+                        message[len(StormAudioResponses.INPUT_X) :]  # noqa: E203
+                    )
+
+                    self._source_id = input_id
+                    self._update_attributes()
+
                 case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
-                    upmixer_mode = json.loads(
+                    upmixer_mode, *_tail = json.loads(
                         message[len(StormAudioResponses.SURROUND_MODE_X) :]  # noqa: E203
                     )
 
-                    value = list(self._upmixer_modes.keys())[
-                        list(self._upmixer_modes.values()).index(upmixer_mode[0])
+                    self._upmixer_mode = list(self._upmixer_modes.keys())[
+                        list(self._upmixer_modes.values()).index(upmixer_mode)
                     ]
-
-                    self._upmixer_mode = value
                     self._update_attributes()
 
         await self._client.parse_response_messages(self._connection, message_handler)
@@ -253,6 +269,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the media player attributes."""
         return {
             MediaAttr.STATE: self._state,
+            MediaAttr.SOURCE: self.source,
             MediaAttr.SOURCE_LIST: self.source_list,
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
@@ -368,7 +385,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             StormAudioCommands.INPUT_X.format(self._sources.get(source))
         )
         await self._wait_for_response(
-            StormAudioResponses.INPUT_X.format(self._sources.get(source))
+            StormAudioResponses.INPUT_X_FULL.format(self._sources.get(source))
         )
 
     async def select_sound_mode(self, mode):
