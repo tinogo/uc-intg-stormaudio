@@ -36,13 +36,14 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         self._state = States.UNKNOWN
         self._sources: dict[str, int] = {}
-        self._surround_modes: dict[str, int] = {
+        self._upmixer_modes: dict[str, int] = {
             "Native": 0,
             "Stereo Downmix": 1,
             "Dolby Surround": 2,
             "DTS Neural:X": 3,
             "Auro-Matic": 4,
         }
+        self._upmixer_mode: str | None = None
         self._volume: int = 40
         self._muted: bool = False
         self._storm_xt_active: bool = False
@@ -71,7 +72,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def sound_mode_list(self) -> list[str]:
         """Returns a list of the available sound modes."""
-        return list(self._surround_modes.keys())
+        return list(self._upmixer_modes.keys())
 
     @property
     def identifier(self) -> str:
@@ -150,6 +151,18 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.INPUT_LIST_END:
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
+                    upmixer_mode = json.loads(
+                        message[len(StormAudioResponses.SURROUND_MODE_X) :]  # noqa: E203
+                    )
+
+                    value = list(self._upmixer_modes.keys())[
+                        list(self._upmixer_modes.values()).index(upmixer_mode[0])
+                    ]
+
+                    self._upmixer_mode = value
+                    self._update_attributes()
+
         await self._client.parse_response_messages(self._connection, message_handler)
 
     async def _send_command(self, command: str) -> None:
@@ -195,6 +208,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier) == entity_id
             ):
                 return self._get_media_player_attributes()
+
             case entity_id if (
                 create_entity_id(
                     EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
@@ -202,6 +216,15 @@ class StormAudioDevice(PersistentConnectionDevice):
                 == entity_id
             ):
                 return self._get_volume_sensor_attributes()
+
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
+                )
+                == entity_id
+            ):
+                return self._get_upmixer_mode_sensor_attributes()
+
             case entity_id if (
                 create_entity_id(
                     EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
@@ -209,6 +232,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 == entity_id
             ):
                 return self._get_mute_sensor_attributes()
+
             case entity_id if (
                 create_entity_id(
                     EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
@@ -216,6 +240,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 == entity_id
             ):
                 return self._get_storm_xt_sensor_attributes()
+
             case _:
                 _LOG.error(
                     "[%s] Cannot get attributes for unknown entity ID: %s",
@@ -242,6 +267,15 @@ class StormAudioDevice(PersistentConnectionDevice):
             else States.UNAVAILABLE,
             Attributes.VALUE: self.volume - 100,
             Attributes.UNIT: "dB",
+        }
+
+    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: self._upmixer_mode,
         }
 
     def _get_mute_sensor_attributes(self) -> dict[str, Any]:
@@ -339,7 +373,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def select_sound_mode(self, mode):
         """Set the surround mode of the StormAudio processor."""
         await self._send_command(
-            StormAudioCommands.SURROUND_MODE_X.format(self._surround_modes.get(mode))
+            StormAudioCommands.SURROUND_MODE_X.format(self._upmixer_modes.get(mode))
         )
 
     async def cursor_up(self):

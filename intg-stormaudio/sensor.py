@@ -64,6 +64,19 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
+            case SensorType.UPMIXER_MODE:
+                sensor_entity_id = create_entity_id(
+                    EntityTypes.SENSOR,
+                    device.identifier,
+                    SensorType.UPMIXER_MODE.value,
+                )
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Upmixer",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
             case SensorType.MUTE:
                 sensor_entity_id = create_entity_id(
                     EntityTypes.SENSOR,
@@ -72,7 +85,7 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                 )
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} Mute Status",
+                    "name": f"{device.name} Mute",
                     "device_class": DeviceClasses.BINARY,
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
@@ -85,7 +98,7 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                 )
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} StormXT Status",
+                    "name": f"{device.name} StormXT",
                     "device_class": DeviceClasses.BINARY,
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
@@ -97,8 +110,7 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
 
 def create_sensors(device: StormAudioDevice) -> list[StormAudioSensor]:
     """Create all applicable sensor entities for the given ISP."""
-    return [
-        StormAudioSensor(device, SensorType.VOLUME_DB),
-        StormAudioSensor(device, SensorType.MUTE),
-        StormAudioSensor(device, SensorType.STORM_XT),
-    ]
+    sensors = []
+    for sensor_type in SensorType:
+        sensors.append(StormAudioSensor(device, sensor_type))
+    return sensors
