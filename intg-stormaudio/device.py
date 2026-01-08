@@ -312,7 +312,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             Attributes.STATE: States.ON
             if self.state == States.ON
             else States.UNAVAILABLE,
-            Attributes.VALUE: "on" if self.muted else "off",
+            Attributes.VALUE: "on" if self._storm_xt_active else "off",
         }
 
     async def power_on(self):
