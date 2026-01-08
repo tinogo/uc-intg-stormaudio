@@ -11,6 +11,18 @@ _Changes in the next release_
 
 ---
 
+## [0.13.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.12.0...v0.13.0) (2026-01-08)
+
+
+### Features
+
+* Add the current source to the media_player attributes ([baebe33](https://github.com/tinogo/uc-intg-stormaudio/commit/baebe338154087cd274cb66b2041953b4ecd209b))
+
+
+### Miscellaneous
+
+* Optimize building the initial sensor attributes ([1628fdc](https://github.com/tinogo/uc-intg-stormaudio/commit/1628fdc3bd10bca0eab779a8a4537228d305b200))
+
 ## [0.12.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.11.0...v0.12.0) (2026-01-08)
 
 
