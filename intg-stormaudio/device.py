@@ -44,7 +44,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             "DTS Neural:X": 3,
             "Auro-Matic": 4,
         }
-        self._upmixer_mode: str | None = None
+        self._upmixer_mode_id: int | None = None
         self._volume: int = 40
         self._muted: bool = False
         self._storm_xt_active: bool = False
@@ -84,6 +84,16 @@ class StormAudioDevice(PersistentConnectionDevice):
     def sound_mode_list(self) -> list[str]:
         """Returns a list of the available sound modes."""
         return list(self._upmixer_modes.keys())
+
+    @property
+    def sound_mode(self) -> str | None:
+        """Returns the current sound mode."""
+        try:
+            return list(self._upmixer_modes.keys())[
+                list(self._upmixer_modes.values()).index(self._upmixer_mode_id)
+            ]
+        except ValueError:
+            return None
 
     @property
     def identifier(self) -> str:
@@ -171,13 +181,11 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
-                    upmixer_mode, *_tail = json.loads(
+                    upmixer_mode_id, *_tail = json.loads(
                         message[len(StormAudioResponses.SURROUND_MODE_X) :]  # noqa: E203
                     )
 
-                    self._upmixer_mode = list(self._upmixer_modes.keys())[
-                        list(self._upmixer_modes.values()).index(upmixer_mode)
-                    ]
+                    self._upmixer_mode_id = upmixer_mode_id
                     self._update_attributes()
 
         await self._client.parse_response_messages(self._connection, message_handler)
@@ -272,10 +280,10 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.STATE: self._state,
             MediaAttr.SOURCE: self.source,
             MediaAttr.SOURCE_LIST: self.source_list,
+            MediaAttr.SOUND_MODE: self.sound_mode,
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
             MediaAttr.MUTED: self.muted,
-            MediaAttr.SOUND_MODE: self._upmixer_mode,
         }
 
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:
@@ -294,7 +302,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             Attributes.STATE: States.ON
             if self.state == States.ON
             else States.UNAVAILABLE,
-            Attributes.VALUE: self._upmixer_mode,
+            Attributes.VALUE: self.sound_mode,
         }
 
     def _get_mute_sensor_attributes(self) -> dict[str, Any]:
