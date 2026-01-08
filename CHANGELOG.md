@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.12.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.11.0...v0.12.0) (2026-01-08)
+
+
+### Features
+
+* Publish the current sound mode to the media player attributes, too ([015fb2b](https://github.com/tinogo/uc-intg-stormaudio/commit/015fb2b4566b95ca345f21fa9b0e4cfc87fbaea2))
+
 ## [0.11.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.10.5...v0.11.0) (2026-01-08)
 
 
