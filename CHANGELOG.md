@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.13.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.0...v0.13.1) (2026-01-08)
+
+
+### Bug Fixes
+
+* Fix the sound mode media_player attribute ([466ba4e](https://github.com/tinogo/uc-intg-stormaudio/commit/466ba4e16b347838bcf255e516ea99fdc7f284e3))
+* Fix the StormXT sensor data ([e0d626b](https://github.com/tinogo/uc-intg-stormaudio/commit/e0d626b8e1ccaa7e411c23093fed05355229e7c1))
+
+
+### Miscellaneous
+
+* Use EAFP-approach to check the existence of a key ([561a8f4](https://github.com/tinogo/uc-intg-stormaudio/commit/561a8f4dff886bb620ef3f05f9edd50d2c2028cd))
+
 ## [0.13.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.12.0...v0.13.0) (2026-01-08)
 
 
