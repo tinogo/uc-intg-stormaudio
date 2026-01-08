@@ -257,6 +257,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
             MediaAttr.MUTED: self.muted,
+            MediaAttr.SOUND_MODE: self._upmixer_mode,
         }
 
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:
