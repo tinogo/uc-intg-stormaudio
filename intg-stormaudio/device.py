@@ -11,11 +11,12 @@ import json
 import logging
 from typing import Any
 
-from const import Loggers, StormAudioCommands, StormAudioResponses
+from const import Loggers, SensorType, StormAudioCommands, StormAudioResponses
 from stormaudio import StormAudioClient
 from ucapi import EntityTypes
 from ucapi.media_player import Attributes as MediaAttr
 from ucapi.media_player import States
+from ucapi.sensor import Attributes
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
@@ -35,15 +36,17 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         self._state = States.UNKNOWN
         self._sources: dict[str, int] = {}
-        self._surround_modes: dict[str, int] = {
+        self._upmixer_modes: dict[str, int] = {
             "Native": 0,
             "Stereo Downmix": 1,
             "Dolby Surround": 2,
             "DTS Neural:X": 3,
             "Auro-Matic": 4,
         }
+        self._upmixer_mode: str | None = None
         self._volume: int = 40
         self._muted: bool = False
+        self._storm_xt_active: bool = False
         self._client = StormAudioClient(self.address, self.device_config.port)
 
     @property
@@ -69,7 +72,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def sound_mode_list(self) -> list[str]:
         """Returns a list of the available sound modes."""
-        return list(self._surround_modes.keys())
+        return list(self._upmixer_modes.keys())
 
     @property
     def identifier(self) -> str:
@@ -90,11 +93,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     def log_id(self) -> str:
         """Return a log identifier for debugging."""
         return self.name if self.name else self.identifier
-
-    @property
-    def entity_id(self) -> str:
-        """Returns the unique entity-ID."""
-        return create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier)
 
     async def establish_connection(self) -> Any:
         """Establish connection to the device."""
@@ -127,6 +125,10 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._muted = message == StormAudioResponses.MUTE_ON
                     self._update_attributes()
 
+                case StormAudioResponses.STORM_XT_ON | StormAudioResponses.STORM_XT_OFF:
+                    self._storm_xt_active = message == StormAudioResponses.STORM_XT_ON
+                    self._update_attributes()
+
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
@@ -149,6 +151,18 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case StormAudioResponses.INPUT_LIST_END:
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
+                    upmixer_mode = json.loads(
+                        message[len(StormAudioResponses.SURROUND_MODE_X) :]  # noqa: E203
+                    )
+
+                    value = list(self._upmixer_modes.keys())[
+                        list(self._upmixer_modes.values()).index(upmixer_mode[0])
+                    ]
+
+                    self._upmixer_mode = value
+                    self._update_attributes()
+
         await self._client.parse_response_messages(self._connection, message_handler)
 
     async def _send_command(self, command: str) -> None:
@@ -166,27 +180,120 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
+        media_player_entity_id = create_entity_id(
+            EntityTypes.MEDIA_PLAYER, self.identifier
+        )
         self.events.emit(
             DeviceEvents.UPDATE,
-            self.entity_id,
-            self.get_device_attributes(self.entity_id),
+            media_player_entity_id,
+            self.get_device_attributes(media_player_entity_id),
         )
+
+        # Handle sensors
+        for sensor_type in SensorType:
+            sensor_entity_id = create_entity_id(
+                EntityTypes.SENSOR, self.identifier, sensor_type
+            )
+
+            self.events.emit(
+                DeviceEvents.UPDATE,
+                sensor_entity_id,
+                self.get_device_attributes(sensor_entity_id),
+            )
 
     def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
         """Get the device attributes for the given entity ID."""
-        if entity_id != self.entity_id:
-            _LOG.error(
-                "[%s] Cannot get attributes for unknown entity ID: %s",
-                self.log_id,
-                entity_id,
-            )
+        match entity_id:
+            case entity_id if (
+                create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier) == entity_id
+            ):
+                return self._get_media_player_attributes()
 
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+                )
+                == entity_id
+            ):
+                return self._get_volume_sensor_attributes()
+
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
+                )
+                == entity_id
+            ):
+                return self._get_upmixer_mode_sensor_attributes()
+
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
+                )
+                == entity_id
+            ):
+                return self._get_mute_sensor_attributes()
+
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
+                )
+                == entity_id
+            ):
+                return self._get_storm_xt_sensor_attributes()
+
+            case _:
+                _LOG.error(
+                    "[%s] Cannot get attributes for unknown entity ID: %s",
+                    self.log_id,
+                    entity_id,
+                )
+                return {}
+
+    def _get_media_player_attributes(self) -> dict[str, Any]:
+        """Get the media player attributes."""
         return {
             MediaAttr.STATE: self._state,
             MediaAttr.SOURCE_LIST: self.source_list,
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
             MediaAttr.MUTED: self.muted,
+        }
+
+    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: self.volume - 100,
+            Attributes.UNIT: "dB",
+        }
+
+    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: self._upmixer_mode,
+        }
+
+    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
+        """Get the mute sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: "on" if self.muted else "off",
+        }
+
+    def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
+        """Get the StormXT sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: "on" if self.muted else "off",
         }
 
     async def power_on(self):
@@ -266,7 +373,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def select_sound_mode(self, mode):
         """Set the surround mode of the StormAudio processor."""
         await self._send_command(
-            StormAudioCommands.SURROUND_MODE_X.format(self._surround_modes.get(mode))
+            StormAudioCommands.SURROUND_MODE_X.format(self._upmixer_modes.get(mode))
         )
 
     async def cursor_up(self):
@@ -419,3 +526,15 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Set the Dolby mode to night mode."""
         await self._send_command(StormAudioCommands.DOLBY_MODE_NIGHT)
         await self._wait_for_response(StormAudioResponses.DOLBY_MODE_NIGHT)
+
+    async def storm_xt_on(self):
+        """Set the StormXT mode to on."""
+        await self._send_command(StormAudioCommands.STORM_XT_ON)
+
+    async def storm_xt_off(self):
+        """Set the StormXT mode to off."""
+        await self._send_command(StormAudioCommands.STORM_XT_OFF)
+
+    async def storm_xt_toggle(self):
+        """Toggle the StormXT mode."""
+        await self._send_command(StormAudioCommands.STORM_XT_TOGGLE)
