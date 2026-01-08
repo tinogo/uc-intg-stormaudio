@@ -77,6 +77,19 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
+            case SensorType.STORM_XT:
+                sensor_entity_id = create_entity_id(
+                    EntityTypes.SENSOR,
+                    device.identifier,
+                    SensorType.STORM_XT.value,
+                )
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} StormXT Status",
+                    "device_class": DeviceClasses.BINARY,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
             case _:
                 raise ValueError(f"Unsupported sensor type: {sensor_type}")
         return sensor
@@ -87,4 +100,5 @@ def create_sensors(device: StormAudioDevice) -> list[StormAudioSensor]:
     return [
         StormAudioSensor(device, SensorType.VOLUME_DB),
         StormAudioSensor(device, SensorType.MUTE),
+        StormAudioSensor(device, SensorType.STORM_XT),
     ]

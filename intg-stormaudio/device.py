@@ -194,21 +194,28 @@ class StormAudioDevice(PersistentConnectionDevice):
             case entity_id if (
                 create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier) == entity_id
             ):
-                return self.get_media_player_attributes()
+                return self._get_media_player_attributes()
             case entity_id if (
                 create_entity_id(
                     EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
                 )
                 == entity_id
             ):
-                return self.get_volume_sensor_attributes()
+                return self._get_volume_sensor_attributes()
             case entity_id if (
                 create_entity_id(
                     EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
                 )
                 == entity_id
             ):
-                return self.get_mute_sensor_attributes()
+                return self._get_mute_sensor_attributes()
+            case entity_id if (
+                create_entity_id(
+                    EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
+                )
+                == entity_id
+            ):
+                return self._get_storm_xt_sensor_attributes()
             case _:
                 _LOG.error(
                     "[%s] Cannot get attributes for unknown entity ID: %s",
@@ -217,7 +224,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 )
                 return {}
 
-    def get_media_player_attributes(self) -> dict[str, Any]:
+    def _get_media_player_attributes(self) -> dict[str, Any]:
         """Get the media player attributes."""
         return {
             MediaAttr.STATE: self._state,
@@ -227,7 +234,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.MUTED: self.muted,
         }
 
-    def get_volume_sensor_attributes(self) -> dict[str, Any]:
+    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
         """Get the volume sensor attributes."""
         return {
             Attributes.STATE: States.ON
@@ -237,8 +244,17 @@ class StormAudioDevice(PersistentConnectionDevice):
             Attributes.UNIT: "dB",
         }
 
-    def get_mute_sensor_attributes(self) -> dict[str, Any]:
+    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
         """Get the mute sensor attributes."""
+        return {
+            Attributes.STATE: States.ON
+            if self.state == States.ON
+            else States.UNAVAILABLE,
+            Attributes.VALUE: "on" if self.muted else "off",
+        }
+
+    def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
+        """Get the StormXT sensor attributes."""
         return {
             Attributes.STATE: States.ON
             if self.state == States.ON

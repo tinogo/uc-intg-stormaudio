@@ -177,3 +177,4 @@ class SensorType(StrEnum):
 
     VOLUME_DB = "volume_db"
     MUTE = "mute"
+    STORM_XT = "storm_xt"
