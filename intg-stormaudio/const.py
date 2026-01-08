@@ -69,6 +69,9 @@ class SimpleCommands(StrEnum):
     DOLBY_MODE_MOVIE = "Dolby mode: Movie"
     DOLBY_MODE_MUSIC = "Dolby mode: Music"
     DOLBY_MODE_NIGHT = "Dolby mode: Night"
+    STORM_XT_ON = "StormXT: on"
+    STORM_XT_OFF = "StormXT: off"
+    STORM_XT_TOGGLE = "StormXT: toggle"
 
 
 class StormAudioCommands(StrEnum):
@@ -120,6 +123,9 @@ class StormAudioCommands(StrEnum):
     DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
     DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
     DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"
+    STORM_XT_ON = "ssp.stormxt.on"
+    STORM_XT_OFF = "ssp.stormxt.off"
+    STORM_XT_TOGGLE = "ssp.stormxt.toggle"
 
 
 class StormAudioResponses(StrEnum):
@@ -152,7 +158,8 @@ class StormAudioResponses(StrEnum):
     DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
     DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
     DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"
-    ZONE_PROFILES_END = "ssp.zones.profiles.end"
+    STORM_XT_ON = "ssp.stormxt.on"
+    STORM_XT_OFF = "ssp.stormxt.off"
 
 
 class Loggers(StrEnum):

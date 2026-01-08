@@ -135,6 +135,9 @@ class StormAudioMediaPlayer(MediaPlayer):
             SimpleCommands.DOLBY_MODE_MOVIE.value: self._device.dolby_mode_movie,
             SimpleCommands.DOLBY_MODE_MUSIC.value: self._device.dolby_mode_music,
             SimpleCommands.DOLBY_MODE_NIGHT.value: self._device.dolby_mode_night,
+            SimpleCommands.STORM_XT_ON.value: self._device.storm_xt_on,
+            SimpleCommands.STORM_XT_OFF.value: self._device.storm_xt_off,
+            SimpleCommands.STORM_XT_TOGGLE.value: self._device.storm_xt_toggle,
         }
 
         try:

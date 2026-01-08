@@ -45,6 +45,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         }
         self._volume: int = 40
         self._muted: bool = False
+        self._storm_xt_active: bool = False
         self._client = StormAudioClient(self.address, self.device_config.port)
 
     @property
@@ -121,6 +122,10 @@ class StormAudioDevice(PersistentConnectionDevice):
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
                     self._muted = message == StormAudioResponses.MUTE_ON
+                    self._update_attributes()
+
+                case StormAudioResponses.STORM_XT_ON | StormAudioResponses.STORM_XT_OFF:
+                    self._storm_xt_active = message == StormAudioResponses.STORM_XT_ON
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
@@ -471,3 +476,15 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Set the Dolby mode to night mode."""
         await self._send_command(StormAudioCommands.DOLBY_MODE_NIGHT)
         await self._wait_for_response(StormAudioResponses.DOLBY_MODE_NIGHT)
+
+    async def storm_xt_on(self):
+        """Set the StormXT mode to on."""
+        await self._send_command(StormAudioCommands.STORM_XT_ON)
+
+    async def storm_xt_off(self):
+        """Set the StormXT mode to off."""
+        await self._send_command(StormAudioCommands.STORM_XT_OFF)
+
+    async def storm_xt_toggle(self):
+        """Toggle the StormXT mode."""
+        await self._send_command(StormAudioCommands.STORM_XT_TOGGLE)
