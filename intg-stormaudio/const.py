@@ -8,7 +8,7 @@ the integration. Customize these for your specific device.
 """
 
 from dataclasses import dataclass
-from enum import IntEnum, StrEnum
+from enum import StrEnum
 
 from ucapi.media_player import States as MediaPlayerStates
 from ucapi.sensor import States as SensorStates
@@ -185,13 +185,13 @@ class SensorType(StrEnum):
     UPMIXER_MODE = "upmixer"
 
 
-class StormAudioStates(IntEnum):
+class StormAudioStates(StrEnum):
     """Defines the possible states of the StormAudio device."""
 
-    UNKNOWN = 0
-    UNAVAILABLE = 1
-    OFF = 2
-    ON = 3
+    UNKNOWN = "UNKNOWN"
+    UNAVAILABLE = "UNAVAILABLE"
+    OFF = "OFF"
+    ON = "ON"
 
 
 MEDIA_PLAYER_STATE_MAPPING = {
