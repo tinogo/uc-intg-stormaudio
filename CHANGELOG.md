@@ -11,6 +11,22 @@ _Changes in the next release_
 
 ---
 
+## [0.13.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.1...v0.13.2) (2026-01-09)
+
+
+### Bug Fixes
+
+* Prevent multiple connections to the ISP ([ca78214](https://github.com/tinogo/uc-intg-stormaudio/commit/ca7821474fbd03e183b18eed8559fcf3414e4971))
+
+
+### Miscellaneous
+
+* **#26:** Add pre-commit hooks ([#48](https://github.com/tinogo/uc-intg-stormaudio/issues/48)) ([a7d4531](https://github.com/tinogo/uc-intg-stormaudio/commit/a7d4531b8b15c7b7043b98fe9fc3f0220484b2ec))
+* **#45:** Differentiate between the device states and entity states ([#50](https://github.com/tinogo/uc-intg-stormaudio/issues/50)) ([23dd333](https://github.com/tinogo/uc-intg-stormaudio/commit/23dd333a50dca3bbbd21803c585e7f0ab948c9c1)), closes [#45](https://github.com/tinogo/uc-intg-stormaudio/issues/45)
+* Improve the wording of a comment ([85abfc3](https://github.com/tinogo/uc-intg-stormaudio/commit/85abfc3b6d12e3f05964124122addc171011c579))
+* Reduce the cyclomatic complexity of retrieving the the entity attributes ([b9c2317](https://github.com/tinogo/uc-intg-stormaudio/commit/b9c231760ecda8c53eddd5b36d3343fa4a0d01f0))
+* use a StringEnum for the StormAudioStates ([c50112f](https://github.com/tinogo/uc-intg-stormaudio/commit/c50112fc8411a486d87092117ea6db368e9b73cc))
+
 ## [0.13.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.0...v0.13.1) (2026-01-08)
 
 
