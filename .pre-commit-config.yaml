@@ -14,3 +14,12 @@ repos:
         args: [ "--format=requirements.txt", "--output-file=requirements.txt", "--no-annotate", "--no-header", "--no-hashes", "--no-dev" ]
 
       - id: uv-sync
+
+  - repo: local
+    hooks:
+      - id: uv-format
+        name: uv-format
+        entry: uv format --
+        language: system
+        types: [python]
+        pass_filenames: true
