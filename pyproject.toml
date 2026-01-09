@@ -25,5 +25,6 @@ dev = [
     "flake8>=7.3.0",
     "flake8-docstrings>=1.7.0",
     "isort>=7.0.0",
+    "pre-commit>=4.5.1",
     "pylint>=4.0.4",
 ]

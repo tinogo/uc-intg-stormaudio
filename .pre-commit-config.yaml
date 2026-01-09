@@ -1,0 +1,16 @@
+default_install_hook_types:
+  - pre-commit
+  - post-checkout
+  - post-merge
+  - post-rewrite
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.9.22
+    hooks:
+      - id: uv-lock
+
+      - id: uv-export
+        args: [ "--format=requirements.txt", "--output-file=requirements.txt", "--no-annotate", "--no-header", "--no-hashes", "--no-dev" ]
+
+      - id: uv-sync
