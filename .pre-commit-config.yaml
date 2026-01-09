@@ -25,7 +25,7 @@ repos:
     hooks:
       - id: uv-format
         name: uv-format
-        entry: uv format --
+        entry: uv format --preview-features format --
         language: python
         additional_dependencies: [uv==0.9.22]
         types: [python]
