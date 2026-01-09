@@ -176,7 +176,6 @@ async def handle_connection(reader, writer):
 
 async def main():
     server = await asyncio.start_server(handle_connection, "0.0.0.0", 23)
-
     addrs = ", ".join(str(sock.getsockname()) for sock in server.sockets)
     print(f"Serving on {addrs}")
 
