@@ -51,12 +51,22 @@ The major changes found in each new release are listed in the [changelog](https:
 
 ### Running the integration
 
-1. Install dependencies:
+1. Prepare the environment:
+   ```bash
+   uv venv
+   ```
+
+2. Install dependencies:
    ```bash
    uv sync
    ```
 
-2. Run the integration either locally or via a Compose environment:
+3. Install the git-hooks:
+   ```bash
+   uv run pre-commit install
+   ```
+
+4. Run the integration either locally or via a Compose environment:
    1. Locally:
       ```bash
       uv run intg-stormaudio/driver.py
