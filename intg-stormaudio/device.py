@@ -11,12 +11,19 @@ import json
 import logging
 from typing import Any
 
-from const import Loggers, SensorType, StormAudioCommands, StormAudioResponses
+from const import (
+    MEDIA_PLAYER_STATE_MAPPING,
+    SENSOR_STATE_MAPPING,
+    Loggers,
+    SensorType,
+    StormAudioCommands,
+    StormAudioResponses,
+    StormAudioStates,
+)
 from stormaudio import StormAudioClient
 from ucapi import EntityTypes
 from ucapi.media_player import Attributes as MediaAttr
-from ucapi.media_player import States
-from ucapi.sensor import Attributes
+from ucapi.sensor import Attributes as SensorAttr
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
 
@@ -34,7 +41,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Initialize the device."""
         super().__init__(*args, **kwargs)
 
-        self._state = States.UNKNOWN
+        self._state: StormAudioStates = StormAudioStates.UNKNOWN
         self._sources: dict[str, int] = {}
         self._source_id: int | None = None
         self._upmixer_modes: dict[str, int] = {
@@ -51,7 +58,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._client = StormAudioClient(self.address, self.device_config.port)
 
     @property
-    def state(self) -> States:
+    def state(self) -> StormAudioStates:
         """Return the current device state."""
         return self._state
 
@@ -130,7 +137,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         def message_handler(message: str) -> None:
             match message:
                 case StormAudioResponses.PROC_STATE_ON:
-                    self._state = States.ON
+                    self._state = StormAudioStates.ON
                     self._update_attributes()
 
                 case (
@@ -139,7 +146,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                 ):
                     # Maps both the initialization and the process of shutting down to OFF
                     # as they are not "fully booted"
-                    self._state = States.OFF
+                    self._state = StormAudioStates.OFF
                     self._update_attributes()
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
@@ -277,7 +284,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _get_media_player_attributes(self) -> dict[str, Any]:
         """Get the media player attributes."""
         return {
-            MediaAttr.STATE: self._state,
+            MediaAttr.STATE: MEDIA_PLAYER_STATE_MAPPING[self.state],
             MediaAttr.SOURCE: self.source,
             MediaAttr.SOURCE_LIST: self.source_list,
             MediaAttr.SOUND_MODE: self.sound_mode,
@@ -289,38 +296,30 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:
         """Get the volume sensor attributes."""
         return {
-            Attributes.STATE: States.ON
-            if self.state == States.ON
-            else States.UNAVAILABLE,
-            Attributes.VALUE: self.volume - 100,
-            Attributes.UNIT: "dB",
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self.volume - 100,
+            SensorAttr.UNIT: "dB",
         }
 
     def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
         """Get the volume sensor attributes."""
         return {
-            Attributes.STATE: States.ON
-            if self.state == States.ON
-            else States.UNAVAILABLE,
-            Attributes.VALUE: self.sound_mode,
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self.sound_mode,
         }
 
     def _get_mute_sensor_attributes(self) -> dict[str, Any]:
         """Get the mute sensor attributes."""
         return {
-            Attributes.STATE: States.ON
-            if self.state == States.ON
-            else States.UNAVAILABLE,
-            Attributes.VALUE: "on" if self.muted else "off",
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: "on" if self.muted else "off",
         }
 
     def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
         """Get the StormXT sensor attributes."""
         return {
-            Attributes.STATE: States.ON
-            if self.state == States.ON
-            else States.UNAVAILABLE,
-            Attributes.VALUE: "on" if self._storm_xt_active else "off",
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: "on" if self._storm_xt_active else "off",
         }
 
     async def power_on(self):
@@ -342,7 +341,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._send_command(StormAudioCommands.POWER_TOGGLE)
         await self._send_command(StormAudioCommands.PROC_STATE)
 
-        if current_power_state == States.ON:
+        if current_power_state == StormAudioStates.ON:
             await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
         else:
             await self._wait_for_response(
