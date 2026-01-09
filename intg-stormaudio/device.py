@@ -9,7 +9,7 @@ sends commands, and tracks the device state.
 
 import json
 import logging
-from typing import Any
+from typing import Any, Callable
 
 from const import (
     MEDIA_PLAYER_STATE_MAPPING,
@@ -56,6 +56,24 @@ class StormAudioDevice(PersistentConnectionDevice):
         self._muted: bool = False
         self._storm_xt_active: bool = False
         self._client = StormAudioClient(self.address, self.device_config.port)
+
+        self._entity_attributes: dict[str, Callable] = {
+            create_entity_id(
+                EntityTypes.MEDIA_PLAYER, self.identifier
+            ): self._get_media_player_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+            ): self._get_volume_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
+            ): self._get_mute_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
+            ): self._get_storm_xt_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
+            ): self._get_upmixer_mode_sensor_attributes,
+        }
 
     @property
     def state(self) -> StormAudioStates:
@@ -235,51 +253,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
         """Get the device attributes for the given entity ID."""
-        match entity_id:
-            case entity_id if (
-                create_entity_id(EntityTypes.MEDIA_PLAYER, self.identifier) == entity_id
-            ):
-                return self._get_media_player_attributes()
-
-            case entity_id if (
-                create_entity_id(
-                    EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
-                )
-                == entity_id
-            ):
-                return self._get_volume_sensor_attributes()
-
-            case entity_id if (
-                create_entity_id(
-                    EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
-                )
-                == entity_id
-            ):
-                return self._get_upmixer_mode_sensor_attributes()
-
-            case entity_id if (
-                create_entity_id(
-                    EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
-                )
-                == entity_id
-            ):
-                return self._get_mute_sensor_attributes()
-
-            case entity_id if (
-                create_entity_id(
-                    EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
-                )
-                == entity_id
-            ):
-                return self._get_storm_xt_sensor_attributes()
-
-            case _:
-                _LOG.error(
-                    "[%s] Cannot get attributes for unknown entity ID: %s",
-                    self.log_id,
-                    entity_id,
-                )
-                return {}
+        return self._entity_attributes[entity_id]()
 
     def _get_media_player_attributes(self) -> dict[str, Any]:
         """Get the media player attributes."""
