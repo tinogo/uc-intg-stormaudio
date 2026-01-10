@@ -23,7 +23,7 @@ services:
      build:
        dockerfile: ./Dockerfile
      hostname: uc-intg-stormaudio
-     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) python3 -u intg-stormaudio/driver.py"
+     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) python3 -m uc_intg_stormaudio"
      volumes:
        - integration-data:/config
      develop:
@@ -31,8 +31,8 @@ services:
          - path: ./requirements.txt
            action: rebuild
 
-         - path: ./intg-stormaudio
-           target: /app/intg-stormaudio
+         - path: uc_intg_stormaudio
+           target: /app/uc_intg_stormaudio
            action: sync+restart
 
          - path: ./driver.json

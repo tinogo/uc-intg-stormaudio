@@ -28,3 +28,6 @@ dev = [
     "pre-commit>=4.5.1",
     "pylint>=4.0.4",
 ]
+
+[project.scripts]
+uc-intg-stormaudio = "uc_intg_stormaudio:main"

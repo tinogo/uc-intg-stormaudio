@@ -10,9 +10,10 @@ import logging
 import socket
 from typing import Any
 
-from const import Loggers
 from ucapi_framework import DiscoveredDevice
 from ucapi_framework.discovery import MDNSDiscovery
+
+from uc_intg_stormaudio.const import Loggers
 
 _LOG = logging.getLogger(Loggers.SETUP_FLOW)
 

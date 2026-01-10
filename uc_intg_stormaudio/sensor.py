@@ -7,11 +7,12 @@ Sensor Entity.
 import logging
 from typing import Any
 
-from const import Loggers, SensorType
-from device import StormAudioDevice
 from ucapi import EntityTypes, Sensor
 from ucapi.sensor import DeviceClasses, Options
 from ucapi_framework import create_entity_id
+
+from uc_intg_stormaudio.const import Loggers, SensorType
+from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.SENSOR)
 

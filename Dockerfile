@@ -8,7 +8,7 @@ RUN uv pip install --no-cache-dir -r requirements.txt --system
 RUN mkdir /config
 
 ADD driver.json .
-ADD intg-stormaudio ./intg-stormaudio
+ADD uc_intg_stormaudio ./uc_intg_stormaudio
 
 # Network configuration
 ENV UC_DISABLE_MDNS_PUBLISH="false"
@@ -19,4 +19,4 @@ ENV UC_INTEGRATION_HTTP_PORT="9090"
 # Configuration path
 ENV UC_CONFIG_HOME="/config"
 
-CMD ["python3", "-u", "intg-stormaudio/driver.py"]
+CMD ["python3", "-m", "uc_intg_stormaudio"]

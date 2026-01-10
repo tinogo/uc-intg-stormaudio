@@ -41,7 +41,7 @@ repos:
 
       - id: pylint
         name: pylint
-        entry: uv run -m pylint intg-stormaudio
+        entry: uv run -m pylint uc_intg_stormaudio
         language: python
         additional_dependencies: [uv==0.9.22]
         types: [python]
@@ -49,7 +49,7 @@ repos:
 
       - id: flake8
         name: flake8
-        entry: uv run -m flake8 intg-stormaudio --count --show-source --statistics
+        entry: uv run -m flake8 uc_intg_stormaudio --count --show-source --statistics
         language: python
         additional_dependencies: [uv==0.9.22]
         types: [python]

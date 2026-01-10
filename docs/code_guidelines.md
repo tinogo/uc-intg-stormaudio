@@ -20,9 +20,9 @@ The following tests are run as GitHub action for each push on the main branch an
 They can also be run anytime on a local developer machine:
 
 ```shell
-uv run -m pylint intg-stormaudio
-uv run -m flake8 intg-stormaudio --count --show-source --statistics
-uv run -m isort intg-stormaudio/. --check --verbose
+uv run -m pylint uc_intg_stormaudio
+uv run -m flake8 uc_intg_stormaudio --count --show-source --statistics
+uv run -m isort uc_intg_stormaudio/. --check --verbose
 ```
 
 Linting integration in PyCharm/IntelliJ IDEA:
@@ -37,5 +37,5 @@ uv format
 ### Sort Imports
 
 ```shell
-ux rn -m isort intg-stormaudio/. --verbose
+ux rn -m isort uc_intg_stormaudio/. --verbose
 ```

@@ -3,4 +3,4 @@
 
 cd /usr/src/app
 pip install --no-cache-dir -q -r requirements.txt
-python intg-stormaudio/driver.py
+python -m uc_intg_stormaudio

@@ -7,13 +7,14 @@ Media Player Entity.
 import logging
 from typing import Any
 
-import device
 import ucapi
-from config import StormAudioConfig
-from const import Loggers, SimpleCommands
 from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import DeviceClasses
 from ucapi_framework import create_entity_id
+
+from uc_intg_stormaudio.config import StormAudioConfig
+from uc_intg_stormaudio.const import Loggers, SimpleCommands
+from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
 
@@ -40,7 +41,7 @@ class StormAudioMediaPlayer(MediaPlayer):
     """
 
     def __init__(
-        self, config_device: StormAudioConfig, device_instance: device.StormAudioDevice
+        self, config_device: StormAudioConfig, device_instance: StormAudioDevice
     ):
         """
         Initialize the media player entity.

@@ -31,11 +31,12 @@ The major changes found in each new release are listed in the [changelog](https:
 
 ```
 ├── driver.json              # Integration metadata and configuration
-├── intg-stormaudio/         # Main integration code
+├── uc_intg_stormaudio/         # Main integration code
+│   ├── __init__.py          # Main entry point
 │   ├── const.py             # Constants and device configuration dataclass
 │   ├── device.py            # Device communication and state management
 │   ├── discover.py          # Network device discovery
-│   ├── driver.py            # Main entry point
+│   ├── driver.py            # Integration Driver
 │   ├── media_player.py      # Media player entity
 │   └── setup.py             # Setup flow and user configuration
 ├── config/                  # Runtime configuration storage
@@ -69,7 +70,7 @@ The major changes found in each new release are listed in the [changelog](https:
 4. Run the integration either locally or via a Compose environment:
    1. Locally:
       ```bash
-      uv run intg-stormaudio/driver.py
+      uv run uc_intg_stormaudio/__init__.py
       ```
    2. via Compose:
       ```bash

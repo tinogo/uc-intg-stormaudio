@@ -10,7 +10,7 @@ import asyncio
 import logging
 from asyncio import StreamReader, StreamWriter
 
-from const import Loggers
+from uc_intg_stormaudio.const import Loggers
 
 _LOG = logging.getLogger(Loggers.DEVICE)
 
