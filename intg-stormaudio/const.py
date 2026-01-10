@@ -1,39 +1,16 @@
 """
 Constants for the Integration.
 
-This module contains configuration dataclasses and constants used throughout
-the integration. Customize these for your specific device.
+This module contains constants used throughout
+the integration.
 
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
-from dataclasses import dataclass
 from enum import StrEnum
 
 from ucapi.media_player import States as MediaPlayerStates
 from ucapi.sensor import States as SensorStates
-
-
-@dataclass
-class StormAudioConfig:
-    """
-    Device configuration dataclass.
-
-    This dataclass holds all the configuration needed to connect to and
-    identify a device. Add or remove fields as needed for your device.
-    """
-
-    identifier: str
-    """Unique identifier of the device (e.g., MAC address, serial number)."""
-
-    name: str
-    """Friendly name of the device for display purposes."""
-
-    address: str
-    """IP address or hostname of the device."""
-
-    port: int = 23
-    """Port number for device communication."""
 
 
 class SimpleCommands(StrEnum):

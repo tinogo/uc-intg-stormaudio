@@ -42,7 +42,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         super().__init__(*args, **kwargs)
 
         self._state: StormAudioStates = StormAudioStates.UNKNOWN
-        self._sources: dict[str, int] = {}
+        self._sources: dict[str, int] = self.device_config.sources
         self._source_id: int | None = None
         self._upmixer_modes: dict[str, int] = {
             "Native": 0,
@@ -140,7 +140,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Return a log identifier for debugging."""
         return self.name if self.name else self.identifier
 
-    async def connect(self) -> True:
+    async def connect(self) -> bool:
         """Connect to the device."""
         if self._reconnect_task is None or self._reconnect_task.done():
             return await super().connect()
@@ -201,6 +201,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._sources.update({input_name: input_id})
 
                 case StormAudioResponses.INPUT_LIST_END:
+                    self.update_config(sources=self._sources)
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.INPUT_X):
