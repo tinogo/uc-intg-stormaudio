@@ -25,6 +25,8 @@ FEATURES = [
     remote.Features.TOGGLE,
 ]
 
+_PRESET_CMD_PREFIX = "PRESET_"
+
 
 class StormAudioRemote(Remote):
     """
@@ -132,6 +134,16 @@ class StormAudioRemote(Remote):
                 case cmd_id if cmd_id in command_map:
                     await command_map[cmd_id]()
 
+                case remote.Commands.SEND_CMD:
+                    command = params.get("command") if params else None
+
+                    if isinstance(command, str) and command.startswith(
+                        _PRESET_CMD_PREFIX
+                    ):
+                        await self._handle_preset_change(command)
+                    else:
+                        await self._device.custom_command(command)
+
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
@@ -142,3 +154,12 @@ class StormAudioRemote(Remote):
         except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
             return ucapi.StatusCodes.BAD_REQUEST
+
+    async def _handle_preset_change(self, command: str) -> None:
+        if command == SimpleCommands.PRESET_NEXT.value:
+            await self._device.preset_next()
+        elif command == SimpleCommands.PRESET_PREV.value:
+            await self._device.preset_prev()
+        else:
+            preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
+            await self._device.preset_x(preset_name)
