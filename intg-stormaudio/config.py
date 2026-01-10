@@ -32,3 +32,6 @@ class StormAudioConfig:
 
     sources: dict[str, int] = field(default_factory=dict)
     """Dictionary containing all the currently configured sources/inputs of the StormAudio ISP."""
+
+    presets: dict[str, int] = field(default_factory=dict)
+    """Dictionary containing all the currently configured presets of the StormAudio ISP."""
