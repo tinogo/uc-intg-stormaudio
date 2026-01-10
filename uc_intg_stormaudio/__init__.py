@@ -18,8 +18,6 @@ from uc_intg_stormaudio.const import Loggers
 from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
 from uc_intg_stormaudio.driver import StormAudioIntegrationDriver
-from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
-from uc_intg_stormaudio.sensor import StormAudioSensor
 from uc_intg_stormaudio.setup import StormAudioSetupFlow
 
 
@@ -35,29 +33,31 @@ async def main():
     logging.getLogger(Loggers.SETUP_FLOW).setLevel(level)
 
     # Initialize the integration driver
-    driver = StormAudioIntegrationDriver(
+    integration_driver = StormAudioIntegrationDriver(
         device_class=StormAudioDevice,
-        entity_classes=[StormAudioMediaPlayer, StormAudioSensor],
+        entity_classes=[],
         require_connection_before_registry=True,
     )
 
     # Configure the device config manager
-    driver.config_manager = BaseConfigManager(
-        get_config_path(driver.api.config_dir_path),
-        driver.on_device_added,
-        driver.on_device_removed,
+    integration_driver.config_manager = BaseConfigManager(
+        get_config_path(integration_driver.api.config_dir_path),
+        integration_driver.on_device_added,
+        integration_driver.on_device_removed,
         config_class=StormAudioConfig,
     )
 
     # Register all configured devices from config file
-    await driver.register_all_configured_devices()
+    await integration_driver.register_all_configured_devices()
 
     # Set up device discovery (optional - remove if not using discovery)
     discovery = StormAudioDiscovery(timeout=5, service_type="_stormremote._tcp.local.")
-    setup_handler = StormAudioSetupFlow.create_handler(driver, discovery=discovery)
+    setup_handler = StormAudioSetupFlow.create_handler(
+        driver=integration_driver, discovery=discovery
+    )
 
     # Initialize the API with the driver configuration
-    await driver.api.init("driver.json", setup_handler)
+    await integration_driver.api.init("driver.json", setup_handler)
 
     # Keep the driver running
     await asyncio.Future()
