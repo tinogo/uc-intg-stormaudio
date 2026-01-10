@@ -205,10 +205,10 @@ class StormAudioDevice(PersistentConnectionDevice):
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support relative volume scales.
                     # That's why we need to convert the absolute values from the ISPs.
-                    self._volume = (
-                        int(float(message[len(StormAudioResponses.VOLUME_X) : -1]))  # noqa: E203
-                        + MAX_VOLUME
+                    volume, *_tail = json.loads(
+                        message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
                     )
+                    self._volume = int(volume) + MAX_VOLUME
                     self._update_attributes()
 
                 case StormAudioResponses.INPUT_LIST_START:
