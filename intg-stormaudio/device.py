@@ -348,6 +348,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: "on" if self.muted else "off",
+            SensorAttr.UNIT: "sound",
         }
 
     def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
@@ -355,6 +356,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: "on" if self._storm_xt_active else "off",
+            SensorAttr.UNIT: "sound",
         }
 
     async def power_on(self):
