@@ -11,6 +11,18 @@ _Changes in the next release_
 
 ---
 
+## [0.14.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.2...v0.14.0) (2026-01-10)
+
+
+### Features
+
+* **#42:** Add support for a "Current preset" sensor ([#54](https://github.com/tinogo/uc-intg-stormaudio/issues/54)) ([fcef3aa](https://github.com/tinogo/uc-intg-stormaudio/commit/fcef3aa0ef8409d58cef238d72ba30bd4497514f))
+
+
+### Bug Fixes
+
+* **#51:** Persist the sources in the device config ([#52](https://github.com/tinogo/uc-intg-stormaudio/issues/52)) ([9aed792](https://github.com/tinogo/uc-intg-stormaudio/commit/9aed79222f741d90bda669bce8d003c5646fd5e0))
+
 ## [0.13.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.1...v0.13.2) (2026-01-09)
 
 
