@@ -247,7 +247,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self.update_config(presets=self._presets)
                     self._update_attributes()
 
-                case message if message.startswith(StormAudioResponses.PRESET_X):
+                case message if message.startswith(
+                    StormAudioResponses.PRESET_X
+                ) and not message.startswith(StormAudioResponses.PRESET_CUSTOM_X):
                     self._preset_id, *_tail = json.loads(
                         fix_json(
                             message[len(StormAudioResponses.PRESET_X) :]  # noqa: E203

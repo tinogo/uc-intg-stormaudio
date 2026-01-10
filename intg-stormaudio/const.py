@@ -135,6 +135,7 @@ class StormAudioResponses(StrEnum):
     PRESET_LIST_END = "ssp.preset.end"
     PRESET_LIST_X = "ssp.preset.list."
     PRESET_X = "ssp.preset."
+    PRESET_CUSTOM_X = "ssp.preset.custom."
     INPUT_X_FULL = "ssp.input.[{}]"
     INPUT_X = "ssp.input."
     SURROUND_MODE_X = "ssp.surroundmode."
