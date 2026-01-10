@@ -1,8 +1,7 @@
 """
 Constants for the Integration.
 
-This module contains constants used throughout
-the integration.
+This module contains constants used throughout the integration.
 
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
@@ -132,6 +131,11 @@ class StormAudioResponses(StrEnum):
     INPUT_LIST_START = "ssp.input.start"
     INPUT_LIST_END = "ssp.input.end"
     INPUT_LIST_X = "ssp.input.list."
+    PRESET_LIST_START = "ssp.preset.start"
+    PRESET_LIST_END = "ssp.preset.end"
+    PRESET_LIST_X = "ssp.preset.list."
+    PRESET_X = "ssp.preset."
+    PRESET_CUSTOM_X = "ssp.preset.custom."
     INPUT_X_FULL = "ssp.input.[{}]"
     INPUT_X = "ssp.input."
     SURROUND_MODE_X = "ssp.surroundmode."
@@ -158,6 +162,7 @@ class SensorType(StrEnum):
 
     VOLUME_DB = "volume_db"
     MUTE = "mute"
+    PRESET = "preset"
     STORM_XT = "storm_xt"
     UPMIXER_MODE = "upmixer"
 

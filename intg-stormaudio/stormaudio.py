@@ -87,4 +87,7 @@ class StormAudioClient:
             self._notify_waiters(message)
 
             if message_handler:
-                message_handler(message)
+                try:
+                    message_handler(message)
+                except Exception as ex:  # pylint: disable=broad-exception-caught
+                    _LOG.error("Error handling message %s: %s", message, ex)
