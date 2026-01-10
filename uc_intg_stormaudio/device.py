@@ -19,6 +19,7 @@ from ucapi_framework.device import DeviceEvents
 
 from uc_intg_stormaudio.const import (
     MEDIA_PLAYER_STATE_MAPPING,
+    REMOTE_STATE_MAPPING,
     SENSOR_STATE_MAPPING,
     Loggers,
     SensorType,
@@ -65,6 +66,9 @@ class StormAudioDevice(PersistentConnectionDevice):
             create_entity_id(
                 EntityTypes.MEDIA_PLAYER, self.identifier
             ): self._get_media_player_attributes,
+            create_entity_id(
+                EntityTypes.REMOTE, self.identifier
+            ): self._get_remote_attributes,
             create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
             ): self._get_volume_sensor_attributes,
@@ -320,6 +324,12 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.SOUND_MODE_LIST: self.sound_mode_list,
             MediaAttr.VOLUME: self.volume,
             MediaAttr.MUTED: self.muted,
+        }
+
+    def _get_remote_attributes(self) -> dict[str, Any]:
+        """Get the remote attributes."""
+        return {
+            MediaAttr.STATE: REMOTE_STATE_MAPPING[self.state],
         }
 
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:

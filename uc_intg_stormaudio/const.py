@@ -9,6 +9,7 @@ This module contains constants used throughout the integration.
 from enum import StrEnum
 
 from ucapi.media_player import States as MediaPlayerStates
+from ucapi.remote import States as RemoteStates
 from ucapi.sensor import States as SensorStates
 
 
@@ -17,40 +18,50 @@ class SimpleCommands(StrEnum):
     Additional simple commands not covered by standard media-player features.
 
     Simple commands appear in the UI as buttons the user can press.
-    Add commands specific to your device here.
     """
 
-    PRESET_NEXT = "Preset: next"
-    PRESET_PREV = "Preset: previous"
-    LOUDNESS_OFF = "Loudness: off"
-    LOUDNESS_LOW = "Loudness: low"
-    LOUDNESS_MEDIUM = "Loudness: medium"
-    LOUDNESS_FULL = "Loudness: full"
-    BASS_UP = "Bass: +1dB"
-    BASS_DOWN = "Bass: -1dB"
-    BASS_RESET = "Bass: 0dB"
-    TREBLE_UP = "Treble: +1dB"
-    TREBLE_DOWN = "Treble: -1dB"
-    TREBLE_RESET = "Treble: 0dB"
-    BRIGHTNESS_UP = "Brightness: +1dB"
-    BRIGHTNESS_DOWN = "Brightness: -1dB"
-    BRIGHTNESS_RESET = "Brightness: 0dB"
-    CENTER_ENHANCE_UP = "Center-Enhance: +1dB"
-    CENTER_ENHANCE_DOWN = "Center-Enhance: -1dB"
-    CENTER_ENHANCE_RESET = "Center-Enhance: 0dB"
-    SURROUND_ENHANCE_UP = "Surround-Enhance: +1dB"
-    SURROUND_ENHANCE_DOWN = "Surround-Enhance: -1dB"
-    SURROUND_ENHANCE_RESET = "Surround-Enhance: 0dB"
-    LFE_ENHANCE_UP = "LFE-Enhance: +1dB"
-    LFE_ENHANCE_DOWN = "LFE-Enhance: -1dB"
-    LFE_ENHANCE_RESET = "LFE-Enhance: 0dB"
-    DOLBY_MODE_OFF = "Dolby mode: off"
-    DOLBY_MODE_MOVIE = "Dolby mode: Movie"
-    DOLBY_MODE_MUSIC = "Dolby mode: Music"
-    DOLBY_MODE_NIGHT = "Dolby mode: Night"
-    STORM_XT_ON = "StormXT: on"
-    STORM_XT_OFF = "StormXT: off"
-    STORM_XT_TOGGLE = "StormXT: toggle"
+    VOLUME_UP = "VOLUME_UP"
+    VOLUME_DOWN = "VOLUME_DOWN"
+    MUTE_ON = "MUTE_ON"
+    MUTE_OFF = "MUTE_OFF"
+    MUTE_TOGGLE = "MUTE_TOGGLE"
+    CURSOR_UP = "CURSOR_UP"
+    CURSOR_DOWN = "CURSOR_DOWN"
+    CURSOR_LEFT = "CURSOR_LEFT"
+    CURSOR_RIGHT = "CURSOR_RIGHT"
+    CURSOR_ENTER = "CURSOR_ENTER"
+    BACK = "BACK"
+    PRESET_NEXT = "PRESET_NEXT"
+    PRESET_PREV = "PRESET_PREV"
+    LOUDNESS_OFF = "LOUDNESS_OFF"
+    LOUDNESS_LOW = "LOUDNESS_LOW"
+    LOUDNESS_MEDIUM = "LOUDNESS_MEDIUM"
+    LOUDNESS_FULL = "LOUDNESS_FULL"
+    BASS_UP = "BASS_UP"
+    BASS_DOWN = "BASS_DOWN"
+    BASS_RESET = "BASS_RESET"
+    TREBLE_UP = "TREBLE_UP"
+    TREBLE_DOWN = "TREBLE_DOWN"
+    TREBLE_RESET = "TREBLE_RESET"
+    BRIGHTNESS_UP = "BRIGHTNESS_UP"
+    BRIGHTNESS_DOWN = "BRIGHTNESS_DOWN"
+    BRIGHTNESS_RESET = "BRIGHTNESS_RESET"
+    CENTER_ENHANCE_UP = "CENTER_ENHANCE_UP"
+    CENTER_ENHANCE_DOWN = "CENTER_ENHANCE_DOWN"
+    CENTER_ENHANCE_RESET = "CENTER_ENHANCE_RESET"
+    SURROUND_ENHANCE_UP = "SURROUND_ENHANCE_UP"
+    SURROUND_ENHANCE_DOWN = "SURROUND_ENHANCE_DOWN"
+    SURROUND_ENHANCE_RESET = "SURROUND_ENHANCE_RESET"
+    LFE_ENHANCE_UP = "LFE_ENHANCE_UP"
+    LFE_ENHANCE_DOWN = "LFE_ENHANCE_DOWN"
+    LFE_ENHANCE_RESET = "LFE_ENHANCE_RESET"
+    DOLBY_OFF = "DOLBY_OFF"
+    DOLBY_MOVIE = "DOLBY_MOVIE"
+    DOLBY_MUSIC = "DOLBY_MUSIC"
+    DOLBY_NIGHT = "DOLBY_NIGHT"
+    STORM_XT_ON = "STORM_XT_ON"
+    STORM_XT_OFF = "STORM_XT_OFF"
+    STORM_XT_TOGGLE = "STORM_XT_TOGGLE"
 
 
 class StormAudioCommands(StrEnum):
@@ -181,6 +192,13 @@ MEDIA_PLAYER_STATE_MAPPING = {
     StormAudioStates.OFF: MediaPlayerStates.OFF,
     StormAudioStates.UNAVAILABLE: MediaPlayerStates.UNAVAILABLE,
     StormAudioStates.UNKNOWN: MediaPlayerStates.UNKNOWN,
+}
+
+REMOTE_STATE_MAPPING = {
+    StormAudioStates.ON: RemoteStates.ON,
+    StormAudioStates.OFF: RemoteStates.OFF,
+    StormAudioStates.UNAVAILABLE: RemoteStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: RemoteStates.UNKNOWN,
 }
 
 SENSOR_STATE_MAPPING = {
