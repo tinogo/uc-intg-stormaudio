@@ -52,50 +52,7 @@ class StormAudioMediaPlayer(MediaPlayer):
         :param device_instance: The device instance to control
         """
         self._device = device_instance
-
-        entity_id = create_entity_id(
-            EntityTypes.MEDIA_PLAYER, device_instance.identifier
-        )
-
-        _LOG.debug("Initializing media player entity: %s", entity_id)
-
-        super().__init__(
-            identifier=entity_id,
-            name=config_device.name,
-            features=FEATURES,
-            attributes=device_instance.get_device_attributes(entity_id),
-            device_class=DeviceClasses.RECEIVER,
-            options={
-                media_player.Options.SIMPLE_COMMANDS: [
-                    member.value for member in SimpleCommands
-                ]
-            },
-            cmd_handler=self.handle_command,
-        )
-
-    async def handle_command(
-        self,
-        entity: MediaPlayer,
-        cmd_id: str,
-        params: dict[str, Any] | None,
-    ) -> ucapi.StatusCodes:
-        """
-        Handle media player commands from the remote.
-
-        This method is called by the integration API when a command is sent
-        to this media player entity.
-
-        :param entity: The media player entity receiving the command
-        :param cmd_id: The command identifier
-        :param params: Optional command parameters
-
-        :return: Status code indicating success or failure
-        """
-        _LOG.info(
-            "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
-        )
-
-        command_map = {
+        self._command_map = {
             media_player.Commands.ON.value: self._device.power_on,
             media_player.Commands.OFF.value: self._device.power_off,
             media_player.Commands.TOGGLE.value: self._device.power_toggle,
@@ -144,10 +101,52 @@ class StormAudioMediaPlayer(MediaPlayer):
             SimpleCommands.STORM_XT_TOGGLE.value: self._device.storm_xt_toggle,
         }
 
+        entity_id = create_entity_id(
+            EntityTypes.MEDIA_PLAYER, device_instance.identifier
+        )
+
+        _LOG.debug("Initializing media player entity: %s", entity_id)
+
+        super().__init__(
+            identifier=entity_id,
+            name=config_device.name,
+            features=FEATURES,
+            attributes=device_instance.get_device_attributes(entity_id),
+            device_class=DeviceClasses.RECEIVER,
+            options={
+                media_player.Options.SIMPLE_COMMANDS: [
+                    member.value for member in SimpleCommands
+                ]
+            },
+            cmd_handler=self.handle_command,
+        )
+
+    async def handle_command(
+        self,
+        entity: MediaPlayer,
+        cmd_id: str,
+        params: dict[str, Any] | None,
+    ) -> ucapi.StatusCodes:
+        """
+        Handle media player commands from the remote.
+
+        This method is called by the integration API when a command is sent
+        to this media player entity.
+
+        :param entity: The media player entity receiving the command
+        :param cmd_id: The command identifier
+        :param params: Optional command parameters
+
+        :return: Status code indicating success or failure
+        """
+        _LOG.info(
+            "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
+        )
+
         try:
             match cmd_id:
-                case cmd_id if cmd_id in command_map:
-                    await command_map[cmd_id]()
+                case cmd_id if cmd_id in self._command_map:
+                    await self._command_map[cmd_id]()
 
                 # complex commands (with parameters)
                 case media_player.Commands.VOLUME:

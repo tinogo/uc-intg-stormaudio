@@ -6,6 +6,7 @@ Remote Entity.
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
 
+import asyncio
 import logging
 from typing import Any
 
@@ -45,43 +46,7 @@ class StormAudioRemote(Remote):
         :param device_instance: The device instance to control
         """
         self._device = device_instance
-
-        entity_id = create_entity_id(EntityTypes.REMOTE, device_instance.identifier)
-
-        _LOG.debug("Initializing remote entity: %s", entity_id)
-
-        super().__init__(
-            identifier=entity_id,
-            name=config_device.name,
-            features=FEATURES,
-            attributes=device_instance.get_device_attributes(entity_id),
-            simple_commands=[member.value for member in SimpleCommands],
-            cmd_handler=self.handle_command,
-        )
-
-    async def handle_command(
-        self,
-        entity: Remote,
-        cmd_id: str,
-        params: dict[str, Any] | None,
-    ) -> ucapi.StatusCodes:
-        """
-        Handle commands from the remote.
-
-        This method is called by the integration API when a command is sent
-        to this remote entity.
-
-        :param entity: The remote receiving the command
-        :param cmd_id: The command identifier
-        :param params: Optional command parameters
-
-        :return: Status code indicating success or failure
-        """
-        _LOG.info(
-            "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
-        )
-
-        command_map = {
+        self._command_map = {
             remote.Commands.ON.value: self._device.power_on,
             remote.Commands.OFF.value: self._device.power_off,
             remote.Commands.TOGGLE.value: self._device.power_toggle,
@@ -129,20 +94,59 @@ class StormAudioRemote(Remote):
             SimpleCommands.STORM_XT_TOGGLE.value: self._device.storm_xt_toggle,
         }
 
+        entity_id = create_entity_id(EntityTypes.REMOTE, device_instance.identifier)
+
+        _LOG.debug("Initializing remote entity: %s", entity_id)
+
+        super().__init__(
+            identifier=entity_id,
+            name=config_device.name,
+            features=FEATURES,
+            attributes=device_instance.get_device_attributes(entity_id),
+            simple_commands=[member.value for member in SimpleCommands],
+            cmd_handler=self.handle_command,
+        )
+
+    async def handle_command(
+        self,
+        entity: Remote,
+        cmd_id: str,
+        params: dict[str, Any] | None,
+    ) -> ucapi.StatusCodes:
+        """
+        Handle commands from the remote.
+
+        This method is called by the integration API when a command is sent
+        to this remote entity.
+
+        :param entity: The remote receiving the command
+        :param cmd_id: The command identifier
+        :param params: Optional command parameters
+
+        :return: Status code indicating success or failure
+        """
+        _LOG.info(
+            "[%s] Received command: %s %s", entity.id, cmd_id, params if params else ""
+        )
+
         try:
             match cmd_id:
-                case cmd_id if cmd_id in command_map:
-                    await command_map[cmd_id]()
+                case cmd_id if cmd_id in self._command_map:
+                    await self._command_map[cmd_id]()
 
                 case remote.Commands.SEND_CMD:
                     command = params.get("command") if params else None
+                    repeat = params.get("repeat") if params else 1
+                    delay = params.get("repeat") if params else 100
+                    await self._handle_send_cmd(command, repeat, delay)
 
-                    if isinstance(command, str) and command.startswith(
-                        _PRESET_CMD_PREFIX
-                    ):
-                        await self._handle_preset_change(command)
-                    else:
-                        await self._device.custom_command(command)
+                case remote.Commands.SEND_CMD_SEQUENCE:
+                    command_list = params.get("sequence") if params else None
+                    repeat = params.get("repeat") if params else 1
+                    delay = params.get("repeat") if params else 100
+
+                    for command in command_list:
+                        await self._handle_send_cmd(command, repeat, delay)
 
                 # --- unhandled commands ---
                 case _:
@@ -155,11 +159,18 @@ class StormAudioRemote(Remote):
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
             return ucapi.StatusCodes.BAD_REQUEST
 
-    async def _handle_preset_change(self, command: str) -> None:
-        if command == SimpleCommands.PRESET_NEXT.value:
-            await self._device.preset_next()
-        elif command == SimpleCommands.PRESET_PREV.value:
-            await self._device.preset_prev()
-        else:
-            preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
-            await self._device.preset_x(preset_name)
+    async def _handle_send_cmd(self, command: str, repeat: int, delay: int) -> None:
+        for _ in range(repeat):
+            if command in self._command_map:
+                await self._command_map[command]()
+            elif isinstance(command, str) and command.startswith(_PRESET_CMD_PREFIX):
+                await self._handle_custom_preset(command)
+            else:
+                await self._device.custom_command(command)
+
+            if delay > 0:
+                await asyncio.sleep(delay / 1000)
+
+    async def _handle_custom_preset(self, command: str) -> None:
+        preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
+        await self._device.preset_x(preset_name)
