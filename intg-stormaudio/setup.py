@@ -10,7 +10,8 @@ forms for manual device entry and validation of device connections.
 import logging
 from typing import Any
 
-from const import Loggers, StormAudioConfig
+from config import StormAudioConfig
+from const import Loggers
 from stormaudio import StormAudioClient
 from ucapi import IntegrationSetupError, RequestUserInput, SetupError
 from ucapi_framework import BaseSetupFlow, DiscoveredDevice

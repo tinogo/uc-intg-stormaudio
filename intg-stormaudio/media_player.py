@@ -9,7 +9,8 @@ from typing import Any
 
 import device
 import ucapi
-from const import Loggers, SimpleCommands, StormAudioConfig
+from config import StormAudioConfig
+from const import Loggers, SimpleCommands
 from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import DeviceClasses
 from ucapi_framework import create_entity_id

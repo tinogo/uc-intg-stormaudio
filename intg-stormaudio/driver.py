@@ -11,7 +11,8 @@ import asyncio
 import logging
 import os
 
-from const import Loggers, StormAudioConfig
+from config import StormAudioConfig
+from const import Loggers
 from device import StormAudioDevice
 from discover import StormAudioDiscovery
 from media_player import StormAudioMediaPlayer
