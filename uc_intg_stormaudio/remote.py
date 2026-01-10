@@ -27,6 +27,7 @@ FEATURES = [
 ]
 
 _PRESET_CMD_PREFIX = "PRESET_"
+_VOLUME_CMD_PREFIX = "VOLUME_"
 
 
 class StormAudioRemote(Remote):
@@ -164,13 +165,13 @@ class StormAudioRemote(Remote):
             if command in self._command_map:
                 await self._command_map[command]()
             elif isinstance(command, str) and command.startswith(_PRESET_CMD_PREFIX):
-                await self._handle_custom_preset(command)
+                preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
+                await self._device.preset_x(preset_name)
+            elif isinstance(command, str) and command.startswith(_VOLUME_CMD_PREFIX):
+                volume = int(command[len(_VOLUME_CMD_PREFIX) :])  # noqa: E203
+                await self._device.volume_x(volume)
             else:
                 await self._device.custom_command(command)
 
             if delay > 0:
                 await asyncio.sleep(delay / 1000)
-
-    async def _handle_custom_preset(self, command: str) -> None:
-        preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
-        await self._device.preset_x(preset_name)

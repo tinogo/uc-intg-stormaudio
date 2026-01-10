@@ -203,8 +203,8 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
-                    # The UC remotes currently only support relative volume scales.
-                    # That's why we need to convert the absolute values from the ISPs.
+                    # The UC remotes currently only support absolute volume scales.
+                    # That's why we need to convert the relative values from the ISPs.
                     volume, *_tail = json.loads(
                         message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
                     )
@@ -412,13 +412,15 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def volume_x(self, volume):
         """Set the volume of the StormAudio processor."""
-        # The UC remotes only support relative volume scales for now.
-        # That's why we need to convert the absolute values from the ISPs.
+        # The UC remotes only support absolute volume scales for now.
+        # That's why we need to convert the relative values from the ISPs.
         sanitized_volume = max(MIN_VOLUME, min(MAX_VOLUME, int(volume)))
-        absolute_volume = sanitized_volume - MAX_VOLUME
-        await self._send_command(StormAudioCommands.VOLUME_X.format(absolute_volume))
+        relative_volume = sanitized_volume - MAX_VOLUME
+        await self._send_command(
+            StormAudioCommands.VOLUME_X_FORMAT.format(relative_volume)
+        )
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FULL.format(sanitized_volume)
+            StormAudioResponses.VOLUME_X_FORMAT.format(relative_volume)
         )
 
     async def volume_up(self):
@@ -427,7 +429,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         await self._send_command(StormAudioCommands.VOLUME_UP)
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FULL.format(target_volume)
+            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
         )
 
     async def volume_down(self):
@@ -436,7 +438,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FULL.format(target_volume)
+            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
         )
 
     async def select_source(self, source: str):
@@ -444,9 +446,11 @@ class StormAudioDevice(PersistentConnectionDevice):
         source_id = self._sources.get(source)
 
         if source_id is not None:
-            await self._send_command(StormAudioCommands.INPUT_X.format(source_id))
+            await self._send_command(
+                StormAudioCommands.INPUT_X_FORMAT.format(source_id)
+            )
             await self._wait_for_response(
-                StormAudioResponses.INPUT_X_FULL.format(source_id)
+                StormAudioResponses.INPUT_X_FORMAT.format(source_id)
             )
 
     async def select_sound_mode(self, mode: str):
@@ -455,7 +459,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
         if sound_mode_id is not None:
             await self._send_command(
-                StormAudioCommands.SURROUND_MODE_X.format(sound_mode_id)
+                StormAudioCommands.SURROUND_MODE_X_FORMAT.format(sound_mode_id)
             )
 
     async def cursor_up(self):
@@ -627,9 +631,11 @@ class StormAudioDevice(PersistentConnectionDevice):
         preset_id = self._presets.get(preset_name)
 
         if preset_id is not None:
-            await self._send_command(StormAudioCommands.PRESET_X.format(preset_id))
+            await self._send_command(
+                StormAudioCommands.PRESET_X_FORMAT.format(preset_id)
+            )
             await self._wait_for_response(
-                StormAudioResponses.PRESET_X_FULL.format(preset_id)
+                StormAudioResponses.PRESET_X_FORMAT.format(preset_id)
             )
 
     async def custom_command(self, command: str):
