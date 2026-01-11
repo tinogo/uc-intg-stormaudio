@@ -19,6 +19,7 @@ from ucapi_framework.device import DeviceEvents
 
 from uc_intg_stormaudio.const import (
     MEDIA_PLAYER_STATE_MAPPING,
+    REMOTE_STATE_MAPPING,
     SENSOR_STATE_MAPPING,
     Loggers,
     SensorType,
@@ -65,6 +66,9 @@ class StormAudioDevice(PersistentConnectionDevice):
             create_entity_id(
                 EntityTypes.MEDIA_PLAYER, self.identifier
             ): self._get_media_player_attributes,
+            create_entity_id(
+                EntityTypes.REMOTE, self.identifier
+            ): self._get_remote_attributes,
             create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
             ): self._get_volume_sensor_attributes,
@@ -199,12 +203,12 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
-                    # The UC remotes currently only support relative volume scales.
-                    # That's why we need to convert the absolute values from the ISPs.
-                    self._volume = (
-                        int(float(message[len(StormAudioResponses.VOLUME_X) : -1]))  # noqa: E203
-                        + MAX_VOLUME
+                    # The UC remotes currently only support absolute volume scales.
+                    # That's why we need to convert the relative values from the ISPs.
+                    volume, *_tail = json.loads(
+                        message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
                     )
+                    self._volume = int(volume) + MAX_VOLUME
                     self._update_attributes()
 
                 case StormAudioResponses.INPUT_LIST_START:
@@ -322,6 +326,12 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.MUTED: self.muted,
         }
 
+    def _get_remote_attributes(self) -> dict[str, Any]:
+        """Get the remote attributes."""
+        return {
+            MediaAttr.STATE: REMOTE_STATE_MAPPING[self.state],
+        }
+
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:
         """Get the volume sensor attributes."""
         return {
@@ -402,13 +412,15 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def volume_x(self, volume):
         """Set the volume of the StormAudio processor."""
-        # The UC remotes only support relative volume scales for now.
-        # That's why we need to convert the absolute values from the ISPs.
+        # The UC remotes only support absolute volume scales for now.
+        # That's why we need to convert the relative values from the ISPs.
         sanitized_volume = max(MIN_VOLUME, min(MAX_VOLUME, int(volume)))
-        absolute_volume = sanitized_volume - MAX_VOLUME
-        await self._send_command(StormAudioCommands.VOLUME_X.format(absolute_volume))
+        relative_volume = sanitized_volume - MAX_VOLUME
+        await self._send_command(
+            StormAudioCommands.VOLUME_X_FORMAT.format(relative_volume)
+        )
         await self._wait_for_response(
-            StormAudioCommands.VOLUME_X.format(sanitized_volume)
+            StormAudioResponses.VOLUME_X_FORMAT.format(relative_volume)
         )
 
     async def volume_up(self):
@@ -416,29 +428,39 @@ class StormAudioDevice(PersistentConnectionDevice):
         target_volume = float(self.volume - MAX_VOLUME + 1)
 
         await self._send_command(StormAudioCommands.VOLUME_UP)
-        await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
+        await self._wait_for_response(
+            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
+        )
 
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
         target_volume = float(self.volume - MAX_VOLUME - 1)
 
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
-        await self._wait_for_response(StormAudioCommands.VOLUME_X.format(target_volume))
-
-    async def select_source(self, source):
-        """Select the input of the StormAudio processor."""
-        await self._send_command(
-            StormAudioCommands.INPUT_X.format(self._sources.get(source))
-        )
         await self._wait_for_response(
-            StormAudioResponses.INPUT_X_FULL.format(self._sources.get(source))
+            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
         )
 
-    async def select_sound_mode(self, mode):
+    async def select_source(self, source: str):
+        """Select the input of the StormAudio processor."""
+        source_id = self._sources.get(source)
+
+        if source_id is not None:
+            await self._send_command(
+                StormAudioCommands.INPUT_X_FORMAT.format(source_id)
+            )
+            await self._wait_for_response(
+                StormAudioResponses.INPUT_X_FORMAT.format(source_id)
+            )
+
+    async def select_sound_mode(self, mode: str):
         """Set the surround mode of the StormAudio processor."""
-        await self._send_command(
-            StormAudioCommands.SURROUND_MODE_X.format(self._upmixer_modes.get(mode))
-        )
+        sound_mode_id = self._upmixer_modes.get(mode)
+
+        if sound_mode_id is not None:
+            await self._send_command(
+                StormAudioCommands.SURROUND_MODE_X_FORMAT.format(sound_mode_id)
+            )
 
     async def cursor_up(self):
         """Navigate up."""
@@ -602,3 +624,20 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def storm_xt_toggle(self):
         """Toggle the StormXT mode."""
         await self._send_command(StormAudioCommands.STORM_XT_TOGGLE)
+
+    # --- Custom commands from the Remote entity ---
+    async def preset_x(self, preset_name: str):
+        """Select a preset by name."""
+        preset_id = self._presets.get(preset_name)
+
+        if preset_id is not None:
+            await self._send_command(
+                StormAudioCommands.PRESET_X_FORMAT.format(preset_id)
+            )
+            await self._wait_for_response(
+                StormAudioResponses.PRESET_X_FORMAT.format(preset_id)
+            )
+
+    async def custom_command(self, command: str):
+        """Send any of the supported ISP's supported Telnet commands to the device."""
+        await self._send_command(command)

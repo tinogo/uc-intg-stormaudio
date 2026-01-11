@@ -4,17 +4,38 @@ This repository contains the source code for the [Unfolded Circle Remote Two/3](
 
 The integration is based on the amazing work of JackJPowell's [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
-## Installing the integration on the Remote
+## Supported entity types
+
+- Media player
+- Remote
+- Sensors
+  - Current Volume
+  - Muted Status
+  - Current Preset
+  - Current Upmixer
+  - StormXT Status
+
+### Remote entity
+
+The Remote entity has built-in support for `send_cmd` and `send_cmd_sequence`.
+
+These commands allow the user to send any of your StormAudio's supported TCP commands (see https://www.stormaudio.com/tools-guides/ → Drivers Packages → TCP/IP API for reference).
+
+Additionally, you can send the following custom commands for the `send_cmd` and `send_cmd_sequence` commands:
+1. `PRESET_<YourPresetName>` --> This will select the given preset name on your device.
+2. `VOLUME_<YourVolumeLevel>` --> This will set the volume level on your device to the given value (i.e. `VOLUME_45` will result in `-55dB` in your ISP).
+
+## Installation instructions
 
 1. Download the integration package (tar.gz file) from the [Releases](https://github.com/tinogo/uc-intg-stormaudio/releases) page
-2. Upload via the Remote's web configurator under Integrations
+2. Upload the archive via the Remote's web configurator: "Integrations" → "Install custom"
 3. Configure your device through the setup wizard
 
-## Updating the integration on the Remote
+## Update instructions
 
 1. Download the integration package (tar.gz file) from the [Releases](https://github.com/tinogo/uc-intg-stormaudio/releases) page
 2. Remove the existing integration from the Remote (twice) → no worries, all your configured activity settings will still be there.
-3. Update via the Remote's web configurator under Integrations
+3. Upload the archive via the Remote's web configurator: "Integrations" → "Install custom"
 4. Configure your device through the setup wizard
 
 ## Versioning
