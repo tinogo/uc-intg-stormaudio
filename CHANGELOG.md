@@ -11,6 +11,24 @@ _Changes in the next release_
 
 ---
 
+## [0.15.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.14.0...v0.15.0) (2026-01-11)
+
+
+### Features
+
+* **#47:** Add Remote entity ([#56](https://github.com/tinogo/uc-intg-stormaudio/issues/56)) ([a99d6dc](https://github.com/tinogo/uc-intg-stormaudio/commit/a99d6dcd912891b3581b55b960ebf7fd5853bf5a))
+
+
+### Bug Fixes
+
+* Fixed waiting for the volume response. This should hopefully fix the volume slider's behavior ([a99d6dc](https://github.com/tinogo/uc-intg-stormaudio/commit/a99d6dcd912891b3581b55b960ebf7fd5853bf5a))
+* Renamed all "Simple Commands", so that they adhere to the restrictions given by the Unfoldedcircle API-Docs ([a99d6dc](https://github.com/tinogo/uc-intg-stormaudio/commit/a99d6dcd912891b3581b55b960ebf7fd5853bf5a))
+
+
+### Miscellaneous
+
+* separate the StormIntegrationDriver from the main entrypoint ([a42bd91](https://github.com/tinogo/uc-intg-stormaudio/commit/a42bd91f5fd5dfe2813471941f4869088a053463))
+
 ## [0.14.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.13.2...v0.14.0) (2026-01-10)
 
 
