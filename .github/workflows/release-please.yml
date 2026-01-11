@@ -55,7 +55,7 @@ jobs:
             bash -c \
             "cd /workspace && \
               python -m pip install -r requirements.txt && \
-              pyinstaller --clean --onedir --name intg-${{ env.DRIVER_ID }} --collect-all zeroconf intg-${{ env.INTG_NAME }}/__init__.py"
+              pyinstaller --clean --onedir --name intg-${{ env.DRIVER_ID }} --collect-all zeroconf uc_intg_${{ env.INTG_NAME }}/__init__.py"
 
       - name: Prepare artifacts
         if: ${{ steps.release.outputs.release_created }}
