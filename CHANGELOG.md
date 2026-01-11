@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.15.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.15.0...v0.15.1) (2026-01-11)
+
+
+### Bug Fixes
+
+* **ci:** Fix the build ([57cf270](https://github.com/tinogo/uc-intg-stormaudio/commit/57cf27064a9d24d62dc066a1d8e8adf02d38acff))
+
 ## [0.15.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.14.0...v0.15.0) (2026-01-11)
 
 
