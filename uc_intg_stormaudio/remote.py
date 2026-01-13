@@ -18,7 +18,7 @@ from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers, SimpleCommands
 from uc_intg_stormaudio.device import StormAudioDevice
 
-_LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
+_LOG = logging.getLogger(Loggers.REMOTE)
 
 FEATURES = [
     remote.Features.ON_OFF,

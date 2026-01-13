@@ -167,6 +167,7 @@ class Loggers(StrEnum):
     DRIVER = "driver"
     MEDIA_PLAYER = "media_player"
     DEVICE = "device"
+    REMOTE = "remote"
     SENSOR = "sensor"
     SETUP_FLOW = "setup_flow"
 
