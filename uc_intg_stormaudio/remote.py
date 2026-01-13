@@ -136,18 +136,28 @@ class StormAudioRemote(Remote):
                     await self._command_map[cmd_id]()
 
                 case remote.Commands.SEND_CMD:
-                    command = params.get("command") if params else None
-                    repeat = params.get("repeat") if params else 1
-                    delay = params.get("repeat") if params else 100
-                    await self._handle_send_cmd(command, repeat, delay)
+                    if params:
+                        command = params.get("command", None)
+                        repeat = params.get("repeat", 1)
+                        delay = params.get("delay", 100)
+                        await self._handle_send_cmd(command, repeat, delay)
+                    else:
+                        raise ValueError(
+                            "Cannot process command without any given parameters."
+                        )
 
                 case remote.Commands.SEND_CMD_SEQUENCE:
-                    command_list = params.get("sequence") if params else None
-                    repeat = params.get("repeat") if params else 1
-                    delay = params.get("repeat") if params else 100
+                    if params:
+                        command_list = params.get("sequence") if params else None
+                        repeat = params.get("repeat", 1)
+                        delay = params.get("delay", 100)
 
-                    for command in command_list:
-                        await self._handle_send_cmd(command, repeat, delay)
+                        for command in command_list:
+                            await self._handle_send_cmd(command, repeat, delay)
+                    else:
+                        raise ValueError(
+                            "Cannot process command without any given parameters."
+                        )
 
                 # --- unhandled commands ---
                 case _:
