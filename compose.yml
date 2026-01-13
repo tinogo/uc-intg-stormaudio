@@ -7,12 +7,11 @@ services:
     image: unfoldedcircle/core-simulator
     restart: "unless-stopped"
     hostname: core-simulator
-    network_mode: "host"
     environment:
       - UC_INTEGRATION_DISABLE_CERT_VERIFICATION=true
-#    ports:
-#      - "8080:8080"
-#      - "8443:8443"
+    ports:
+      - "8080:8080"
+      - "8443:8443"
     volumes:
       - simulator-data:/data
     depends_on:
