@@ -27,10 +27,8 @@ async def main():
 
     # Configure logging level from environment variable
     level = os.getenv("UC_LOG_LEVEL", "DEBUG").upper()
-    logging.getLogger(Loggers.DRIVER).setLevel(level)
-    logging.getLogger(Loggers.MEDIA_PLAYER).setLevel(level)
-    logging.getLogger(Loggers.DEVICE).setLevel(level)
-    logging.getLogger(Loggers.SETUP_FLOW).setLevel(level)
+    for logger in Loggers:
+        logging.getLogger(logger).setLevel(level)
 
     # Initialize the integration driver
     integration_driver = StormAudioIntegrationDriver(
