@@ -11,6 +11,25 @@ _Changes in the next release_
 
 ---
 
+## [0.16.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.15.1...v0.16.0) (2026-01-13)
+
+
+### Features
+
+* Add a logger for the Remote entity ([222b8cb](https://github.com/tinogo/uc-intg-stormaudio/commit/222b8cb7b6cd5a2d7912dffd378bb74a5b998061))
+
+
+### Bug Fixes
+
+* Fix sending commands via the Remote Entity ([33a53d0](https://github.com/tinogo/uc-intg-stormaudio/commit/33a53d0e6e9bd1fa8cc17a5908a33554892b1c0e))
+
+
+### Miscellaneous
+
+* **deps:** Update the dependencies ([77271a1](https://github.com/tinogo/uc-intg-stormaudio/commit/77271a16cead5b89ad8d6540fb9fd671d415eff1))
+* Initialize all logers ([d6bc2c5](https://github.com/tinogo/uc-intg-stormaudio/commit/d6bc2c5888ec11d7f7fee0c1a36734f5a5360c70))
+* Remove the network_mode property from the compose.yml ([af6a2ea](https://github.com/tinogo/uc-intg-stormaudio/commit/af6a2eae2a0edd26d8f2ac6034d70f1802561898))
+
 ## [0.15.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.15.0...v0.15.1) (2026-01-11)
 
 
