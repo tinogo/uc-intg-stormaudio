@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.17.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.16.1...v0.17.0) (2026-01-14)
+
+
+### Features
+
+* Add the entity type suffix to the media player and remote default names ([f642b85](https://github.com/tinogo/uc-intg-stormaudio/commit/f642b854d70001bfa9b093be27a70e8a9bdb24be))
+
 ## [0.16.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.16.0...v0.16.1) (2026-01-14)
 
 
