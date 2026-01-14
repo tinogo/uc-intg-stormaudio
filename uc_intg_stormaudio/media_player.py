@@ -120,7 +120,7 @@ class StormAudioMediaPlayer(MediaPlayer):
 
         super().__init__(
             identifier=entity_id,
-            name=config_device.name,
+            name=f"{config_device.name} Media Player",
             features=FEATURES,
             attributes=device_instance.get_device_attributes(entity_id),
             device_class=DeviceClasses.RECEIVER,

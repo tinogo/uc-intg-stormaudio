@@ -101,7 +101,7 @@ class StormAudioRemote(Remote):
 
         super().__init__(
             identifier=entity_id,
-            name=config_device.name,
+            name=f"{config_device.name} Remote",
             features=FEATURES,
             attributes=device_instance.get_device_attributes(entity_id),
             simple_commands=[member.value for member in SimpleCommands],
