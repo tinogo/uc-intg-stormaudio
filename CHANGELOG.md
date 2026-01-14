@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.16.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.16.0...v0.16.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* Add missing command handlers for some SimpleCommands ([9b1b59c](https://github.com/tinogo/uc-intg-stormaudio/commit/9b1b59c5e67fea2d2e2aab1b747ac3e07d23bfff))
+
 ## [0.16.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.15.1...v0.16.0) (2026-01-13)
 
 
