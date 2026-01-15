@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.17.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.17.0...v0.17.1) (2026-01-15)
+
+
+### Miscellaneous
+
+* **#58:** Optimize emitting the device update events ([#76](https://github.com/tinogo/uc-intg-stormaudio/issues/76)) ([f96d18d](https://github.com/tinogo/uc-intg-stormaudio/commit/f96d18d9ae45ea7fd0b2299e689289b83431cfe9))
+
 ## [0.17.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.16.1...v0.17.0) (2026-01-14)
 
 
