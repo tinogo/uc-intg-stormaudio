@@ -338,17 +338,15 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _update_media_player_attributes(self) -> None:
         """Update the media player attributes via an event."""
         if (  # pylint: disable=too-many-boolean-expressions
-            self._upmixer_mode_id is not None
-            and self._source_id is not None
+            self._source_id is not None
             and self.source_list
             and (
                 self._state_changed
                 or self._source_id_changed
                 or self._sources_changed
-                or self._preset_id_changed
-                or self._presets_changed
                 or self._volume_changed
                 or self._muted_changed
+                or self._upmixer_mode_id_changed
             )
         ):
             media_player_entity_id = create_entity_id(
