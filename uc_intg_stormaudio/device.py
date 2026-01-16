@@ -768,5 +768,5 @@ class StormAudioDevice(PersistentConnectionDevice):
             )
 
     async def custom_command(self, command: str):
-        """Send any of the supported ISP's supported Telnet commands to the device."""
+        """Send any of the ISP's supported Telnet commands to the device."""
         await self._send_command(command)
