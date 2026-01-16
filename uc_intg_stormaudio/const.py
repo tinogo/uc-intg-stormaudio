@@ -179,6 +179,7 @@ class SensorType(StrEnum):
     MUTE = "mute"
     PRESET = "preset"
     STORM_XT = "storm_xt"
+    SOURCE = "source"
     UPMIXER_MODE = "upmixer"
 
 

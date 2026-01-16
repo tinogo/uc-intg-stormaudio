@@ -52,6 +52,7 @@ This integration provides the following sensors:
 - Current Volume
 - Muted Status
 - Current Preset
+- Current Source
 - Current Upmixer
 - StormXT Status
 

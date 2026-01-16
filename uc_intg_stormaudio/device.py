@@ -94,6 +94,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
             ): self._get_storm_xt_sensor_attributes,
             create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.SOURCE.value
+            ): self._get_source_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
             ): self._get_upmixer_mode_sensor_attributes,
         }
@@ -387,12 +390,13 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _sensor_attributes_changed(self, sensor_type: SensorType) -> bool:
         """Check if the sensor attributes have changed for the given sensor type."""
         return {
-            SensorType.STORM_XT: self._state_changed or self._storm_xt_active_changed,
-            SensorType.PRESET: self._state_changed or self._preset_id_changed,
             SensorType.MUTE: self._state_changed or self._muted_changed,
-            SensorType.VOLUME_DB: self._state_changed or self._volume_changed,
+            SensorType.PRESET: self._state_changed or self._preset_id_changed,
+            SensorType.SOURCE: self._state_changed or self._source_id_changed,
+            SensorType.STORM_XT: self._state_changed or self._storm_xt_active_changed,
             SensorType.UPMIXER_MODE: self._state_changed
             or self._upmixer_mode_id_changed,
+            SensorType.VOLUME_DB: self._state_changed or self._volume_changed,
         }.get(sensor_type, False)
 
     def get_device_attributes(self, entity_id: str) -> dict[str, Any]:
@@ -423,6 +427,13 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self.volume - 100,
             SensorAttr.UNIT: "dB",
+        }
+
+    def _get_source_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self.source,
         }
 
     def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:

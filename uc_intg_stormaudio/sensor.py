@@ -74,6 +74,19 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
+            case SensorType.SOURCE:
+                sensor_entity_id = create_entity_id(
+                    EntityTypes.SENSOR,
+                    device.identifier,
+                    SensorType.SOURCE.value,
+                )
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Source",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
             case SensorType.PRESET:
                 sensor_entity_id = create_entity_id(
                     EntityTypes.SENSOR,
