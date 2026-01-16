@@ -11,6 +11,20 @@ _Changes in the next release_
 
 ---
 
+## [0.18.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.17.1...v0.18.0) (2026-01-16)
+
+
+### Features
+
+* **#65:** Add a sensor for "Loudness" ([b9c00ca](https://github.com/tinogo/uc-intg-stormaudio/commit/b9c00ca7501f360d1896d3eff538b1bde93ff425))
+* Add a "Current source" sensor ([d1b4ed9](https://github.com/tinogo/uc-intg-stormaudio/commit/d1b4ed99de542e0ca54fa7b32ff1d86f94050b3e))
+* Add support for direct source selection via the Remote entity ([3c49460](https://github.com/tinogo/uc-intg-stormaudio/commit/3c49460415bed7583ad6c4fa05025ff2077b185f))
+
+
+### Miscellaneous
+
+* **docs:** Extend the Readme with more information for the entities ([3c1312e](https://github.com/tinogo/uc-intg-stormaudio/commit/3c1312e8e2d4f1cbfd8f1e7c92176de8610dc20e))
+
 ## [0.17.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.17.0...v0.17.1) (2026-01-15)
 
 
