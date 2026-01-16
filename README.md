@@ -1,6 +1,6 @@
 # Unfolded Circle Integration StormAudio
 
-This repository contains the source code for the [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) integration driver for StormAudio devices.
+This repository contains the source code for the [Unfolded Circle Remote Two/3](https://www.unfoldedcircle.com/) integration driver for StormAudio devices. The Focal Astral 16 and Bryston SP4 should work, too.
 
 The integration is based on the amazing work of JackJPowell's [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
@@ -9,21 +9,51 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 - Media player
 - Remote
 - Sensors
-  - Current Volume
-  - Muted Status
-  - Current Preset
-  - Current Upmixer
-  - StormXT Status
+
+### Media Player entity
+
+The Media Player entity implements the following features:
+- `ON_OFF`: Provides dedicated on/off commands
+- `DPAD`: Enables navigating your ISPs front panel (for supported models)
+- `TOGGLE`: Provides the power toggle
+- `VOLUME`: Enables adjusting the volume slider via the Remote 3's touch slider
+- `VOLUME_UP_DOWN`: Provides dedicated volume up/down commands
+- `HOME`: Provides the home and back commands. Both commands are mapped to the `back` command, as there is no `home` command for the ISPs
+- `MUTE`: Mutes the device
+- `UNMUTE`: Unmutes the device
+- `MUTE_TOGGLE`: Toggles the mute state of the device
+- `SELECT_SOUND_MODE`: Provides a dropdown of available sound modes (Upmixers)
+- `SELECT_SOURCE`: Provides a dropdown of available sources
+
+The entity doesn't provide any of the playback features, though, as the StormAudio API doesn't provide any of those commands (they would only be active for Roon anyway).
+
+Furthermore, the Media Player entity implements all the Simple-Commands provided by the Remote entity, too.
 
 ### Remote entity
 
-The Remote entity has built-in support for `send_cmd` and `send_cmd_sequence`.
+The Media Player entity implements the following features:
+- `ON_OFF`: Provides dedicated on/off commands
+- `TOGGLE`: Provides the power toggle
+- `SEND_CMD`: Allows sending a (custom) command to the device
+- `SEND_CMD_SEQUENCE`: Allows sending a (custom) command sequence to the device
 
-These commands allow the user to send any of your StormAudio's supported TCP commands (see https://www.stormaudio.com/tools-guides/ → Drivers Packages → TCP/IP API for reference).
+Furthermore, it implements many Simple-Commands.
+
+These commands `SEND_CMD` and `SEND_CMD_SEQUENCE` allow the user to send any of your StormAudio's supported TCP commands (see https://www.stormaudio.com/tools-guides/ → Drivers Packages → TCP/IP API for reference).
 
 Additionally, you can send the following custom commands for the `send_cmd` and `send_cmd_sequence` commands:
-1. `PRESET_<YourPresetName>` --> This will select the given preset name on your device.
-2. `VOLUME_<YourVolumeLevel>` --> This will set the volume level on your device to the given value (i.e. `VOLUME_45` will result in `-55dB` in your ISP).
+1. `PRESET_<YourPresetName>` --> This will select the given preset on your device.
+2. `SOURCE_<YourSourceName>` --> This will select the given source on your device.
+3. `VOLUME_<YourVolumeLevel>` --> This will set the volume level on your device to the given value (i.e. `VOLUME_45` will result in `-55dB` in your ISP).
+
+### Sensor entity
+
+This integration provides the following sensors:
+- Current Volume
+- Muted Status
+- Current Preset
+- Current Upmixer
+- StormXT Status
 
 ## Installation instructions
 
