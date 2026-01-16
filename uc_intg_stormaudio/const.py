@@ -131,6 +131,7 @@ class StormAudioResponses(StrEnum):
     MUTE_OFF = "ssp.mute.off"
     VOLUME_X_FORMAT = "ssp.vol.[{:.1f}]"
     VOLUME_X = "ssp.vol."
+    LOUDNESS_X = "ssp.loudness."
     LOUDNESS_OFF = "ssp.loudness.[0]"
     LOUDNESS_LOW = "ssp.loudness.[1]"
     LOUDNESS_MEDIUM = "ssp.loudness.[2]"
@@ -175,12 +176,13 @@ class Loggers(StrEnum):
 class SensorType(StrEnum):
     """Defines the supported sensor types for StormAudio devices."""
 
-    VOLUME_DB = "volume_db"
+    LOUDNESS = "loudness"
     MUTE = "mute"
     PRESET = "preset"
-    STORM_XT = "storm_xt"
     SOURCE = "source"
+    STORM_XT = "storm_xt"
     UPMIXER_MODE = "upmixer"
+    VOLUME_DB = "volume_db"
 
 
 class StormAudioStates(StrEnum):

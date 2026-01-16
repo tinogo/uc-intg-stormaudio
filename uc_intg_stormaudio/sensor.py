@@ -43,13 +43,62 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
     ) -> dict[str, Any]:
         """Get sensor configuration based on type."""
         sensor = {}
+        sensor_entity_id = create_entity_id(
+            EntityTypes.SENSOR,
+            device.identifier,
+            sensor_type,
+        )
+
         match sensor_type:
+            case SensorType.MUTE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Mute",
+                    "device_class": DeviceClasses.BINARY,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.LOUDNESS:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Loudness",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.PRESET:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Preset",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.SOURCE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Source",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.STORM_XT:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} StormXT",
+                    "device_class": DeviceClasses.BINARY,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.UPMIXER_MODE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Upmixer",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
             case SensorType.VOLUME_DB:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.VOLUME_DB.value,
-                )
                 sensor = {
                     "identifier": sensor_entity_id,
                     "name": f"{device.name} Volume",
@@ -58,71 +107,6 @@ class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
                         Options.CUSTOM_UNIT: "dB",
                         Options.DECIMALS: 1,
                     },
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.UPMIXER_MODE:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.UPMIXER_MODE.value,
-                )
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Upmixer",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.SOURCE:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.SOURCE.value,
-                )
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Source",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.PRESET:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.PRESET.value,
-                )
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Preset",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.MUTE:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.MUTE.value,
-                )
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Mute",
-                    "device_class": DeviceClasses.BINARY,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.STORM_XT:
-                sensor_entity_id = create_entity_id(
-                    EntityTypes.SENSOR,
-                    device.identifier,
-                    SensorType.STORM_XT.value,
-                )
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} StormXT",
-                    "device_class": DeviceClasses.BINARY,
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 

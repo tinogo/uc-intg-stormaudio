@@ -44,11 +44,20 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Initialize the device."""
         super().__init__(*args, **kwargs)
 
-        self._state: StormAudioStates = StormAudioStates.UNKNOWN
-        self._sources: dict[str, int] = self.device_config.sources
-        self._source_id: int | None = None
+        self._loudness: int | None = None
+        self._loudness_modes: dict[int, str] = {
+            0: "Off",
+            1: "Low",
+            2: "Medium",
+            3: "Full",
+        }
+        self._muted: bool = False
         self._presets: dict[str, int] = self.device_config.presets
         self._preset_id: int | None = None
+        self._sources: dict[str, int] = self.device_config.sources
+        self._source_id: int | None = None
+        self._state: StormAudioStates = StormAudioStates.UNKNOWN
+        self._storm_xt_active: bool = False
         self._upmixer_modes: dict[str, int] = {
             "Native": 0,
             "Stereo Downmix": 1,
@@ -58,19 +67,18 @@ class StormAudioDevice(PersistentConnectionDevice):
         }
         self._upmixer_mode_id: int | None = None
         self._volume: int = 40
-        self._muted: bool = False
-        self._storm_xt_active: bool = False
 
         # Naive change detection
-        self._state_changed = False
-        self._sources_changed = False
-        self._source_id_changed = False
+        self._loudness_changed = False
+        self._muted_changed = False
         self._presets_changed = False
         self._preset_id_changed = False
+        self._sources_changed = False
+        self._source_id_changed = False
+        self._state_changed = False
+        self._storm_xt_active_changed = False
         self._upmixer_mode_id_changed = False
         self._volume_changed = False
-        self._muted_changed = False
-        self._storm_xt_active_changed = False
 
         self._client = StormAudioClient(self.address, self.device_config.port)
 
@@ -82,8 +90,8 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.REMOTE, self.identifier
             ): self._get_remote_attributes,
             create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
-            ): self._get_volume_sensor_attributes,
+                EntityTypes.SENSOR, self.identifier, SensorType.LOUDNESS.value
+            ): self._get_loudness_sensor_attributes,
             create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.MUTE.value
             ): self._get_mute_sensor_attributes,
@@ -91,35 +99,48 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SENSOR, self.identifier, SensorType.PRESET.value
             ): self._get_preset_sensor_attributes,
             create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
-            ): self._get_storm_xt_sensor_attributes,
-            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.SOURCE.value
             ): self._get_source_sensor_attributes,
             create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
+            ): self._get_storm_xt_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
             ): self._get_upmixer_mode_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+            ): self._get_volume_sensor_attributes,
         }
 
     @property
-    def state(self) -> StormAudioStates:
-        """Return the current device state."""
-        return self._state
+    def address(self) -> str | None:
+        """Return the device address."""
+        return self._device_config.address
 
     @property
-    def source_list(self) -> list[str]:
-        """Returns a list of the available input sources."""
-        return list(self._sources.keys())
+    def identifier(self) -> str:
+        """Return the device identifier."""
+        return self._device_config.identifier
 
     @property
-    def source(self) -> str | None:
-        """Returns the current source."""
-        try:
-            return list(self._sources.keys())[
-                list(self._sources.values()).index(self._source_id)
-            ]
-        except ValueError:
-            return None
+    def log_id(self) -> str:
+        """Return a log identifier for debugging."""
+        return self.name if self.name else self.identifier
+
+    @property
+    def loudness(self) -> str:
+        """Returns the current loudness setting."""
+        return self._loudness_modes.get(self._loudness)
+
+    @property
+    def muted(self) -> bool:
+        """Returns whether the device is currently muted or not."""
+        return self._muted
+
+    @property
+    def name(self) -> str:
+        """Return the device name."""
+        return self._device_config.name
 
     @property
     def preset(self) -> str | None:
@@ -130,16 +151,6 @@ class StormAudioDevice(PersistentConnectionDevice):
             ]
         except ValueError:
             return None
-
-    @property
-    def volume(self) -> int:
-        """Returns the current device volume."""
-        return self._volume
-
-    @property
-    def muted(self) -> bool:
-        """Returns whether the device is currently muted or not."""
-        return self._muted
 
     @property
     def sound_mode_list(self) -> list[str]:
@@ -157,24 +168,29 @@ class StormAudioDevice(PersistentConnectionDevice):
             return None
 
     @property
-    def identifier(self) -> str:
-        """Return the device identifier."""
-        return self._device_config.identifier
+    def source_list(self) -> list[str]:
+        """Returns a list of the available input sources."""
+        return list(self._sources.keys())
 
     @property
-    def name(self) -> str:
-        """Return the device name."""
-        return self._device_config.name
+    def source(self) -> str | None:
+        """Returns the current source."""
+        try:
+            return list(self._sources.keys())[
+                list(self._sources.values()).index(self._source_id)
+            ]
+        except ValueError:
+            return None
 
     @property
-    def address(self) -> str | None:
-        """Return the device address."""
-        return self._device_config.address
+    def state(self) -> StormAudioStates:
+        """Return the current device state."""
+        return self._state
 
     @property
-    def log_id(self) -> str:
-        """Return a log identifier for debugging."""
-        return self.name if self.name else self.identifier
+    def volume(self) -> int:
+        """Returns the current device volume."""
+        return self._volume
 
     async def connect(self) -> bool:
         """Connect to the device."""
@@ -191,51 +207,11 @@ class StormAudioDevice(PersistentConnectionDevice):
         if self._connection:
             await self._client.close(self._connection)
 
-    async def maintain_connection(self) -> None:
+    async def maintain_connection(self) -> None:  # pylint: disable=too-many-statements
         """Maintain the connection."""
 
         def message_handler(message: str) -> None:  # pylint: disable=too-many-branches
             match message:
-                case StormAudioResponses.PROC_STATE_ON:
-                    self._state_changed = self._state != StormAudioStates.ON
-                    self._state = StormAudioStates.ON
-                    self._update_attributes()
-
-                case (
-                    StormAudioResponses.PROC_STATE_OFF
-                    | StormAudioResponses.PROC_STATE_INDETERMINATE
-                ):
-                    # Maps both the initialization and the process of shutting down to OFF
-                    # as they are not "fully booted"
-                    self._state_changed = self._state != StormAudioStates.OFF
-                    self._state = StormAudioStates.OFF
-                    self._update_attributes()
-
-                case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
-                    muted = message == StormAudioResponses.MUTE_ON
-                    self._muted_changed = self._muted != muted
-                    self._muted = muted
-                    self._update_attributes()
-
-                case StormAudioResponses.STORM_XT_ON | StormAudioResponses.STORM_XT_OFF:
-                    storm_xt_active = message == StormAudioResponses.STORM_XT_ON
-                    self._storm_xt_active_changed = (
-                        self._storm_xt_active != storm_xt_active
-                    )
-                    self._storm_xt_active = storm_xt_active
-                    self._update_attributes()
-
-                case message if message.startswith(StormAudioResponses.VOLUME_X):
-                    # The UC remotes currently only support absolute volume scales.
-                    # That's why we need to convert the relative values from the ISPs.
-                    volume, *_tail = json.loads(
-                        message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
-                    )
-                    absolute_volume = int(volume) + MAX_VOLUME
-                    self._volume_changed = self._volume != absolute_volume
-                    self._volume = absolute_volume
-                    self._update_attributes()
-
                 case StormAudioResponses.INPUT_LIST_START:
                     self._sources = {}
 
@@ -261,6 +237,20 @@ class StormAudioDevice(PersistentConnectionDevice):
                     )
                     self._source_id_changed = self._source_id != source_id
                     self._source_id = source_id
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.LOUDNESS_X):
+                    loudness, *_tail = json.loads(
+                        message[len(StormAudioResponses.LOUDNESS_X) :]  # noqa: E203
+                    )
+                    self._loudness_changed = self._loudness != loudness
+                    self._loudness = loudness
+                    self._update_attributes()
+
+                case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
+                    muted = message == StormAudioResponses.MUTE_ON
+                    self._muted_changed = self._muted != muted
+                    self._muted = muted
                     self._update_attributes()
 
                 case StormAudioResponses.PRESET_LIST_START:
@@ -292,6 +282,29 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._preset_id = preset_id
                     self._update_attributes()
 
+                case (
+                    StormAudioResponses.PROC_STATE_OFF
+                    | StormAudioResponses.PROC_STATE_INDETERMINATE
+                ):
+                    # Maps both the initialization and the process of shutting down to OFF
+                    # as they are not "fully booted"
+                    self._state_changed = self._state != StormAudioStates.OFF
+                    self._state = StormAudioStates.OFF
+                    self._update_attributes()
+
+                case StormAudioResponses.PROC_STATE_ON:
+                    self._state_changed = self._state != StormAudioStates.ON
+                    self._state = StormAudioStates.ON
+                    self._update_attributes()
+
+                case StormAudioResponses.STORM_XT_ON | StormAudioResponses.STORM_XT_OFF:
+                    storm_xt_active = message == StormAudioResponses.STORM_XT_ON
+                    self._storm_xt_active_changed = (
+                        self._storm_xt_active != storm_xt_active
+                    )
+                    self._storm_xt_active = storm_xt_active
+                    self._update_attributes()
+
                 case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
                     upmixer_mode_id, *_tail = json.loads(
                         fix_json(
@@ -304,20 +317,32 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._upmixer_mode_id = upmixer_mode_id
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.VOLUME_X):
+                    # The UC remotes currently only support absolute volume scales.
+                    # That's why we need to convert the relative values from the ISPs.
+                    volume, *_tail = json.loads(
+                        message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
+                    )
+                    absolute_volume = int(volume) + MAX_VOLUME
+                    self._volume_changed = self._volume != absolute_volume
+                    self._volume = absolute_volume
+                    self._update_attributes()
+
             self._reset_change_detection()
 
         await self._client.parse_response_messages(self._connection, message_handler)
 
     def _reset_change_detection(self) -> None:
-        self._state_changed = False
-        self._sources_changed = False
-        self._source_id_changed = False
+        self._loudness_changed = False
+        self._muted_changed = False
         self._presets_changed = False
         self._preset_id_changed = False
+        self._sources_changed = False
+        self._source_id_changed = False
+        self._state_changed = False
+        self._storm_xt_active_changed = False
         self._upmixer_mode_id_changed = False
         self._volume_changed = False
-        self._muted_changed = False
-        self._storm_xt_active_changed = False
 
     async def _send_command(self, command: str) -> None:
         """Send a command to the device."""
@@ -390,6 +415,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _sensor_attributes_changed(self, sensor_type: SensorType) -> bool:
         """Check if the sensor attributes have changed for the given sensor type."""
         return {
+            SensorType.LOUDNESS: self._state_changed or self._loudness_changed,
             SensorType.MUTE: self._state_changed or self._muted_changed,
             SensorType.PRESET: self._state_changed or self._preset_id_changed,
             SensorType.SOURCE: self._state_changed or self._source_id_changed,
@@ -429,8 +455,15 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.UNIT: "dB",
         }
 
+    def _get_loudness_sensor_attributes(self) -> dict[str, Any]:
+        """Get the loudness sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self.loudness,
+        }
+
     def _get_source_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
+        """Get the source sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self.source,
