@@ -27,6 +27,7 @@ FEATURES = [
 ]
 
 _PRESET_CMD_PREFIX = "PRESET_"
+_SOURCE_CMD_PREFIX = "SOURCE_"
 _VOLUME_CMD_PREFIX = "VOLUME_"
 
 
@@ -177,6 +178,9 @@ class StormAudioRemote(Remote):
             elif isinstance(command, str) and command.startswith(_PRESET_CMD_PREFIX):
                 preset_name = command[len(_PRESET_CMD_PREFIX) :]  # noqa: E203
                 await self._device.preset_x(preset_name)
+            elif isinstance(command, str) and command.startswith(_SOURCE_CMD_PREFIX):
+                source_name = command[len(_SOURCE_CMD_PREFIX) :]  # noqa: E203
+                await self._device.select_source(source_name)
             elif isinstance(command, str) and command.startswith(_VOLUME_CMD_PREFIX):
                 volume = int(command[len(_VOLUME_CMD_PREFIX) :])  # noqa: E203
                 await self._device.volume_x(volume)
