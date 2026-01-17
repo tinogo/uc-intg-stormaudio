@@ -4,11 +4,22 @@ This repository contains the source code for the [Unfolded Circle Remote Two/3](
 
 The integration is based on the amazing work of JackJPowell's [ucapi-framework](https://github.com/jackjpowell/ucapi-framework).
 
+## Table of contents
+
+1. [Supported entity types](#supported-entity-types)
+2. [Installation instructions](#installation-instructions)
+3. [Update instructions](#update-instructions)
+4. [Versioning](#versioning)
+5. [Changelog](#changelog)
+6. [Development](#development)
+7. [Resources](#resources)
+8. [License](#license)
+
 ## Supported entity types
 
-- Media player
-- Remote
-- Sensors
+- [Media player](#media-player-entity)
+- [Remote](#remote-entity)
+- [Sensors](#sensor-entity)
 
 ### Media Player entity
 
@@ -51,6 +62,7 @@ Additionally, you can send the following custom commands for the `send_cmd` and 
 This integration provides the following sensors:
 - Current Volume
 - Muted Status
+- Current Loudness Setting
 - Current Preset
 - Current Source
 - Current Upmixer
