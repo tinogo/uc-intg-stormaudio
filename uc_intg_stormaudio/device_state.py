@@ -46,16 +46,16 @@ class StormAudioDeviceState:
     volume: int = 0
 
     # Naive change detection
-    loudness_changed = False
-    muted_changed = False
-    presets_changed = False
-    preset_id_changed = False
-    sources_changed = False
-    source_id_changed = False
-    state_changed = False
-    storm_xt_active_changed = False
-    upmixer_mode_id_changed = False
-    volume_changed = False
+    loudness_changed: bool = False
+    muted_changed: bool = False
+    presets_changed: bool = False
+    preset_id_changed: bool = False
+    sources_changed: bool = False
+    source_id_changed: bool = False
+    state_changed: bool = False
+    storm_xt_active_changed: bool = False
+    upmixer_mode_id_changed: bool = False
+    volume_changed: bool = False
 
     @property
     def loudness(self) -> str:
