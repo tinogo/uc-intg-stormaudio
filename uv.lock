@@ -168,11 +168,11 @@ wheels = [
 
 [[package]]
 name = "dill"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/12/80/630b4b88364e9a8c8c5797f4602d0f76ef820909ee32f0bacb9f90654042/dill-0.4.0.tar.gz", hash = "sha256:0633f1d2df477324f53a895b02c901fb961bdbf65a17122586ea7019292cbcf0", size = 186976, upload-time = "2025-04-16T00:41:48.867Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/e1/56027a71e31b02ddc53c7d65b01e68edf64dea2932122fe7746a516f75d5/dill-0.4.1.tar.gz", hash = "sha256:423092df4182177d4d8ba8290c8a5b640c66ab35ec7da59ccfa00f6fa3eea5fa", size = 187315, upload-time = "2026-01-19T02:36:56.85Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl", hash = "sha256:44f54bf6412c2c8464c14e8243eb163690a9800dbe2c367330883b19c7561049", size = 119668, upload-time = "2025-04-16T00:41:47.671Z" },
+    { url = "https://files.pythonhosted.org/packages/1e/77/dc8c558f7593132cf8fefec57c4f60c83b16941c574ac5f619abb3ae7933/dill-0.4.1-py3-none-any.whl", hash = "sha256:1e1ce33e978ae97fcfcff5638477032b801c46c7c65cf717f95fbc2248f79a9d", size = 120019, upload-time = "2026-01-19T02:36:55.663Z" },
 ]
 
 [[package]]
@@ -800,7 +800,7 @@ dev = [
 requires-dist = [
     { name = "pyee", specifier = ">=9.0" },
     { name = "ucapi", specifier = "==0.5.1" },
-    { name = "ucapi-framework", specifier = "==1.4.2" },
+    { name = "ucapi-framework", specifier = "==1.5.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -829,16 +829,16 @@ wheels = [
 
 [[package]]
 name = "ucapi-framework"
-version = "1.4.2"
+version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pyee" },
     { name = "ucapi" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/88/d1925c2a5f0306ff599d83f3eb8aaa89891d8beb1e46d9d91d5d69147f57/ucapi_framework-1.4.2.tar.gz", hash = "sha256:15815ad507a7527669fcdc8e942b0ee05852e4d5776691d89496dc122d07364c", size = 109863, upload-time = "2026-01-05T23:14:02.978Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/04/b55d411967743aa99e54dbaab484177a78b43a99bddd60cfeff040aa2e8f/ucapi_framework-1.5.0.tar.gz", hash = "sha256:d9648a1f0d49eeb07ded0c69595ef2eb75c42d7cd3130caea72821f0c5f8eddb", size = 120031, upload-time = "2026-01-18T14:03:00.626Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/2d/2f03b917ba217c28fbbc8e852a8c7086b985ed064f066322256ebb04378b/ucapi_framework-1.4.2-py3-none-any.whl", hash = "sha256:a71e79eb5b2a98ccef05e3d77c4d23cc57d2db71ff426b717b58748b4768a396", size = 64172, upload-time = "2026-01-05T23:14:01.839Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/bc/da2d00eb47c75365df6a0d4bee6bf1565c5398f2e817a76bf8135c00a09c/ucapi_framework-1.5.0-py3-none-any.whl", hash = "sha256:8d0aff8cd43eca67d5b8ac4fe316a98ff807efe08573008defd13068ac2cd0fb", size = 70161, upload-time = "2026-01-18T14:02:59.103Z" },
 ]
 
 [[package]]
