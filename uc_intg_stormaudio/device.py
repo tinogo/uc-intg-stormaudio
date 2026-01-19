@@ -104,12 +104,6 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Return the current device state."""
         return self._device_state.state
 
-    async def connect(self) -> bool:
-        """Connect to the device."""
-        if self._reconnect_task is None or self._reconnect_task.done():
-            return await super().connect()
-        return True
-
     async def establish_connection(self) -> Any:
         """Establish connection to the device."""
         return await self._client.connect()
