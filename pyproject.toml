@@ -16,7 +16,7 @@ urls.Repository = "https://github.com/tinogo/uc-intg-stormaudio"
 dependencies = [
     # Core dependencies
     "ucapi==0.5.1",
-    "ucapi-framework==1.4.2",
+    "ucapi-framework==1.5.0",
     "pyee>=9.0",
 ]
 
