@@ -114,6 +114,7 @@ class StormAudioRemote(Remote):
         entity: Remote,
         cmd_id: str,
         params: dict[str, Any] | None,
+        _: Any | None = None,
     ) -> ucapi.StatusCodes:
         """
         Handle commands from the remote.
@@ -124,6 +125,7 @@ class StormAudioRemote(Remote):
         :param entity: The remote receiving the command
         :param cmd_id: The command identifier
         :param params: Optional command parameters
+        :param _: Optional parameter containing the websocket resource
 
         :return: Status code indicating success or failure
         """

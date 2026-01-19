@@ -137,6 +137,7 @@ class StormAudioMediaPlayer(MediaPlayer):
         entity: MediaPlayer,
         cmd_id: str,
         params: dict[str, Any] | None,
+        _: Any | None = None,
     ) -> ucapi.StatusCodes:
         """
         Handle media player commands from the remote.
@@ -147,6 +148,7 @@ class StormAudioMediaPlayer(MediaPlayer):
         :param entity: The media player entity receiving the command
         :param cmd_id: The command identifier
         :param params: Optional command parameters
+        :param _: Optional parameter containing the websocket resource
 
         :return: Status code indicating success or failure
         """
