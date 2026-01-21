@@ -45,18 +45,6 @@ class StormAudioDeviceState:
     upmixer_mode_id: int | None = None
     volume: int = 0
 
-    # Naive change detection
-    loudness_changed: bool = False
-    muted_changed: bool = False
-    presets_changed: bool = False
-    preset_id_changed: bool = False
-    sources_changed: bool = False
-    source_id_changed: bool = False
-    state_changed: bool = False
-    storm_xt_active_changed: bool = False
-    upmixer_mode_id_changed: bool = False
-    volume_changed: bool = False
-
     @property
     def loudness(self) -> str:
         """Returns the current loudness setting."""
@@ -101,16 +89,3 @@ class StormAudioDeviceState:
             ]
         except ValueError:
             return None
-
-    def reset_change_detection(self) -> None:
-        """Reset the change detection flags."""
-        self.loudness_changed = False
-        self.muted_changed = False
-        self.presets_changed = False
-        self.preset_id_changed = False
-        self.sources_changed = False
-        self.source_id_changed = False
-        self.state_changed = False
-        self.storm_xt_active_changed = False
-        self.upmixer_mode_id_changed = False
-        self.volume_changed = False

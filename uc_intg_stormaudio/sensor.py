@@ -9,7 +9,7 @@ from typing import Any
 
 from ucapi import EntityTypes, Sensor
 from ucapi.sensor import DeviceClasses, Options
-from ucapi_framework import create_entity_id
+from ucapi_framework import create_entity_id, Entity
 
 from uc_intg_stormaudio.const import Loggers, SensorType
 from uc_intg_stormaudio.device import StormAudioDevice
@@ -17,19 +17,20 @@ from uc_intg_stormaudio.device import StormAudioDevice
 _LOG = logging.getLogger(Loggers.SENSOR)
 
 
-class StormAudioSensor(Sensor):  # pylint: disable=too-few-public-methods
+class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-methods
     """Sensor for the StormAudio ISPs."""
 
-    def __init__(self, device_instance: StormAudioDevice, sensor_type: SensorType):
+    def __init__(self, device: StormAudioDevice, sensor_type: SensorType):
         """Initialize the sensor entity."""
-        self._device = device_instance
+        self._device = device
         self._sensor_type = sensor_type
 
-        sensor_config = self._get_sensor_config(sensor_type, device_instance)
+        sensor_config = self._get_sensor_config(sensor_type, device)
 
         _LOG.debug("Initializing sensor: %s", sensor_config["identifier"])
 
-        super().__init__(
+        Sensor.__init__(
+            self,
             identifier=sensor_config["identifier"],
             name=sensor_config["name"],
             features=[],
