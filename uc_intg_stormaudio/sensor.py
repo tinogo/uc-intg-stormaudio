@@ -30,12 +30,13 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
         _LOG.debug("Initializing sensor: %s", sensor_config["identifier"])
 
         super().__init__(
-            identifier=sensor_config["identifier"],
-            name=sensor_config["name"],
-            features=[],
-            attributes=sensor_config["attributes"],
-            device_class=sensor_config["device_class"],
-            options=sensor_config.get("options", {}),
+            sensor_config["identifier"],
+            sensor_config["name"],
+            [],
+            sensor_config["attributes"],
+            sensor_config["device_class"],
+            sensor_config.get("options", {}),
+            None,
         )
 
     def _get_sensor_config(

@@ -98,12 +98,15 @@ class StormAudioRemote(Remote, Entity):
         _LOG.debug("Initializing remote entity: %s", entity_id)
 
         super().__init__(
-            identifier=entity_id,
-            name=f"{device_config.name} Remote",
-            features=FEATURES,
-            attributes=device.get_device_attributes(entity_id),
-            simple_commands=[member.value for member in SimpleCommands],
-            cmd_handler=self.handle_command,
+            entity_id,
+            f"{device_config.name} Remote",
+            FEATURES,
+            device.get_device_attributes(entity_id),
+            [member.value for member in SimpleCommands],
+            None,
+            None,
+            None,
+            self.handle_command,
         )
 
         self._device = device

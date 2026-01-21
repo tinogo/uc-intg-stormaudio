@@ -114,17 +114,18 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         _LOG.debug("Initializing media player entity: %s", entity_id)
 
         super().__init__(
-            identifier=entity_id,
-            name=f"{device_config.name} Media Player",
-            features=FEATURES,
-            attributes=device.get_device_attributes(entity_id),
-            device_class=DeviceClasses.RECEIVER,
-            options={
+            entity_id,
+            f"{device_config.name} Media Player",
+            FEATURES,
+            device.get_device_attributes(entity_id),
+            DeviceClasses.RECEIVER,
+            {
                 media_player.Options.SIMPLE_COMMANDS: [
                     member.value for member in SimpleCommands
                 ]
             },
-            cmd_handler=self.handle_command,
+            None,
+            self.handle_command,
         )
 
         self._device = device
