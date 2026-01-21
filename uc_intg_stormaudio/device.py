@@ -242,18 +242,14 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _update_media_player_attributes(self) -> None:
         """Update the media player attributes via an event."""
-        if (
-            self._device_state.source_id is not None
-            and self._device_state.source_list
-        ):
-            media_player_entity_id = create_entity_id(
-                EntityTypes.MEDIA_PLAYER, self.identifier
-            )
-            self.events.emit(
-                DeviceEvents.UPDATE,
-                media_player_entity_id,
-                self.get_device_attributes(media_player_entity_id),
-            )
+        media_player_entity_id = create_entity_id(
+            EntityTypes.MEDIA_PLAYER, self.identifier
+        )
+        self.events.emit(
+            DeviceEvents.UPDATE,
+            media_player_entity_id,
+            self.get_device_attributes(media_player_entity_id),
+        )
 
     def _update_remote_attributes(self) -> None:
         """Update the remote attributes via an event."""
