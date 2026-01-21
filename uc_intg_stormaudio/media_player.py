@@ -12,7 +12,7 @@ from typing import Any
 import ucapi
 from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import DeviceClasses
-from ucapi_framework import create_entity_id
+from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers, SimpleCommands
@@ -35,102 +35,100 @@ FEATURES = [
 ]
 
 
-class StormAudioMediaPlayer(MediaPlayer):
+class StormAudioMediaPlayer(MediaPlayer, Entity):
     """
     Media Player entity for your device.
 
     This class handles all media player commands and maintains the entity state.
     """
 
-    def __init__(
-        self, config_device: StormAudioConfig, device_instance: StormAudioDevice
-    ):
+    def __init__(self, device_config: StormAudioConfig, device: StormAudioDevice):
         """
         Initialize the media player entity.
 
-        :param config_device: Device configuration from the setup
-        :param device_instance: The device instance to control
+        :param device_config: Device configuration from the setup
+        :param device: The device instance to control
         """
-        self._device = device_instance
         self._command_map = {
-            media_player.Commands.ON.value: self._device.power_on,
-            media_player.Commands.OFF.value: self._device.power_off,
-            media_player.Commands.TOGGLE.value: self._device.power_toggle,
-            media_player.Commands.VOLUME_UP.value: self._device.volume_up,
-            media_player.Commands.VOLUME_DOWN.value: self._device.volume_down,
-            media_player.Commands.MUTE.value: self._device.mute_on,
-            media_player.Commands.UNMUTE.value: self._device.mute_off,
-            media_player.Commands.MUTE_TOGGLE.value: self._device.mute_toggle,
-            media_player.Commands.CURSOR_UP.value: self._device.cursor_up,
-            media_player.Commands.CURSOR_DOWN.value: self._device.cursor_down,
-            media_player.Commands.CURSOR_LEFT.value: self._device.cursor_left,
-            media_player.Commands.CURSOR_RIGHT.value: self._device.cursor_right,
-            media_player.Commands.CURSOR_ENTER.value: self._device.cursor_enter,
-            media_player.Commands.BACK.value: self._device.back,
-            media_player.Commands.HOME.value: self._device.back,
-            SimpleCommands.VOLUME_UP.value: self._device.volume_up,
-            SimpleCommands.VOLUME_DOWN.value: self._device.volume_down,
-            SimpleCommands.MUTE_ON.value: self._device.mute_on,
-            SimpleCommands.MUTE_OFF.value: self._device.mute_off,
-            SimpleCommands.MUTE_TOGGLE.value: self._device.mute_toggle,
-            SimpleCommands.CURSOR_UP.value: self._device.cursor_up,
-            SimpleCommands.CURSOR_DOWN.value: self._device.cursor_down,
-            SimpleCommands.CURSOR_LEFT.value: self._device.cursor_left,
-            SimpleCommands.CURSOR_RIGHT.value: self._device.cursor_right,
-            SimpleCommands.CURSOR_ENTER.value: self._device.cursor_enter,
-            SimpleCommands.BACK.value: self._device.back,
-            SimpleCommands.PRESET_NEXT.value: self._device.preset_next,
-            SimpleCommands.PRESET_PREV.value: self._device.preset_prev,
-            SimpleCommands.LOUDNESS_OFF.value: self._device.loudness_off,
-            SimpleCommands.LOUDNESS_LOW.value: self._device.loudness_low,
-            SimpleCommands.LOUDNESS_MEDIUM.value: self._device.loudness_medium,
-            SimpleCommands.LOUDNESS_FULL.value: self._device.loudness_full,
-            SimpleCommands.BASS_UP.value: self._device.bass_up,
-            SimpleCommands.BASS_DOWN.value: self._device.bass_down,
-            SimpleCommands.BASS_RESET.value: self._device.bass_reset,
-            SimpleCommands.TREBLE_UP.value: self._device.treble_up,
-            SimpleCommands.TREBLE_DOWN.value: self._device.treble_down,
-            SimpleCommands.TREBLE_RESET.value: self._device.treble_reset,
-            SimpleCommands.BRIGHTNESS_UP.value: self._device.brightness_up,
-            SimpleCommands.BRIGHTNESS_DOWN.value: self._device.brightness_down,
-            SimpleCommands.BRIGHTNESS_RESET.value: self._device.brightness_reset,
-            SimpleCommands.CENTER_ENHANCE_UP.value: self._device.center_enhance_up,
-            SimpleCommands.CENTER_ENHANCE_DOWN.value: self._device.center_enhance_down,
-            SimpleCommands.CENTER_ENHANCE_RESET.value: self._device.center_enhance_reset,
-            SimpleCommands.SURROUND_ENHANCE_UP.value: self._device.surround_enhance_up,
-            SimpleCommands.SURROUND_ENHANCE_DOWN.value: self._device.surround_enhance_down,
-            SimpleCommands.SURROUND_ENHANCE_RESET.value: self._device.surround_enhance_reset,
-            SimpleCommands.LFE_ENHANCE_UP.value: self._device.lfe_enhance_up,
-            SimpleCommands.LFE_ENHANCE_DOWN.value: self._device.lfe_enhance_down,
-            SimpleCommands.LFE_ENHANCE_RESET.value: self._device.lfe_enhance_reset,
-            SimpleCommands.DOLBY_OFF.value: self._device.dolby_mode_off,
-            SimpleCommands.DOLBY_MOVIE.value: self._device.dolby_mode_movie,
-            SimpleCommands.DOLBY_MUSIC.value: self._device.dolby_mode_music,
-            SimpleCommands.DOLBY_NIGHT.value: self._device.dolby_mode_night,
-            SimpleCommands.STORM_XT_ON.value: self._device.storm_xt_on,
-            SimpleCommands.STORM_XT_OFF.value: self._device.storm_xt_off,
-            SimpleCommands.STORM_XT_TOGGLE.value: self._device.storm_xt_toggle,
+            media_player.Commands.ON.value: device.power_on,
+            media_player.Commands.OFF.value: device.power_off,
+            media_player.Commands.TOGGLE.value: device.power_toggle,
+            media_player.Commands.VOLUME_UP.value: device.volume_up,
+            media_player.Commands.VOLUME_DOWN.value: device.volume_down,
+            media_player.Commands.MUTE.value: device.mute_on,
+            media_player.Commands.UNMUTE.value: device.mute_off,
+            media_player.Commands.MUTE_TOGGLE.value: device.mute_toggle,
+            media_player.Commands.CURSOR_UP.value: device.cursor_up,
+            media_player.Commands.CURSOR_DOWN.value: device.cursor_down,
+            media_player.Commands.CURSOR_LEFT.value: device.cursor_left,
+            media_player.Commands.CURSOR_RIGHT.value: device.cursor_right,
+            media_player.Commands.CURSOR_ENTER.value: device.cursor_enter,
+            media_player.Commands.BACK.value: device.back,
+            media_player.Commands.HOME.value: device.back,
+            SimpleCommands.VOLUME_UP.value: device.volume_up,
+            SimpleCommands.VOLUME_DOWN.value: device.volume_down,
+            SimpleCommands.MUTE_ON.value: device.mute_on,
+            SimpleCommands.MUTE_OFF.value: device.mute_off,
+            SimpleCommands.MUTE_TOGGLE.value: device.mute_toggle,
+            SimpleCommands.CURSOR_UP.value: device.cursor_up,
+            SimpleCommands.CURSOR_DOWN.value: device.cursor_down,
+            SimpleCommands.CURSOR_LEFT.value: device.cursor_left,
+            SimpleCommands.CURSOR_RIGHT.value: device.cursor_right,
+            SimpleCommands.CURSOR_ENTER.value: device.cursor_enter,
+            SimpleCommands.BACK.value: device.back,
+            SimpleCommands.PRESET_NEXT.value: device.preset_next,
+            SimpleCommands.PRESET_PREV.value: device.preset_prev,
+            SimpleCommands.LOUDNESS_OFF.value: device.loudness_off,
+            SimpleCommands.LOUDNESS_LOW.value: device.loudness_low,
+            SimpleCommands.LOUDNESS_MEDIUM.value: device.loudness_medium,
+            SimpleCommands.LOUDNESS_FULL.value: device.loudness_full,
+            SimpleCommands.BASS_UP.value: device.bass_up,
+            SimpleCommands.BASS_DOWN.value: device.bass_down,
+            SimpleCommands.BASS_RESET.value: device.bass_reset,
+            SimpleCommands.TREBLE_UP.value: device.treble_up,
+            SimpleCommands.TREBLE_DOWN.value: device.treble_down,
+            SimpleCommands.TREBLE_RESET.value: device.treble_reset,
+            SimpleCommands.BRIGHTNESS_UP.value: device.brightness_up,
+            SimpleCommands.BRIGHTNESS_DOWN.value: device.brightness_down,
+            SimpleCommands.BRIGHTNESS_RESET.value: device.brightness_reset,
+            SimpleCommands.CENTER_ENHANCE_UP.value: device.center_enhance_up,
+            SimpleCommands.CENTER_ENHANCE_DOWN.value: device.center_enhance_down,
+            SimpleCommands.CENTER_ENHANCE_RESET.value: device.center_enhance_reset,
+            SimpleCommands.SURROUND_ENHANCE_UP.value: device.surround_enhance_up,
+            SimpleCommands.SURROUND_ENHANCE_DOWN.value: device.surround_enhance_down,
+            SimpleCommands.SURROUND_ENHANCE_RESET.value: device.surround_enhance_reset,
+            SimpleCommands.LFE_ENHANCE_UP.value: device.lfe_enhance_up,
+            SimpleCommands.LFE_ENHANCE_DOWN.value: device.lfe_enhance_down,
+            SimpleCommands.LFE_ENHANCE_RESET.value: device.lfe_enhance_reset,
+            SimpleCommands.DOLBY_OFF.value: device.dolby_mode_off,
+            SimpleCommands.DOLBY_MOVIE.value: device.dolby_mode_movie,
+            SimpleCommands.DOLBY_MUSIC.value: device.dolby_mode_music,
+            SimpleCommands.DOLBY_NIGHT.value: device.dolby_mode_night,
+            SimpleCommands.STORM_XT_ON.value: device.storm_xt_on,
+            SimpleCommands.STORM_XT_OFF.value: device.storm_xt_off,
+            SimpleCommands.STORM_XT_TOGGLE.value: device.storm_xt_toggle,
         }
 
-        entity_id = create_entity_id(
-            EntityTypes.MEDIA_PLAYER, device_instance.identifier
-        )
+        entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, device.identifier)
 
         _LOG.debug("Initializing media player entity: %s", entity_id)
 
         super().__init__(
-            identifier=entity_id,
-            name=f"{config_device.name} Media Player",
-            features=FEATURES,
-            attributes=device_instance.get_device_attributes(entity_id),
-            device_class=DeviceClasses.RECEIVER,
-            options={
+            entity_id,
+            f"{device_config.name} Media Player",
+            FEATURES,
+            device.get_device_attributes(entity_id),
+            DeviceClasses.RECEIVER,
+            {
                 media_player.Options.SIMPLE_COMMANDS: [
                     member.value for member in SimpleCommands
                 ]
             },
-            cmd_handler=self.handle_command,
+            None,
+            self.handle_command,
         )
+
+        self._device = device
 
     async def handle_command(
         self,

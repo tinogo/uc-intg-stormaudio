@@ -12,7 +12,7 @@ from typing import Any
 
 import ucapi
 from ucapi import EntityTypes, Remote, remote
-from ucapi_framework import create_entity_id
+from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers, SimpleCommands
@@ -31,83 +31,85 @@ _SOURCE_CMD_PREFIX = "SOURCE_"
 _VOLUME_CMD_PREFIX = "VOLUME_"
 
 
-class StormAudioRemote(Remote):
+class StormAudioRemote(Remote, Entity):
     """
     Remote entity for your device.
 
     This class handles all Remote commands and maintains the entity state.
     """
 
-    def __init__(
-        self, config_device: StormAudioConfig, device_instance: StormAudioDevice
-    ):
+    def __init__(self, device_config: StormAudioConfig, device: StormAudioDevice):
         """
         Initialize the remote entity.
 
-        :param config_device: Device configuration from the setup
-        :param device_instance: The device instance to control
+        :param device_config: Device configuration from the setup
+        :param device: The device instance to control
         """
-        self._device = device_instance
         self._command_map = {
-            remote.Commands.ON.value: self._device.power_on,
-            remote.Commands.OFF.value: self._device.power_off,
-            remote.Commands.TOGGLE.value: self._device.power_toggle,
-            SimpleCommands.VOLUME_UP.value: self._device.volume_up,
-            SimpleCommands.VOLUME_DOWN.value: self._device.volume_down,
-            SimpleCommands.MUTE_ON.value: self._device.mute_on,
-            SimpleCommands.MUTE_OFF.value: self._device.mute_off,
-            SimpleCommands.MUTE_TOGGLE.value: self._device.mute_toggle,
-            SimpleCommands.CURSOR_UP.value: self._device.cursor_up,
-            SimpleCommands.CURSOR_DOWN.value: self._device.cursor_down,
-            SimpleCommands.CURSOR_LEFT.value: self._device.cursor_left,
-            SimpleCommands.CURSOR_RIGHT.value: self._device.cursor_right,
-            SimpleCommands.CURSOR_ENTER.value: self._device.cursor_enter,
-            SimpleCommands.BACK.value: self._device.back,
-            SimpleCommands.PRESET_NEXT.value: self._device.preset_next,
-            SimpleCommands.PRESET_PREV.value: self._device.preset_prev,
-            SimpleCommands.LOUDNESS_OFF.value: self._device.loudness_off,
-            SimpleCommands.LOUDNESS_LOW.value: self._device.loudness_low,
-            SimpleCommands.LOUDNESS_MEDIUM.value: self._device.loudness_medium,
-            SimpleCommands.LOUDNESS_FULL.value: self._device.loudness_full,
-            SimpleCommands.BASS_UP.value: self._device.bass_up,
-            SimpleCommands.BASS_DOWN.value: self._device.bass_down,
-            SimpleCommands.BASS_RESET.value: self._device.bass_reset,
-            SimpleCommands.TREBLE_UP.value: self._device.treble_up,
-            SimpleCommands.TREBLE_DOWN.value: self._device.treble_down,
-            SimpleCommands.TREBLE_RESET.value: self._device.treble_reset,
-            SimpleCommands.BRIGHTNESS_UP.value: self._device.brightness_up,
-            SimpleCommands.BRIGHTNESS_DOWN.value: self._device.brightness_down,
-            SimpleCommands.BRIGHTNESS_RESET.value: self._device.brightness_reset,
-            SimpleCommands.CENTER_ENHANCE_UP.value: self._device.center_enhance_up,
-            SimpleCommands.CENTER_ENHANCE_DOWN.value: self._device.center_enhance_down,
-            SimpleCommands.CENTER_ENHANCE_RESET.value: self._device.center_enhance_reset,
-            SimpleCommands.SURROUND_ENHANCE_UP.value: self._device.surround_enhance_up,
-            SimpleCommands.SURROUND_ENHANCE_DOWN.value: self._device.surround_enhance_down,
-            SimpleCommands.SURROUND_ENHANCE_RESET.value: self._device.surround_enhance_reset,
-            SimpleCommands.LFE_ENHANCE_UP.value: self._device.lfe_enhance_up,
-            SimpleCommands.LFE_ENHANCE_DOWN.value: self._device.lfe_enhance_down,
-            SimpleCommands.LFE_ENHANCE_RESET.value: self._device.lfe_enhance_reset,
-            SimpleCommands.DOLBY_OFF.value: self._device.dolby_mode_off,
-            SimpleCommands.DOLBY_MOVIE.value: self._device.dolby_mode_movie,
-            SimpleCommands.DOLBY_MUSIC.value: self._device.dolby_mode_music,
-            SimpleCommands.DOLBY_NIGHT.value: self._device.dolby_mode_night,
-            SimpleCommands.STORM_XT_ON.value: self._device.storm_xt_on,
-            SimpleCommands.STORM_XT_OFF.value: self._device.storm_xt_off,
-            SimpleCommands.STORM_XT_TOGGLE.value: self._device.storm_xt_toggle,
+            remote.Commands.ON.value: device.power_on,
+            remote.Commands.OFF.value: device.power_off,
+            remote.Commands.TOGGLE.value: device.power_toggle,
+            SimpleCommands.VOLUME_UP.value: device.volume_up,
+            SimpleCommands.VOLUME_DOWN.value: device.volume_down,
+            SimpleCommands.MUTE_ON.value: device.mute_on,
+            SimpleCommands.MUTE_OFF.value: device.mute_off,
+            SimpleCommands.MUTE_TOGGLE.value: device.mute_toggle,
+            SimpleCommands.CURSOR_UP.value: device.cursor_up,
+            SimpleCommands.CURSOR_DOWN.value: device.cursor_down,
+            SimpleCommands.CURSOR_LEFT.value: device.cursor_left,
+            SimpleCommands.CURSOR_RIGHT.value: device.cursor_right,
+            SimpleCommands.CURSOR_ENTER.value: device.cursor_enter,
+            SimpleCommands.BACK.value: device.back,
+            SimpleCommands.PRESET_NEXT.value: device.preset_next,
+            SimpleCommands.PRESET_PREV.value: device.preset_prev,
+            SimpleCommands.LOUDNESS_OFF.value: device.loudness_off,
+            SimpleCommands.LOUDNESS_LOW.value: device.loudness_low,
+            SimpleCommands.LOUDNESS_MEDIUM.value: device.loudness_medium,
+            SimpleCommands.LOUDNESS_FULL.value: device.loudness_full,
+            SimpleCommands.BASS_UP.value: device.bass_up,
+            SimpleCommands.BASS_DOWN.value: device.bass_down,
+            SimpleCommands.BASS_RESET.value: device.bass_reset,
+            SimpleCommands.TREBLE_UP.value: device.treble_up,
+            SimpleCommands.TREBLE_DOWN.value: device.treble_down,
+            SimpleCommands.TREBLE_RESET.value: device.treble_reset,
+            SimpleCommands.BRIGHTNESS_UP.value: device.brightness_up,
+            SimpleCommands.BRIGHTNESS_DOWN.value: device.brightness_down,
+            SimpleCommands.BRIGHTNESS_RESET.value: device.brightness_reset,
+            SimpleCommands.CENTER_ENHANCE_UP.value: device.center_enhance_up,
+            SimpleCommands.CENTER_ENHANCE_DOWN.value: device.center_enhance_down,
+            SimpleCommands.CENTER_ENHANCE_RESET.value: device.center_enhance_reset,
+            SimpleCommands.SURROUND_ENHANCE_UP.value: device.surround_enhance_up,
+            SimpleCommands.SURROUND_ENHANCE_DOWN.value: device.surround_enhance_down,
+            SimpleCommands.SURROUND_ENHANCE_RESET.value: device.surround_enhance_reset,
+            SimpleCommands.LFE_ENHANCE_UP.value: device.lfe_enhance_up,
+            SimpleCommands.LFE_ENHANCE_DOWN.value: device.lfe_enhance_down,
+            SimpleCommands.LFE_ENHANCE_RESET.value: device.lfe_enhance_reset,
+            SimpleCommands.DOLBY_OFF.value: device.dolby_mode_off,
+            SimpleCommands.DOLBY_MOVIE.value: device.dolby_mode_movie,
+            SimpleCommands.DOLBY_MUSIC.value: device.dolby_mode_music,
+            SimpleCommands.DOLBY_NIGHT.value: device.dolby_mode_night,
+            SimpleCommands.STORM_XT_ON.value: device.storm_xt_on,
+            SimpleCommands.STORM_XT_OFF.value: device.storm_xt_off,
+            SimpleCommands.STORM_XT_TOGGLE.value: device.storm_xt_toggle,
         }
 
-        entity_id = create_entity_id(EntityTypes.REMOTE, device_instance.identifier)
+        entity_id = create_entity_id(EntityTypes.REMOTE, device.identifier)
 
         _LOG.debug("Initializing remote entity: %s", entity_id)
 
         super().__init__(
-            identifier=entity_id,
-            name=f"{config_device.name} Remote",
-            features=FEATURES,
-            attributes=device_instance.get_device_attributes(entity_id),
-            simple_commands=[member.value for member in SimpleCommands],
-            cmd_handler=self.handle_command,
+            entity_id,
+            f"{device_config.name} Remote",
+            FEATURES,
+            device.get_device_attributes(entity_id),
+            [member.value for member in SimpleCommands],
+            None,
+            None,
+            None,
+            self.handle_command,
         )
+
+        self._device = device
 
     async def handle_command(
         self,

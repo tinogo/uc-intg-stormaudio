@@ -11,13 +11,15 @@ import asyncio
 import logging
 import os
 
-from ucapi_framework import BaseConfigManager, get_config_path
+from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers
 from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
-from uc_intg_stormaudio.driver import StormAudioIntegrationDriver
+from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
+from uc_intg_stormaudio.remote import StormAudioRemote
+from uc_intg_stormaudio.sensor import create_sensors
 from uc_intg_stormaudio.setup import StormAudioSetupFlow
 
 
@@ -31,10 +33,13 @@ async def main():
         logging.getLogger(logger).setLevel(level)
 
     # Initialize the integration driver
-    integration_driver = StormAudioIntegrationDriver(
+    integration_driver = BaseIntegrationDriver(
         device_class=StormAudioDevice,
-        entity_classes=[],
-        require_connection_before_registry=True,
+        entity_classes=[
+            StormAudioMediaPlayer,
+            StormAudioRemote,
+            lambda device_config, dev: create_sensors(dev),
+        ],
     )
 
     # Configure the device config manager
@@ -46,7 +51,7 @@ async def main():
     )
 
     # Register all configured devices from config file
-    await integration_driver.register_all_configured_devices()
+    await integration_driver.register_all_configured_devices(True)
 
     # Set up device discovery (optional - remove if not using discovery)
     discovery = StormAudioDiscovery(timeout=5, service_type="_stormremote._tcp.local.")
