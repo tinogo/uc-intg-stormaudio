@@ -12,7 +12,7 @@ from typing import Any
 
 import ucapi
 from ucapi import EntityTypes, Remote, remote
-from ucapi_framework import create_entity_id, Entity
+from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers, SimpleCommands
@@ -38,9 +38,7 @@ class StormAudioRemote(Remote, Entity):
     This class handles all Remote commands and maintains the entity state.
     """
 
-    def __init__(
-        self, device_config: StormAudioConfig, device: StormAudioDevice
-    ):
+    def __init__(self, device_config: StormAudioConfig, device: StormAudioDevice):
         """
         Initialize the remote entity.
 
@@ -99,8 +97,7 @@ class StormAudioRemote(Remote, Entity):
 
         _LOG.debug("Initializing remote entity: %s", entity_id)
 
-        Remote.__init__(
-            self,
+        super().__init__(
             identifier=entity_id,
             name=f"{device_config.name} Remote",
             features=FEATURES,

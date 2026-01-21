@@ -24,8 +24,8 @@ class StormAudioIntegrationDriver(
         """Register available entities for a device (async version)."""
         entities: list[StormAudioMediaPlayer | StormAudioRemote | StormAudioSensor] = [
             StormAudioMediaPlayer(device_config, device),
-            StormAudioRemote(device_config, device),
-            *create_sensors(device),
+            # StormAudioRemote(device_config, device),
+            # *create_sensors(device),
         ]
 
         for entity in entities:

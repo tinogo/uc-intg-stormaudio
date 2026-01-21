@@ -12,7 +12,7 @@ from typing import Any
 import ucapi
 from ucapi import EntityTypes, MediaPlayer, media_player
 from ucapi.media_player import DeviceClasses
-from ucapi_framework import create_entity_id, Entity
+from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import Loggers, SimpleCommands
@@ -42,9 +42,7 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
     This class handles all media player commands and maintains the entity state.
     """
 
-    def __init__(
-        self, device_config: StormAudioConfig, device: StormAudioDevice
-    ):
+    def __init__(self, device_config: StormAudioConfig, device: StormAudioDevice):
         """
         Initialize the media player entity.
 
@@ -111,14 +109,11 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
             SimpleCommands.STORM_XT_TOGGLE.value: device.storm_xt_toggle,
         }
 
-        entity_id = create_entity_id(
-            EntityTypes.MEDIA_PLAYER, device.identifier
-        )
+        entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, device.identifier)
 
         _LOG.debug("Initializing media player entity: %s", entity_id)
 
-        MediaPlayer.__init__(
-            self,
+        super().__init__(
             identifier=entity_id,
             name=f"{device_config.name} Media Player",
             features=FEATURES,

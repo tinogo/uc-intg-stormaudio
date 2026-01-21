@@ -9,7 +9,7 @@ from typing import Any
 
 from ucapi import EntityTypes, Sensor
 from ucapi.sensor import DeviceClasses, Options
-from ucapi_framework import create_entity_id, Entity
+from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.const import Loggers, SensorType
 from uc_intg_stormaudio.device import StormAudioDevice
@@ -29,8 +29,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
 
         _LOG.debug("Initializing sensor: %s", sensor_config["identifier"])
 
-        Sensor.__init__(
-            self,
+        super().__init__(
             identifier=sensor_config["identifier"],
             name=sensor_config["name"],
             features=[],
