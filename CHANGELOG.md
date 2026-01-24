@@ -11,6 +11,34 @@ _Changes in the next release_
 
 ---
 
+## [0.19.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.18.0...v0.19.0) (2026-01-24)
+
+
+### Features
+
+* Add SimpleCommands for Auro-Matic the preset selection ([8704976](https://github.com/tinogo/uc-intg-stormaudio/commit/870497638547a74b8692247a48a5db711c1d0962))
+* Add support for various new sensors ([3eb9cc3](https://github.com/tinogo/uc-intg-stormaudio/commit/3eb9cc33c0a904acbf18cd59a2203f9285abb579)), closes [#59](https://github.com/tinogo/uc-intg-stormaudio/issues/59) [#60](https://github.com/tinogo/uc-intg-stormaudio/issues/60) [#61](https://github.com/tinogo/uc-intg-stormaudio/issues/61) [#62](https://github.com/tinogo/uc-intg-stormaudio/issues/62) [#63](https://github.com/tinogo/uc-intg-stormaudio/issues/63) [#64](https://github.com/tinogo/uc-intg-stormaudio/issues/64)
+
+
+### Bug Fixes
+
+* **#84:** (Hopefully) fix the volume reporting when a maximum volume has been configured in the ISP ([7b0d0ef](https://github.com/tinogo/uc-intg-stormaudio/commit/7b0d0efebca85f1cc0d1d67f2de6d25e51764ee6))
+* **docs:** Fix a typo ([af02436](https://github.com/tinogo/uc-intg-stormaudio/commit/af02436604a3ce5942b8fe6efdd31efb034a83da))
+
+
+### Miscellaneous
+
+* **deps:** Update the UCAPI-Framework to version 1.5.0 ([05333e7](https://github.com/tinogo/uc-intg-stormaudio/commit/05333e765acea7d64b826e63937be69cf4ef89b6))
+* **deps:** Update the ucapi-framework to version 1.6.3 ([e170a3b](https://github.com/tinogo/uc-intg-stormaudio/commit/e170a3b0fe1b64e062c77895ac034a7afc0dcc8c))
+* **deps:** Update the ucapi-framework to version 1.6.5 ([eb9718b](https://github.com/tinogo/uc-intg-stormaudio/commit/eb9718bae84f7785a5c5f7ff2bcb219be0fe593a))
+* **deps:** Update the ucapi-framework to version 1.6.6 ([a119f8e](https://github.com/tinogo/uc-intg-stormaudio/commit/a119f8edad85bbc4c0c79d2dad1efc04f71e851a))
+* **docs:** Add a table of contents + missing a sensor to the readme ([778d270](https://github.com/tinogo/uc-intg-stormaudio/commit/778d270da14c9874ebdab206d3bf2c9dc2fcfbb3))
+* Drop the custom override regarding the connection handling ([2db7692](https://github.com/tinogo/uc-intg-stormaudio/commit/2db76920907362d2473efd22b86f9d805e722367))
+* Extract the device state/attributes into a separate dataclass ([#80](https://github.com/tinogo/uc-intg-stormaudio/issues/80)) ([0a0701e](https://github.com/tinogo/uc-intg-stormaudio/commit/0a0701e1b7c6120a6a932d106f123238948ed09f))
+* Fix a deprecation warning ([05505c7](https://github.com/tinogo/uc-intg-stormaudio/commit/05505c7c2f5477b1335a07fae149c86788121885))
+* Renamed StormAudioDeviceState to StormAudioDeviceAttributes ([5ccbdd8](https://github.com/tinogo/uc-intg-stormaudio/commit/5ccbdd8d718416868f455a9c0fd2ccfab034935c))
+* Use the UCAPI-Framework Entity-class ([#83](https://github.com/tinogo/uc-intg-stormaudio/issues/83)) ([9c629ef](https://github.com/tinogo/uc-intg-stormaudio/commit/9c629ef3473919a541f1682bba82d5212c6d07ba))
+
 ## [0.18.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.17.1...v0.18.0) (2026-01-16)
 
 
