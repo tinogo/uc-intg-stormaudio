@@ -1,5 +1,5 @@
 """
-Device state for the Integration.
+Device attributes for the Integration.
 
 :license: Mozilla Public License Version 2.0, see LICENSE for more details.
 """
@@ -10,9 +10,9 @@ from uc_intg_stormaudio.const import StormAudioStates
 
 
 @dataclass
-class StormAudioDeviceState:
+class StormAudioDeviceAttributes:
     """
-    Device state dataclass.
+    Device attributes dataclass.
 
     This dataclass holds all the current state of our StormAudio ISP.
     """

@@ -27,7 +27,7 @@ from uc_intg_stormaudio.const import (
     StormAudioResponses,
     StormAudioStates,
 )
-from uc_intg_stormaudio.device_state import StormAudioDeviceState
+from uc_intg_stormaudio.device_attributes import StormAudioDeviceAttributes
 from uc_intg_stormaudio.helpers import fix_json
 from uc_intg_stormaudio.stormaudio import StormAudioClient
 
@@ -45,7 +45,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Initialize the device."""
         super().__init__(*args, **kwargs)
 
-        self._device_state: StormAudioDeviceState = StormAudioDeviceState()
+        self._device_attributes: StormAudioDeviceAttributes = (
+            StormAudioDeviceAttributes()
+        )
 
         self._client = StormAudioClient(self.address, self.device_config.port)
 
@@ -102,7 +104,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     @property
     def state(self) -> StormAudioStates:
         """Return the current device state."""
-        return self._device_state.state
+        return self._device_attributes.state
 
     async def establish_connection(self) -> Any:
         """Establish connection to the device."""
@@ -119,7 +121,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         def message_handler(message: str) -> None:  # pylint: disable=too-many-branches
             match message:
                 case StormAudioResponses.INPUT_LIST_START:
-                    self._device_state.sources = {}
+                    self._device_attributes.sources = {}
 
                 case message if message.startswith(StormAudioResponses.INPUT_LIST_X):
                     input_name, input_id, *_tail = json.loads(
@@ -128,10 +130,10 @@ class StormAudioDevice(PersistentConnectionDevice):
                         )
                     )
 
-                    self._device_state.sources.update({input_name: input_id})
+                    self._device_attributes.sources.update({input_name: input_id})
 
                 case StormAudioResponses.INPUT_LIST_END:
-                    self.update_config(sources=self._device_state.sources)
+                    self.update_config(sources=self._device_attributes.sources)
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.INPUT_X):
@@ -140,23 +142,23 @@ class StormAudioDevice(PersistentConnectionDevice):
                             message[len(StormAudioResponses.INPUT_X) :]  # noqa: E203
                         )
                     )
-                    self._device_state.source_id = source_id
+                    self._device_attributes.source_id = source_id
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.LOUDNESS_X):
                     loudness, *_tail = json.loads(
                         message[len(StormAudioResponses.LOUDNESS_X) :]  # noqa: E203
                     )
-                    self._device_state.loudness_mode = loudness
+                    self._device_attributes.loudness_mode = loudness
                     self._update_attributes()
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
                     muted = message == StormAudioResponses.MUTE_ON
-                    self._device_state.muted = muted
+                    self._device_attributes.muted = muted
                     self._update_attributes()
 
                 case StormAudioResponses.PRESET_LIST_START:
-                    self._device_state.presets = {}
+                    self._device_attributes.presets = {}
 
                 case message if message.startswith(StormAudioResponses.PRESET_LIST_X):
                     preset_name, preset_id, *_tail = json.loads(
@@ -165,10 +167,10 @@ class StormAudioDevice(PersistentConnectionDevice):
                         )
                     )
 
-                    self._device_state.presets.update({preset_name: preset_id})
+                    self._device_attributes.presets.update({preset_name: preset_id})
 
                 case StormAudioResponses.PRESET_LIST_END:
-                    self.update_config(presets=self._device_state.presets)
+                    self.update_config(presets=self._device_attributes.presets)
                     self._update_attributes()
 
                 case message if message.startswith(
@@ -179,7 +181,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                             message[len(StormAudioResponses.PRESET_X) :]  # noqa: E203
                         )
                     )
-                    self._device_state.preset_id = preset_id
+                    self._device_attributes.preset_id = preset_id
                     self._update_attributes()
 
                 case (
@@ -188,16 +190,16 @@ class StormAudioDevice(PersistentConnectionDevice):
                 ):
                     # Maps both the initialization and the process of shutting down to OFF
                     # as they are not "fully booted"
-                    self._device_state.state = StormAudioStates.OFF
+                    self._device_attributes.state = StormAudioStates.OFF
                     self._update_attributes()
 
                 case StormAudioResponses.PROC_STATE_ON:
-                    self._device_state.state = StormAudioStates.ON
+                    self._device_attributes.state = StormAudioStates.ON
                     self._update_attributes()
 
                 case StormAudioResponses.STORM_XT_ON | StormAudioResponses.STORM_XT_OFF:
                     storm_xt_active = message == StormAudioResponses.STORM_XT_ON
-                    self._device_state.storm_xt_active = storm_xt_active
+                    self._device_attributes.storm_xt_active = storm_xt_active
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.SURROUND_MODE_X):
@@ -206,7 +208,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                             message[len(StormAudioResponses.SURROUND_MODE_X) :]  # noqa: E203
                         )
                     )
-                    self._device_state.upmixer_mode_id = upmixer_mode_id
+                    self._device_attributes.upmixer_mode_id = upmixer_mode_id
                     self._update_attributes()
 
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
@@ -216,7 +218,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                         message[len(StormAudioResponses.VOLUME_X) :]  # noqa: E203
                     )
                     absolute_volume = int(volume) + MAX_VOLUME
-                    self._device_state.volume = absolute_volume
+                    self._device_attributes.volume = absolute_volume
                     self._update_attributes()
 
         await self._client.parse_response_messages(self._connection, message_handler)
@@ -281,12 +283,12 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the media player attributes."""
         return {
             MediaAttr.STATE: MEDIA_PLAYER_STATE_MAPPING[self.state],
-            MediaAttr.SOURCE: self._device_state.source,
-            MediaAttr.SOURCE_LIST: self._device_state.source_list,
-            MediaAttr.SOUND_MODE: self._device_state.sound_mode,
-            MediaAttr.SOUND_MODE_LIST: self._device_state.sound_mode_list,
-            MediaAttr.VOLUME: self._device_state.volume,
-            MediaAttr.MUTED: self._device_state.muted,
+            MediaAttr.SOURCE: self._device_attributes.source,
+            MediaAttr.SOURCE_LIST: self._device_attributes.source_list,
+            MediaAttr.SOUND_MODE: self._device_attributes.sound_mode,
+            MediaAttr.SOUND_MODE_LIST: self._device_attributes.sound_mode_list,
+            MediaAttr.VOLUME: self._device_attributes.volume,
+            MediaAttr.MUTED: self._device_attributes.muted,
         }
 
     def _get_remote_attributes(self) -> dict[str, Any]:
@@ -299,7 +301,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the volume sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_state.volume - 100,
+            SensorAttr.VALUE: self._device_attributes.volume - 100,
             SensorAttr.UNIT: "dB",
         }
 
@@ -307,35 +309,35 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the loudness sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_state.loudness,
+            SensorAttr.VALUE: self._device_attributes.loudness,
         }
 
     def _get_source_sensor_attributes(self) -> dict[str, Any]:
         """Get the source sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_state.source,
+            SensorAttr.VALUE: self._device_attributes.source,
         }
 
     def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
         """Get the volume sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_state.sound_mode,
+            SensorAttr.VALUE: self._device_attributes.sound_mode,
         }
 
     def _get_preset_sensor_attributes(self) -> dict[str, Any]:
         """Get the preset sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_state.preset,
+            SensorAttr.VALUE: self._device_attributes.preset,
         }
 
     def _get_mute_sensor_attributes(self) -> dict[str, Any]:
         """Get the mute sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: "on" if self._device_state.muted else "off",
+            SensorAttr.VALUE: "on" if self._device_attributes.muted else "off",
             SensorAttr.UNIT: "sound",
         }
 
@@ -343,7 +345,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the StormXT sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: "on" if self._device_state.storm_xt_active else "off",
+            SensorAttr.VALUE: "on"
+            if self._device_attributes.storm_xt_active
+            else "off",
             SensorAttr.UNIT: "sound",
         }
 
@@ -422,7 +426,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def select_source(self, source: str):
         """Select the input of the StormAudio processor."""
-        source_id = self._device_state.sources.get(source)
+        source_id = self._device_attributes.sources.get(source)
 
         if source_id is not None:
             await self._send_command(
@@ -434,7 +438,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def select_sound_mode(self, mode: str):
         """Set the surround mode of the StormAudio processor."""
-        sound_mode_id = self._device_state.upmixer_modes.get(mode)
+        sound_mode_id = self._device_attributes.upmixer_modes.get(mode)
 
         if sound_mode_id is not None:
             await self._send_command(
@@ -607,7 +611,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     # --- Custom commands from the Remote entity ---
     async def preset_x(self, preset_name: str):
         """Select a preset by name."""
-        preset_id = self._device_state.presets.get(preset_name)
+        preset_id = self._device_attributes.presets.get(preset_name)
 
         if preset_id is not None:
             await self._send_command(
