@@ -20,7 +20,7 @@ class StormAudioClient:
 
     def __init__(self, address: str, port: int):
         """Initialize the client."""
-        self._waiters: list[tuple[str, asyncio.Future[str]]] = []
+        self._waiters: list[tuple[str, asyncio.Future[str], bool]] = []
         self._address = address
         self._port = port
 
@@ -50,24 +50,29 @@ class StormAudioClient:
         writer.write((command + "\n").encode())
         await writer.drain()
 
-    async def wait_for_response(self, pattern: str, timeout: float = 5.0) -> str | None:
+    async def wait_for_response(
+        self, pattern: str, timeout: float = 1.0, prefix_match: bool = False
+    ) -> str | None:
         """Wait for a specific response from the device."""
         future = asyncio.get_running_loop().create_future()
-        self._waiters.append((pattern, future))
+        self._waiters.append((pattern, future, prefix_match))
 
         try:
             return await asyncio.wait_for(future, timeout=timeout)
         except asyncio.TimeoutError:
             _LOG.warning("[%s] Timeout waiting for response: %s", self.log_id, pattern)
-            if (pattern, future) in self._waiters:
-                self._waiters.remove((pattern, future))
+            if (pattern, future, prefix_match) in self._waiters:
+                self._waiters.remove((pattern, future, prefix_match))
             return None
 
     def _notify_waiters(self, message: str) -> None:
-        for pattern, future in self._waiters[:]:
-            if pattern in message and not future.done():
+        for waiter in self._waiters[:]:
+            pattern, future, prefix_match = waiter
+            match = message.startswith(pattern) if prefix_match else pattern in message
+            if match and not future.done():
                 future.set_result(message)
-                self._waiters.remove((pattern, future))
+                self._waiters.remove(waiter)
+                break
 
     async def parse_response_messages(
         self, connection: tuple[StreamReader, StreamWriter], message_handler=None

@@ -230,9 +230,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._client.send_command(self._connection, command)
 
     async def _wait_for_response(
-        self, pattern: str, timeout: float = 5.0
+        self, pattern: str, timeout: float = 5.0, prefix_match: bool = False
     ) -> str | None:
-        return await self._client.wait_for_response(pattern, timeout)
+        return await self._client.wait_for_response(pattern, timeout, prefix_match)
 
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
@@ -396,26 +396,28 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._send_command(
             StormAudioCommands.VOLUME_X_FORMAT.format(relative_volume)
         )
+        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FORMAT.format(relative_volume)
+            pattern=StormAudioResponses.VOLUME_X,
+            prefix_match=True,
         )
 
     async def volume_up(self):
         """Increase the volume of the StormAudio processor by 1dB."""
-        target_volume = float(self._device_state.volume - MAX_VOLUME + 1)
-
         await self._send_command(StormAudioCommands.VOLUME_UP)
+        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
+            pattern=StormAudioResponses.VOLUME_X,
+            prefix_match=True,
         )
 
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
-        target_volume = float(self._device_state.volume - MAX_VOLUME - 1)
-
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
+        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
-            StormAudioResponses.VOLUME_X_FORMAT.format(target_volume)
+            pattern=StormAudioResponses.VOLUME_X,
+            prefix_match=True,
         )
 
     async def select_source(self, source: str):
