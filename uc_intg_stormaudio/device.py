@@ -515,7 +515,6 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._send_command(
             StormAudioCommands.VOLUME_X_FORMAT.format(relative_volume)
         )
-        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
             pattern=StormAudioResponses.VOLUME_X,
             prefix_match=True,
@@ -524,7 +523,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def volume_up(self):
         """Increase the volume of the StormAudio processor by 1dB."""
         await self._send_command(StormAudioCommands.VOLUME_UP)
-        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
             pattern=StormAudioResponses.VOLUME_X,
             prefix_match=True,
@@ -533,7 +531,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def volume_down(self):
         """Decrease the volume of the StormAudio processor by 1dB."""
         await self._send_command(StormAudioCommands.VOLUME_DOWN)
-        await self._send_command(StormAudioCommands.VOLUME)
         await self._wait_for_response(
             pattern=StormAudioResponses.VOLUME_X,
             prefix_match=True,
@@ -622,7 +619,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def bass_up(self):
         """Increase the bass by 1dB."""
         await self._send_command(StormAudioCommands.BASS_UP)
-        await self._send_command(StormAudioCommands.BASS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BASS_X,
             prefix_match=True,
@@ -631,7 +627,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def bass_down(self):
         """Decrease the bass by 1dB."""
         await self._send_command(StormAudioCommands.BASS_DOWN)
-        await self._send_command(StormAudioCommands.BASS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BASS_X,
             prefix_match=True,
@@ -640,7 +635,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def bass_reset(self):
         """Reset the bass."""
         await self._send_command(StormAudioCommands.BASS_RESET)
-        await self._send_command(StormAudioCommands.BASS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BASS_X,
             prefix_match=True,
@@ -649,7 +643,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def treble_up(self):
         """Increase the treble by 1dB."""
         await self._send_command(StormAudioCommands.TREBLE_UP)
-        await self._send_command(StormAudioCommands.TREBLE)
         await self._wait_for_response(
             pattern=StormAudioResponses.TREBLE_X,
             prefix_match=True,
@@ -658,7 +651,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def treble_down(self):
         """Decrease the treble by 1dB."""
         await self._send_command(StormAudioCommands.TREBLE_DOWN)
-        await self._send_command(StormAudioCommands.TREBLE)
         await self._wait_for_response(
             pattern=StormAudioResponses.TREBLE_X,
             prefix_match=True,
@@ -667,7 +659,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def treble_reset(self):
         """Reset the treble."""
         await self._send_command(StormAudioCommands.TREBLE_RESET)
-        await self._send_command(StormAudioCommands.TREBLE)
         await self._wait_for_response(
             pattern=StormAudioResponses.TREBLE_X,
             prefix_match=True,
@@ -676,7 +667,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def brightness_up(self):
         """Increase the brightness by 1dB."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_UP)
-        await self._send_command(StormAudioCommands.BRIGHTNESS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BRIGHTNESS_X,
             prefix_match=True,
@@ -685,7 +675,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def brightness_down(self):
         """Decrease the brightness by 1dB."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_DOWN)
-        await self._send_command(StormAudioCommands.BRIGHTNESS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BRIGHTNESS_X,
             prefix_match=True,
@@ -694,7 +683,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def brightness_reset(self):
         """Reset the brightness."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_RESET)
-        await self._send_command(StormAudioCommands.BRIGHTNESS)
         await self._wait_for_response(
             pattern=StormAudioResponses.BRIGHTNESS_X,
             prefix_match=True,
@@ -703,7 +691,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def center_enhance_up(self):
         """Increase the center enhancement by 1dB."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_UP)
-        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.CENTER_ENHANCE_X,
             prefix_match=True,
@@ -712,7 +699,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def center_enhance_down(self):
         """Decrease the center enhancement by 1dB."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_DOWN)
-        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.CENTER_ENHANCE_X,
             prefix_match=True,
@@ -721,7 +707,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def center_enhance_reset(self):
         """Reset the center enhancement."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_RESET)
-        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.CENTER_ENHANCE_X,
             prefix_match=True,
@@ -730,7 +715,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def surround_enhance_up(self):
         """Increase the surround enhancement by 1dB."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_UP)
-        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.SURROUND_ENHANCE_X,
             prefix_match=True,
@@ -739,7 +723,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def surround_enhance_down(self):
         """Decrease the surround enhancement by 1dB."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_DOWN)
-        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.SURROUND_ENHANCE_X,
             prefix_match=True,
@@ -748,7 +731,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def surround_enhance_reset(self):
         """Reset the surround enhancement."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_RESET)
-        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.SURROUND_ENHANCE_X,
             prefix_match=True,
@@ -757,7 +739,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def lfe_enhance_up(self):
         """Increase the LFE enhancement by 1dB."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_UP)
-        await self._send_command(StormAudioCommands.LFE_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.LFE_ENHANCE_X,
             prefix_match=True,
@@ -766,7 +747,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def lfe_enhance_down(self):
         """Decrease the LFE enhancement by 1dB."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_DOWN)
-        await self._send_command(StormAudioCommands.LFE_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.LFE_ENHANCE_X,
             prefix_match=True,
@@ -775,7 +755,6 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def lfe_enhance_reset(self):
         """Reset the LFE enhancement."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_RESET)
-        await self._send_command(StormAudioCommands.LFE_ENHANCE)
         await self._wait_for_response(
             pattern=StormAudioResponses.LFE_ENHANCE_X,
             prefix_match=True,
