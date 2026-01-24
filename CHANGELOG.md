@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.19.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.0...v0.19.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* Send fewer commands to the ISP to reduce the load ([2968167](https://github.com/tinogo/uc-intg-stormaudio/commit/29681678703656bcfd7da654bc96b40231d27553))
+
 ## [0.19.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.18.0...v0.19.0) (2026-01-24)
 
 
