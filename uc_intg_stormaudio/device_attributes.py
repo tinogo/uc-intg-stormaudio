@@ -44,6 +44,12 @@ class StormAudioDeviceAttributes:
     )
     upmixer_mode_id: int | None = None
     volume: int = 0
+    bass: int = 0
+    treble: int = 0
+    brightness: int = 0
+    center_enhance: int = 0
+    surround_enhance: int = 0
+    lfe_enhance: int = 0
 
     @property
     def loudness(self) -> str:

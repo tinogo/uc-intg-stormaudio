@@ -39,7 +39,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             None,
         )
 
-    def _get_sensor_config(
+    def _get_sensor_config(  # pylint: disable=too-many-branches
         self, sensor_type: SensorType, device: StormAudioDevice
     ) -> dict[str, Any]:
         """Get sensor configuration based on type."""
@@ -103,6 +103,78 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
                 sensor = {
                     "identifier": sensor_entity_id,
                     "name": f"{device.name} Volume",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.BASS_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Bass",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.TREBLE_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Treble",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.BRIGHTNESS_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Brightness",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.CENTER_ENHANCE_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Center enhance",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.SURROUND_ENHANCE_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Surround enhance",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.LFE_ENHANCE_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} LFE enhance",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",

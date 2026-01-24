@@ -79,6 +79,26 @@ class StormAudioDevice(PersistentConnectionDevice):
             create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
             ): self._get_volume_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.BASS_DB.value
+            ): self._get_bass_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.TREBLE_DB.value
+            ): self._get_treble_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.BRIGHTNESS_DB.value
+            ): self._get_brightness_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.CENTER_ENHANCE_DB.value
+            ): self._get_center_enhance_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR,
+                self.identifier,
+                SensorType.SURROUND_ENHANCE_DB.value,
+            ): self._get_surround_enhance_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.LFE_ENHANCE_DB.value
+            ): self._get_lfe_enhance_sensor_attributes,
         }
 
     @property
@@ -116,9 +136,10 @@ class StormAudioDevice(PersistentConnectionDevice):
             await self._client.close(self._connection)
 
     async def maintain_connection(self) -> None:  # pylint: disable=too-many-statements
-        """Maintain the connection."""
+        """Maintain the connection."""  # noqa: D202
 
-        def message_handler(message: str) -> None:  # pylint: disable=too-many-branches
+        # pylint: disable=too-many-branches,too-many-locals,too-many-statements
+        def message_handler(message: str) -> None:
             match message:
                 case StormAudioResponses.INPUT_LIST_START:
                     self._device_attributes.sources = {}
@@ -221,6 +242,52 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._device_attributes.volume = absolute_volume
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.BASS_X):
+                    bass, *_tail = json.loads(
+                        message[len(StormAudioResponses.BASS_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.bass = bass
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.TREBLE_X):
+                    treble, *_tail = json.loads(
+                        message[len(StormAudioResponses.TREBLE_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.treble = treble
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.BRIGHTNESS_X):
+                    brightness, *_tail = json.loads(
+                        message[len(StormAudioResponses.BRIGHTNESS_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.brightness = brightness
+                    self._update_attributes()
+
+                case message if message.startswith(
+                    StormAudioResponses.CENTER_ENHANCE_X
+                ):
+                    center_enhance, *_tail = json.loads(
+                        message[len(StormAudioResponses.CENTER_ENHANCE_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.center_enhance = center_enhance
+                    self._update_attributes()
+
+                case message if message.startswith(
+                    StormAudioResponses.SURROUND_ENHANCE_X
+                ):
+                    surround_enhance, *_tail = json.loads(
+                        message[len(StormAudioResponses.SURROUND_ENHANCE_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.surround_enhance = surround_enhance
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.LFE_ENHANCE_X):
+                    lfe_enhance, *_tail = json.loads(
+                        message[len(StormAudioResponses.LFE_ENHANCE_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.lfe_enhance = lfe_enhance
+                    self._update_attributes()
+
         await self._client.parse_response_messages(self._connection, message_handler)
 
     async def _send_command(self, command: str) -> None:
@@ -302,6 +369,54 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self._device_attributes.volume - 100,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_bass_sensor_attributes(self) -> dict[str, Any]:
+        """Get the bass sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.bass,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_treble_sensor_attributes(self) -> dict[str, Any]:
+        """Get the treble sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.treble,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_brightness_sensor_attributes(self) -> dict[str, Any]:
+        """Get the brightness sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.brightness,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_center_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the center-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.center_enhance,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_surround_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the surround-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.surround_enhance,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_lfe_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the LFE-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.lfe_enhance,
             SensorAttr.UNIT: "dB",
         }
 
@@ -507,74 +622,164 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def bass_up(self):
         """Increase the bass by 1dB."""
         await self._send_command(StormAudioCommands.BASS_UP)
+        await self._send_command(StormAudioCommands.BASS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BASS_X,
+            prefix_match=True,
+        )
 
     async def bass_down(self):
         """Decrease the bass by 1dB."""
         await self._send_command(StormAudioCommands.BASS_DOWN)
+        await self._send_command(StormAudioCommands.BASS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BASS_X,
+            prefix_match=True,
+        )
 
     async def bass_reset(self):
         """Reset the bass."""
         await self._send_command(StormAudioCommands.BASS_RESET)
+        await self._send_command(StormAudioCommands.BASS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BASS_X,
+            prefix_match=True,
+        )
 
     async def treble_up(self):
         """Increase the treble by 1dB."""
         await self._send_command(StormAudioCommands.TREBLE_UP)
+        await self._send_command(StormAudioCommands.TREBLE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.TREBLE_X,
+            prefix_match=True,
+        )
 
     async def treble_down(self):
         """Decrease the treble by 1dB."""
         await self._send_command(StormAudioCommands.TREBLE_DOWN)
+        await self._send_command(StormAudioCommands.TREBLE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.TREBLE_X,
+            prefix_match=True,
+        )
 
     async def treble_reset(self):
         """Reset the treble."""
         await self._send_command(StormAudioCommands.TREBLE_RESET)
+        await self._send_command(StormAudioCommands.TREBLE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.TREBLE_X,
+            prefix_match=True,
+        )
 
     async def brightness_up(self):
         """Increase the brightness by 1dB."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_UP)
+        await self._send_command(StormAudioCommands.BRIGHTNESS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BRIGHTNESS_X,
+            prefix_match=True,
+        )
 
     async def brightness_down(self):
         """Decrease the brightness by 1dB."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_DOWN)
+        await self._send_command(StormAudioCommands.BRIGHTNESS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BRIGHTNESS_X,
+            prefix_match=True,
+        )
 
     async def brightness_reset(self):
         """Reset the brightness."""
         await self._send_command(StormAudioCommands.BRIGHTNESS_RESET)
+        await self._send_command(StormAudioCommands.BRIGHTNESS)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.BRIGHTNESS_X,
+            prefix_match=True,
+        )
 
     async def center_enhance_up(self):
         """Increase the center enhancement by 1dB."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_UP)
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.CENTER_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def center_enhance_down(self):
         """Decrease the center enhancement by 1dB."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_DOWN)
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.CENTER_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def center_enhance_reset(self):
         """Reset the center enhancement."""
         await self._send_command(StormAudioCommands.CENTER_ENHANCE_RESET)
+        await self._send_command(StormAudioCommands.CENTER_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.CENTER_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def surround_enhance_up(self):
         """Increase the surround enhancement by 1dB."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_UP)
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.SURROUND_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def surround_enhance_down(self):
         """Decrease the surround enhancement by 1dB."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_DOWN)
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.SURROUND_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def surround_enhance_reset(self):
         """Reset the surround enhancement."""
         await self._send_command(StormAudioCommands.SURROUND_ENHANCE_RESET)
+        await self._send_command(StormAudioCommands.SURROUND_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.SURROUND_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def lfe_enhance_up(self):
         """Increase the LFE enhancement by 1dB."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_UP)
+        await self._send_command(StormAudioCommands.LFE_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.LFE_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def lfe_enhance_down(self):
         """Decrease the LFE enhancement by 1dB."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_DOWN)
+        await self._send_command(StormAudioCommands.LFE_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.LFE_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def lfe_enhance_reset(self):
         """Reset the LFE enhancement."""
         await self._send_command(StormAudioCommands.LFE_ENHANCE_RESET)
+        await self._send_command(StormAudioCommands.LFE_ENHANCE)
+        await self._wait_for_response(
+            pattern=StormAudioResponses.LFE_ENHANCE_X,
+            prefix_match=True,
+        )
 
     async def dolby_mode_off(self):
         """Set the Dolby mode to off mode."""
