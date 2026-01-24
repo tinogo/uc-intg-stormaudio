@@ -813,6 +813,22 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Toggle the StormXT mode."""
         await self._send_command(StormAudioCommands.STORM_XT_TOGGLE)
 
+    async def auro_preset_small(self):
+        """Set the Auro-Matic preset to "small"."""
+        await self._send_command(StormAudioCommands.AURO_PRESET_SMALL)
+
+    async def auro_preset_medium(self):
+        """Set the Auro-Matic preset to "medium"."""
+        await self._send_command(StormAudioCommands.AURO_PRESET_MEDIUM)
+
+    async def auro_preset_large(self):
+        """Set the Auro-Matic preset to "large"."""
+        await self._send_command(StormAudioCommands.AURO_PRESET_LARGE)
+
+    async def auro_preset_speech(self):
+        """Set the Auro-Matic preset to "speech"."""
+        await self._send_command(StormAudioCommands.AURO_PRESET_SPEECH)
+
     # --- Custom commands from the Remote entity ---
     async def preset_x(self, preset_name: str):
         """Select a preset by name."""

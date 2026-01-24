@@ -91,6 +91,10 @@ class StormAudioRemote(Remote, Entity):
             SimpleCommands.STORM_XT_ON.value: device.storm_xt_on,
             SimpleCommands.STORM_XT_OFF.value: device.storm_xt_off,
             SimpleCommands.STORM_XT_TOGGLE.value: device.storm_xt_toggle,
+            SimpleCommands.AURO_PRESET_SMALL.value: device.auro_preset_small,
+            SimpleCommands.AURO_PRESET_MEDIUM.value: device.auro_preset_medium,
+            SimpleCommands.AURO_PRESET_LARGE.value: device.auro_preset_large,
+            SimpleCommands.AURO_PRESET_SPEECH.value: device.auro_preset_speech,
         }
 
         entity_id = create_entity_id(EntityTypes.REMOTE, device.identifier)

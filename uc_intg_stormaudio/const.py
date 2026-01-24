@@ -62,6 +62,10 @@ class SimpleCommands(StrEnum):
     STORM_XT_ON = "STORM_XT_ON"
     STORM_XT_OFF = "STORM_XT_OFF"
     STORM_XT_TOGGLE = "STORM_XT_TOGGLE"
+    AURO_PRESET_SMALL = "AURO_PRESET_SMALL"
+    AURO_PRESET_MEDIUM = "AURO_PRESET_MEDIUM"
+    AURO_PRESET_LARGE = "AURO_PRESET_LARGE"
+    AURO_PRESET_SPEECH = "AURO_PRESET_SPEECH"
 
 
 class StormAudioCommands(StrEnum):
@@ -124,6 +128,10 @@ class StormAudioCommands(StrEnum):
     STORM_XT_ON = "ssp.stormxt.on"
     STORM_XT_OFF = "ssp.stormxt.off"
     STORM_XT_TOGGLE = "ssp.stormxt.toggle"
+    AURO_PRESET_SMALL = "ssp.auropreset.[0]"
+    AURO_PRESET_MEDIUM = "ssp.auropreset.[1]"
+    AURO_PRESET_LARGE = "ssp.auropreset.[2]"
+    AURO_PRESET_SPEECH = "ssp.auropreset.[3]"
 
 
 class StormAudioResponses(StrEnum):

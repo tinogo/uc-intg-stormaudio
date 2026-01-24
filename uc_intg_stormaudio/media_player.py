@@ -7,7 +7,7 @@ Media Player Entity.
 """
 
 import logging
-from typing import Any
+from typing import Any, Callable
 
 import ucapi
 from ucapi import EntityTypes, MediaPlayer, media_player
@@ -49,7 +49,7 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         :param device_config: Device configuration from the setup
         :param device: The device instance to control
         """
-        self._command_map = {
+        self._command_map: dict[str, Callable] = {
             media_player.Commands.ON.value: device.power_on,
             media_player.Commands.OFF.value: device.power_off,
             media_player.Commands.TOGGLE.value: device.power_toggle,
@@ -107,6 +107,10 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
             SimpleCommands.STORM_XT_ON.value: device.storm_xt_on,
             SimpleCommands.STORM_XT_OFF.value: device.storm_xt_off,
             SimpleCommands.STORM_XT_TOGGLE.value: device.storm_xt_toggle,
+            SimpleCommands.AURO_PRESET_SMALL.value: device.auro_preset_small,
+            SimpleCommands.AURO_PRESET_MEDIUM.value: device.auro_preset_medium,
+            SimpleCommands.AURO_PRESET_LARGE.value: device.auro_preset_large,
+            SimpleCommands.AURO_PRESET_SPEECH.value: device.auro_preset_speech,
         }
 
         entity_id = create_entity_id(EntityTypes.MEDIA_PLAYER, device.identifier)
