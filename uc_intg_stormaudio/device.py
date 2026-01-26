@@ -59,6 +59,21 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.REMOTE, self.identifier
             ): self._get_remote_attributes,
             create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.BASS_DB.value
+            ): self._get_bass_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.BRIGHTNESS_DB.value
+            ): self._get_brightness_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.CENTER_ENHANCE_DB.value
+            ): self._get_center_enhance_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.DOLBY_MODE.value
+            ): self._get_dolby_mode_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.LFE_ENHANCE_DB.value
+            ): self._get_lfe_enhance_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.LOUDNESS.value
             ): self._get_loudness_sensor_attributes,
             create_entity_id(
@@ -74,31 +89,19 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SENSOR, self.identifier, SensorType.STORM_XT.value
             ): self._get_storm_xt_sensor_attributes,
             create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
-            ): self._get_upmixer_mode_sensor_attributes,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
-            ): self._get_volume_sensor_attributes,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.BASS_DB.value
-            ): self._get_bass_sensor_attributes,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.TREBLE_DB.value
-            ): self._get_treble_sensor_attributes,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.BRIGHTNESS_DB.value
-            ): self._get_brightness_sensor_attributes,
-            create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.CENTER_ENHANCE_DB.value
-            ): self._get_center_enhance_sensor_attributes,
-            create_entity_id(
                 EntityTypes.SENSOR,
                 self.identifier,
                 SensorType.SURROUND_ENHANCE_DB.value,
             ): self._get_surround_enhance_sensor_attributes,
             create_entity_id(
-                EntityTypes.SENSOR, self.identifier, SensorType.LFE_ENHANCE_DB.value
-            ): self._get_lfe_enhance_sensor_attributes,
+                EntityTypes.SENSOR, self.identifier, SensorType.TREBLE_DB.value
+            ): self._get_treble_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.UPMIXER_MODE.value
+            ): self._get_upmixer_mode_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.VOLUME_DB.value
+            ): self._get_volume_sensor_attributes,
         }
 
     @property
@@ -141,6 +144,13 @@ class StormAudioDevice(PersistentConnectionDevice):
         # pylint: disable=too-many-branches,too-many-locals,too-many-statements
         def message_handler(message: str) -> None:
             match message:
+                case message if message.startswith(StormAudioResponses.DOLBY_MODE_X):
+                    dolby_mode, *_tail = json.loads(
+                        message[len(StormAudioResponses.DOLBY_MODE_X) :]  # noqa: E203
+                    )
+                    self._device_attributes.dolby_mode_id = dolby_mode
+                    self._update_attributes()
+
                 case StormAudioResponses.INPUT_LIST_START:
                     self._device_attributes.sources = {}
 
@@ -170,7 +180,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     loudness, *_tail = json.loads(
                         message[len(StormAudioResponses.LOUDNESS_X) :]  # noqa: E203
                     )
-                    self._device_attributes.loudness_mode = loudness
+                    self._device_attributes.loudness_mode_id = loudness
                     self._update_attributes()
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
@@ -364,27 +374,11 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.STATE: REMOTE_STATE_MAPPING[self.state],
         }
 
-    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.volume - 100,
-            SensorAttr.UNIT: "dB",
-        }
-
     def _get_bass_sensor_attributes(self) -> dict[str, Any]:
         """Get the bass sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self._device_attributes.bass,
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_treble_sensor_attributes(self) -> dict[str, Any]:
-        """Get the treble sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.treble,
             SensorAttr.UNIT: "dB",
         }
 
@@ -402,6 +396,13 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self._device_attributes.center_enhance,
             SensorAttr.UNIT: "dB",
+        }
+
+    def _get_dolby_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.dolby_mode,
         }
 
     def _get_surround_enhance_sensor_attributes(self) -> dict[str, Any]:
@@ -427,18 +428,12 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.VALUE: self._device_attributes.loudness,
         }
 
-    def _get_source_sensor_attributes(self) -> dict[str, Any]:
-        """Get the source sensor attributes."""
+    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
+        """Get the mute sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.source,
-        }
-
-    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.sound_mode,
+            SensorAttr.VALUE: "on" if self._device_attributes.muted else "off",
+            SensorAttr.UNIT: "sound",
         }
 
     def _get_preset_sensor_attributes(self) -> dict[str, Any]:
@@ -448,12 +443,11 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.VALUE: self._device_attributes.preset,
         }
 
-    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
-        """Get the mute sensor attributes."""
+    def _get_source_sensor_attributes(self) -> dict[str, Any]:
+        """Get the source sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: "on" if self._device_attributes.muted else "off",
-            SensorAttr.UNIT: "sound",
+            SensorAttr.VALUE: self._device_attributes.source,
         }
 
     def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
@@ -464,6 +458,29 @@ class StormAudioDevice(PersistentConnectionDevice):
             if self._device_attributes.storm_xt_active
             else "off",
             SensorAttr.UNIT: "sound",
+        }
+
+    def _get_treble_sensor_attributes(self) -> dict[str, Any]:
+        """Get the treble sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.treble,
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.sound_mode,
+        }
+
+    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: self._device_attributes.volume - 100,
+            SensorAttr.UNIT: "dB",
         }
 
     async def power_on(self):

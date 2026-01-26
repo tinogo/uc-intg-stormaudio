@@ -62,6 +62,7 @@ Additionally, you can send the following custom commands for the `send_cmd` and 
 This integration provides the following sensors:
 - Current Volume
 - Muted Status
+- Current Dolby Mode
 - Current Loudness Setting
 - Current Preset
 - Current Source

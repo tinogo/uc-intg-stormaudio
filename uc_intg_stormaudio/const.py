@@ -174,6 +174,7 @@ class StormAudioResponses(StrEnum):
     INPUT_X_FORMAT = "ssp.input.[{}]"
     INPUT_X = "ssp.input."
     SURROUND_MODE_X = "ssp.surroundmode."
+    DOLBY_MODE_X = "ssp.dolbymode."
     DOLBY_MODE_OFF = "ssp.dolbymode.[0]"
     DOLBY_MODE_MOVIE = "ssp.dolbymode.[1]"
     DOLBY_MODE_MUSIC = "ssp.dolbymode.[2]"
@@ -196,19 +197,20 @@ class Loggers(StrEnum):
 class SensorType(StrEnum):
     """Defines the supported sensor types for StormAudio devices."""
 
+    BASS_DB = "bass_db"
+    BRIGHTNESS_DB = "brightness_db"
+    CENTER_ENHANCE_DB = "center_enhance_db"
+    DOLBY_MODE = "dolby_mode"
+    LFE_ENHANCE_DB = "lfe_enhance_db"
     LOUDNESS = "loudness"
     MUTE = "mute"
     PRESET = "preset"
     SOURCE = "source"
     STORM_XT = "storm_xt"
+    SURROUND_ENHANCE_DB = "surround_enhance_db"
+    TREBLE_DB = "treble_db"
     UPMIXER_MODE = "upmixer"
     VOLUME_DB = "volume_db"
-    BASS_DB = "bass_db"
-    TREBLE_DB = "treble_db"
-    BRIGHTNESS_DB = "brightness_db"
-    SURROUND_ENHANCE_DB = "surround_enhance_db"
-    CENTER_ENHANCE_DB = "center_enhance_db"
-    LFE_ENHANCE_DB = "lfe_enhance_db"
 
 
 class StormAudioStates(StrEnum):

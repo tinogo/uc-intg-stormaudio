@@ -51,82 +51,10 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
         )
 
         match sensor_type:
-            case SensorType.MUTE:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Mute",
-                    "device_class": DeviceClasses.BINARY,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.LOUDNESS:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Loudness",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.PRESET:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Preset",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.SOURCE:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Source",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.STORM_XT:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} StormXT",
-                    "device_class": DeviceClasses.BINARY,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.UPMIXER_MODE:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Upmixer",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.VOLUME_DB:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Volume",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "options": {
-                        Options.CUSTOM_UNIT: "dB",
-                        Options.DECIMALS: 1,
-                    },
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
             case SensorType.BASS_DB:
                 sensor = {
                     "identifier": sensor_entity_id,
                     "name": f"{device.name} Bass",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "options": {
-                        Options.CUSTOM_UNIT: "dB",
-                        Options.DECIMALS: 1,
-                    },
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case SensorType.TREBLE_DB:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Treble",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",
@@ -159,6 +87,66 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
+            case SensorType.DOLBY_MODE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Dolby mode",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.LFE_ENHANCE_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} LFE enhance",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.LOUDNESS:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Loudness",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.MUTE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Mute",
+                    "device_class": DeviceClasses.BINARY,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.PRESET:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Preset",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.SOURCE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Source",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.STORM_XT:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} StormXT",
+                    "device_class": DeviceClasses.BINARY,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
             case SensorType.SURROUND_ENHANCE_DB:
                 sensor = {
                     "identifier": sensor_entity_id,
@@ -171,10 +159,30 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
 
-            case SensorType.LFE_ENHANCE_DB:
+            case SensorType.TREBLE_DB:
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} LFE enhance",
+                    "name": f"{device.name} Treble",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "options": {
+                        Options.CUSTOM_UNIT: "dB",
+                        Options.DECIMALS: 1,
+                    },
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.UPMIXER_MODE:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Upmixer",
+                    "device_class": DeviceClasses.CUSTOM,
+                    "attributes": self._device.get_device_attributes(sensor_entity_id),
+                }
+
+            case SensorType.VOLUME_DB:
+                sensor = {
+                    "identifier": sensor_entity_id,
+                    "name": f"{device.name} Volume",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",

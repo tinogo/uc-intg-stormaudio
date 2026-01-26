@@ -17,7 +17,20 @@ class StormAudioDeviceAttributes:
     This dataclass holds all the current state of our StormAudio ISP.
     """
 
-    loudness_mode: int | None = None
+    bass: int = 0
+    brightness: int = 0
+    center_enhance: int = 0
+    dolby_mode_id: int | None = None
+    dolby_modes: dict[int, str] = field(
+        default_factory=lambda: {
+            0: "Off",
+            1: "Movie",
+            2: "Music",
+            3: "Night",
+        }
+    )
+    lfe_enhance: int = 0
+    loudness_mode_id: int | None = None
     loudness_modes: dict[int, str] = field(
         default_factory=lambda: {
             0: "Off",
@@ -33,6 +46,8 @@ class StormAudioDeviceAttributes:
     source_id: int | None = None
     state: StormAudioStates = StormAudioStates.UNKNOWN
     storm_xt_active: bool = False
+    surround_enhance: int = 0
+    treble: int = 0
     upmixer_modes: dict[str, int] = field(
         default_factory=lambda: {
             "Native": 0,
@@ -44,17 +59,16 @@ class StormAudioDeviceAttributes:
     )
     upmixer_mode_id: int | None = None
     volume: int = 0
-    bass: int = 0
-    treble: int = 0
-    brightness: int = 0
-    center_enhance: int = 0
-    surround_enhance: int = 0
-    lfe_enhance: int = 0
+
+    @property
+    def dolby_mode(self) -> str:
+        """Returns the current dolby mode setting."""
+        return self.dolby_modes.get(self.dolby_mode_id)
 
     @property
     def loudness(self) -> str:
         """Returns the current loudness setting."""
-        return self.loudness_modes.get(self.loudness_mode)
+        return self.loudness_modes.get(self.loudness_mode_id)
 
     @property
     def preset(self) -> str | None:
