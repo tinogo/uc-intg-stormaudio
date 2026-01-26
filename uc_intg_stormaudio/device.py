@@ -378,7 +378,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the bass sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.bass,
+            SensorAttr.VALUE: str(self._device_attributes.bass),
             SensorAttr.UNIT: "dB",
         }
 
@@ -386,7 +386,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the brightness sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.brightness,
+            SensorAttr.VALUE: str(self._device_attributes.brightness),
             SensorAttr.UNIT: "dB",
         }
 
@@ -394,7 +394,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the center-enhance sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.center_enhance,
+            SensorAttr.VALUE: str(self._device_attributes.center_enhance),
             SensorAttr.UNIT: "dB",
         }
 
@@ -409,7 +409,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the surround-enhance sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.surround_enhance,
+            SensorAttr.VALUE: str(self._device_attributes.surround_enhance),
             SensorAttr.UNIT: "dB",
         }
 
@@ -417,7 +417,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the LFE-enhance sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.lfe_enhance,
+            SensorAttr.VALUE: str(self._device_attributes.lfe_enhance),
             SensorAttr.UNIT: "dB",
         }
 
@@ -464,7 +464,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the treble sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.treble,
+            SensorAttr.VALUE: str(self._device_attributes.treble),
             SensorAttr.UNIT: "dB",
         }
 
@@ -479,7 +479,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the volume sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self._device_attributes.volume - 100,
+            SensorAttr.VALUE: str(self._device_attributes.volume - 100),
             SensorAttr.UNIT: "dB",
         }
 
