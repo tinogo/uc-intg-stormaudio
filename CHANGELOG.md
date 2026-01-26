@@ -11,6 +11,24 @@ _Changes in the next release_
 
 ---
 
+## [0.20.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.2...v0.20.0) (2026-01-26)
+
+
+### Features
+
+* **#66:** Add a sensor for the current dolby mode ([d4ed8a4](https://github.com/tinogo/uc-intg-stormaudio/commit/d4ed8a4e9b064f4ba1a8220158eb054a441f36fe)), closes [#66](https://github.com/tinogo/uc-intg-stormaudio/issues/66)
+
+
+### Bug Fixes
+
+* Fix the dB-based sensor state when it has a value of "0" ([1f1f8d5](https://github.com/tinogo/uc-intg-stormaudio/commit/1f1f8d54011dd96b037e1232052cf74d83faed8d))
+
+
+### Miscellaneous
+
+* Refactor the internals of the Sensor entity ([890563f](https://github.com/tinogo/uc-intg-stormaudio/commit/890563f7516aaf25a47713451aec8483134566ab))
+* Remove the create_sensors helper function ([20d1dff](https://github.com/tinogo/uc-intg-stormaudio/commit/20d1dff0353cc2094dd4f8d8d7b985a15d167bfd))
+
 ## [0.19.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.1...v0.19.2) (2026-01-26)
 
 
