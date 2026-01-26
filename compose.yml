@@ -4,7 +4,7 @@ name: integration-stormaudio
 services:
   # Unfolded Circle Core Simulator for testing
   core-simulator:
-    image: unfoldedcircle/core-simulator
+    image: unfoldedcircle/core-simulator:latest
     restart: "unless-stopped"
     hostname: core-simulator
     environment:

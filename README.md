@@ -138,7 +138,7 @@ The major changes found in each new release are listed in the [changelog](https:
       ```
    2. via Compose:
       ```bash
-      docker compose up --remove-orphans --build --watch
+      docker compose up --remove-orphans --build --watch --pull=always
       ```
 
 ### Adding and removing dependencies
