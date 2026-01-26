@@ -51,7 +51,7 @@ async def main():
     )
 
     # Register all configured devices from config file
-    await integration_driver.register_all_configured_devices(True)
+    await integration_driver.register_all_device_instances(True)
 
     # Set up device discovery (optional - remove if not using discovery)
     discovery = StormAudioDiscovery(timeout=5, service_type="_stormremote._tcp.local.")
