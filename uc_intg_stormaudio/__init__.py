@@ -19,6 +19,7 @@ from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
 from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
 from uc_intg_stormaudio.remote import StormAudioRemote
+from uc_intg_stormaudio.select import StormAudioSelect
 from uc_intg_stormaudio.sensor import create_sensors
 from uc_intg_stormaudio.setup import StormAudioSetupFlow
 
@@ -38,6 +39,7 @@ async def main():
         entity_classes=[
             StormAudioMediaPlayer,
             StormAudioRemote,
+            StormAudioSelect,
             lambda device_config, dev: create_sensors(dev),
         ],
     )

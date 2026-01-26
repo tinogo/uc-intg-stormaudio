@@ -20,6 +20,7 @@ from ucapi_framework.device import DeviceEvents
 from uc_intg_stormaudio.const import (
     MEDIA_PLAYER_STATE_MAPPING,
     REMOTE_STATE_MAPPING,
+    SELECT_STATE_MAPPING,
     SENSOR_STATE_MAPPING,
     Loggers,
     SensorType,
@@ -55,6 +56,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             create_entity_id(
                 EntityTypes.MEDIA_PLAYER, self.identifier
             ): self._get_media_player_attributes,
+            create_entity_id("select", self.identifier): self._get_select_attributes,
             create_entity_id(
                 EntityTypes.REMOTE, self.identifier
             ): self._get_remote_attributes,
@@ -306,6 +308,7 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
         self._update_media_player_attributes()
+        self._update_select_attributes()
         self._update_remote_attributes()
         self._update_sensor_attributes()
 
@@ -318,6 +321,15 @@ class StormAudioDevice(PersistentConnectionDevice):
             DeviceEvents.UPDATE,
             media_player_entity_id,
             self.get_device_attributes(media_player_entity_id),
+        )
+
+    def _update_select_attributes(self) -> None:
+        """Update the select attributes via an event."""
+        select_entity_id = create_entity_id("select", self.identifier)
+        self.events.emit(
+            DeviceEvents.UPDATE,
+            select_entity_id,
+            self.get_device_attributes(select_entity_id),
         )
 
     def _update_remote_attributes(self) -> None:
@@ -356,6 +368,14 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.SOUND_MODE_LIST: self._device_attributes.sound_mode_list,
             MediaAttr.VOLUME: self._device_attributes.volume,
             MediaAttr.MUTED: self._device_attributes.muted,
+        }
+
+    def _get_select_attributes(self) -> dict[str, Any]:
+        """Get the select attributes."""
+        return {
+            "state": SELECT_STATE_MAPPING[self.state],
+            "current_option": self._device_attributes.sound_mode,
+            "options": self._device_attributes.sound_mode_list,
         }
 
     def _get_remote_attributes(self) -> dict[str, Any]:
