@@ -1,6 +1,6 @@
 [project]
 name = "uc-intg-stormaudio"
-version = "0.19.1"
+version = "0.19.2"
 description = "Unfolded Circle Integration StormAudio"
 readme = "README.md"
 requires-python = ">=3.11"
