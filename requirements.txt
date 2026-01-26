@@ -5,7 +5,7 @@ attrs==25.4.0
 frozenlist==1.8.0
 idna==3.11
 ifaddr==0.2.0
-multidict==6.7.0
+multidict==6.7.1
 propcache==0.4.1
 protobuf==6.33.4
 pyee==13.0.0
