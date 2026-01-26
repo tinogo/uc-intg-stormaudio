@@ -67,6 +67,7 @@ This integration provides the following sensors:
 - Current Source
 - Current Upmixer
 - StormXT Status
+- Tone controls (Bass, Treble, Brightness, Center enhancement, Surround enhancement, LFE enhancement)
 
 ## Installation instructions
 
