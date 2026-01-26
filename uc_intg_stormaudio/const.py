@@ -189,6 +189,7 @@ class Loggers(StrEnum):
     MEDIA_PLAYER = "media_player"
     DEVICE = "device"
     REMOTE = "remote"
+    SELECT = "select"
     SENSOR = "sensor"
     SETUP_FLOW = "setup_flow"
 
@@ -239,4 +240,11 @@ SENSOR_STATE_MAPPING = {
     StormAudioStates.OFF: SensorStates.UNAVAILABLE,
     StormAudioStates.UNAVAILABLE: SensorStates.UNAVAILABLE,
     StormAudioStates.UNKNOWN: SensorStates.UNKNOWN,
+}
+
+SELECT_STATE_MAPPING = {
+    StormAudioStates.ON: "ON",
+    StormAudioStates.OFF: "UNAVAILABLE",
+    StormAudioStates.UNAVAILABLE: "UNAVAILABLE",
+    StormAudioStates.UNKNOWN: "UNKNOWN",
 }
