@@ -186,11 +186,3 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             case _:
                 raise ValueError(f"Unsupported sensor type: {sensor_type}")
         return sensor
-
-
-def create_sensors(device: StormAudioDevice) -> list[StormAudioSensor]:
-    """Create all applicable sensor entities for the given ISP."""
-    sensors = []
-    for sensor_type in SensorType:
-        sensors.append(StormAudioSensor(device, sensor_type))
-    return sensors
