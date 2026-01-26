@@ -11,6 +11,15 @@ _Changes in the next release_
 
 ---
 
+## [0.19.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.1...v0.19.2) (2026-01-26)
+
+
+### Miscellaneous
+
+* Always pull the latest docker images ([960bb7b](https://github.com/tinogo/uc-intg-stormaudio/commit/960bb7b70cdaa28c7663978e9f848f127e4462c6))
+* **deps:** Update the UCAPI-Framework to version 1.7.2 ([e0f6424](https://github.com/tinogo/uc-intg-stormaudio/commit/e0f64242f60fb59dffdff682799ef56cd88d0709))
+* **docs:** Add the newly added sensors to the readme ([5949f83](https://github.com/tinogo/uc-intg-stormaudio/commit/5949f837b1ed577e339f1d171309f14512783af7))
+
 ## [0.19.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.0...v0.19.1) (2026-01-24)
 
 
