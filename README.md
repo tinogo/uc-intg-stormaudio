@@ -61,6 +61,8 @@ Additionally, you can send the following custom commands for the `send_cmd` and 
 ### Select entity
 
 This integration provides the following Select-Types:
+- Auro-Matic presets
+- Auro-Matic strength
 - Presets
 - Sound mode (aka Upmixers)
 
@@ -69,6 +71,8 @@ This integration provides the following Select-Types:
 This integration provides the following sensors:
 - Current Volume
 - Muted Status
+- Current Auro-Matic Preset
+- Current Auro-Matic Strength
 - Current Dolby Mode
 - Current Loudness Setting
 - Current Preset
