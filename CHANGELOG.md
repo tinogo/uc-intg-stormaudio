@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.22.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.0...v0.22.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* Fix the Auro-Matic strength select entity ([bcdeac9](https://github.com/tinogo/uc-intg-stormaudio/commit/bcdeac90ef72793c801dd81325e587a4928594fc))
+
 ## [0.22.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.21.1...v0.22.0) (2026-01-31)
 
 
