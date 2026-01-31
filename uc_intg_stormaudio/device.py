@@ -13,6 +13,8 @@ from typing import Any, Callable
 
 from ucapi import EntityTypes
 from ucapi.media_player import Attributes as MediaAttr
+from ucapi.remote import Attributes as RemoteAttr
+from ucapi.select import Attributes as SelectAttr
 from ucapi.sensor import Attributes as SensorAttr
 from ucapi_framework import PersistentConnectionDevice, create_entity_id
 from ucapi_framework.device import DeviceEvents
@@ -324,8 +326,8 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _update_attributes(self) -> None:
         """Update the device attributes via an event."""
         self._update_media_player_attributes()
-        self._update_select_attributes()
         self._update_remote_attributes()
+        self._update_select_attributes()
         self._update_sensor_attributes()
 
     def _update_media_player_attributes(self) -> None:
@@ -337,6 +339,15 @@ class StormAudioDevice(PersistentConnectionDevice):
             DeviceEvents.UPDATE,
             media_player_entity_id,
             self.get_device_attributes(media_player_entity_id),
+        )
+
+    def _update_remote_attributes(self) -> None:
+        """Update the remote attributes via an event."""
+        remote_entity_id = create_entity_id(EntityTypes.REMOTE, self.identifier)
+        self.events.emit(
+            DeviceEvents.UPDATE,
+            remote_entity_id,
+            self.get_device_attributes(remote_entity_id),
         )
 
     def _update_select_attributes(self) -> None:
@@ -351,15 +362,6 @@ class StormAudioDevice(PersistentConnectionDevice):
                 sensor_entity_id,
                 self.get_device_attributes(sensor_entity_id),
             )
-
-    def _update_remote_attributes(self) -> None:
-        """Update the remote attributes via an event."""
-        remote_entity_id = create_entity_id(EntityTypes.REMOTE, self.identifier)
-        self.events.emit(
-            DeviceEvents.UPDATE,
-            remote_entity_id,
-            self.get_device_attributes(remote_entity_id),
-        )
 
     def _update_sensor_attributes(self) -> None:
         """Update the sensor attributes via an event."""
@@ -393,23 +395,23 @@ class StormAudioDevice(PersistentConnectionDevice):
     def _get_preset_select_attributes(self) -> dict[str, Any]:
         """Get the preset select attributes."""
         return {
-            "state": SELECT_STATE_MAPPING[self.state],
-            "current_option": self.device_attributes.preset,
-            "options": self.device_attributes.preset_list,
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
+            SelectAttr.CURRENT_OPTION: self.device_attributes.preset,
+            SelectAttr.OPTIONS: self.device_attributes.preset_list,
         }
 
     def _get_sound_mode_select_attributes(self) -> dict[str, Any]:
         """Get the preset select attributes."""
         return {
-            "state": SELECT_STATE_MAPPING[self.state],
-            "current_option": self.device_attributes.sound_mode,
-            "options": self.device_attributes.sound_mode_list,
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
+            SelectAttr.CURRENT_OPTION: self.device_attributes.sound_mode,
+            SelectAttr.OPTIONS: self.device_attributes.sound_mode_list,
         }
 
     def _get_remote_attributes(self) -> dict[str, Any]:
         """Get the remote attributes."""
         return {
-            MediaAttr.STATE: REMOTE_STATE_MAPPING[self.state],
+            RemoteAttr.STATE: REMOTE_STATE_MAPPING[self.state],
         }
 
     def _get_bass_sensor_attributes(self) -> dict[str, Any]:
