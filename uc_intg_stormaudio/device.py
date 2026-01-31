@@ -352,15 +352,15 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _update_select_attributes(self) -> None:
         """Update the select attributes via an event."""
-        for sensor_type in SensorType:
-            sensor_entity_id = create_entity_id(
-                EntityTypes.SELECT, self.identifier, sensor_type
+        for select_type in SelectType:
+            select_entity_id = create_entity_id(
+                EntityTypes.SELECT, self.identifier, select_type
             )
 
             self.events.emit(
                 DeviceEvents.UPDATE,
-                sensor_entity_id,
-                self.get_device_attributes(sensor_entity_id),
+                select_entity_id,
+                self.get_device_attributes(select_entity_id),
             )
 
     def _update_sensor_attributes(self) -> None:
