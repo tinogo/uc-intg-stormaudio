@@ -47,20 +47,18 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
     def __init__(self, device: StormAudioDevice, sensor_type: SensorType):
         """Initialize the sensor entity."""
         self._device = device
-        self._sensor_type = sensor_type
 
         sensor_config = self._get_sensor_config(sensor_type, device)
 
         _LOG.debug("Initializing sensor: %s", sensor_config["identifier"])
 
         super().__init__(
-            sensor_config["identifier"],
-            sensor_config["name"],
-            [],
-            sensor_config["attributes"],
-            sensor_config["device_class"],
-            sensor_config.get("options", {}),
-            None,
+            identifier=sensor_config["identifier"],
+            name=sensor_config["name"],
+            features=[],
+            attributes=sensor_config["attributes"],
+            device_class=sensor_config["device_class"],
+            options=sensor_config.get("options", {}),
         )
 
     def _get_sensor_config(
@@ -80,7 +78,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             ):
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} {_decibel_based_custom_sensors.get(sensor_type)}",
+                    "name": f"{device.name} Sensor: {_decibel_based_custom_sensors.get(sensor_type)}",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",
@@ -92,7 +90,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             case sensor_type if _simple_custom_sensors.get(sensor_type) is not None:
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} {_simple_custom_sensors.get(sensor_type)}",
+                    "name": f"{device.name} Sensor: {_simple_custom_sensors.get(sensor_type)}",
                     "device_class": DeviceClasses.CUSTOM,
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }
@@ -100,7 +98,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             case sensor_type if _binary_sensors.get(sensor_type) is not None:
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} {_binary_sensors.get(sensor_type)}",
+                    "name": f"{device.name} Sensor: {_binary_sensors.get(sensor_type)}",
                     "device_class": DeviceClasses.BINARY,
                     "attributes": self._device.get_device_attributes(sensor_entity_id),
                 }

@@ -81,6 +81,11 @@ class StormAudioDeviceAttributes:
             return None
 
     @property
+    def preset_list(self) -> list[str]:
+        """Returns a list of the available presets."""
+        return list(self.presets.keys())
+
+    @property
     def sound_mode_list(self) -> list[str]:
         """Returns a list of the available sound modes."""
         return list(self.upmixer_modes.keys())

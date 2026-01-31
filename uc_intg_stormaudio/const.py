@@ -10,6 +10,7 @@ from enum import StrEnum
 
 from ucapi.media_player import States as MediaPlayerStates
 from ucapi.remote import States as RemoteStates
+from ucapi.select import States as SelectStates
 from ucapi.sensor import States as SensorStates
 
 
@@ -195,6 +196,13 @@ class Loggers(StrEnum):
     SETUP_FLOW = "setup_flow"
 
 
+class SelectType(StrEnum):
+    """Defines the supported select types for StormAudio devices."""
+
+    PRESET = "preset"
+    SOUND_MODE = "sound_mode"
+
+
 class SensorType(StrEnum):
     """Defines the supported sensor types for StormAudio devices."""
 
@@ -245,8 +253,8 @@ SENSOR_STATE_MAPPING = {
 }
 
 SELECT_STATE_MAPPING = {
-    StormAudioStates.ON: "ON",
-    StormAudioStates.OFF: "UNAVAILABLE",
-    StormAudioStates.UNAVAILABLE: "UNAVAILABLE",
-    StormAudioStates.UNKNOWN: "UNKNOWN",
+    StormAudioStates.ON: SelectStates.ON,
+    StormAudioStates.OFF: SelectStates.UNAVAILABLE,
+    StormAudioStates.UNAVAILABLE: SelectStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: SelectStates.UNKNOWN,
 }
