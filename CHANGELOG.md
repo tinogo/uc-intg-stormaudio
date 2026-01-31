@@ -11,6 +11,24 @@ _Changes in the next release_
 
 ---
 
+## [0.22.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.21.1...v0.22.0) (2026-01-31)
+
+
+### Features
+
+* **#86:** Add support for Auro-Matic strength selection ([a5d8166](https://github.com/tinogo/uc-intg-stormaudio/commit/a5d8166cc4815fadb3c059b654620147540367a3)), closes [#86](https://github.com/tinogo/uc-intg-stormaudio/issues/86)
+
+
+### Bug Fixes
+
+* **#98:** apply the first restrictions on the allowed upmixer modes ([9b6c917](https://github.com/tinogo/uc-intg-stormaudio/commit/9b6c91771096b9cce2e05e31d6a17eab42393547))
+
+
+### Miscellaneous
+
+* **docs:** Update the readme ([345863b](https://github.com/tinogo/uc-intg-stormaudio/commit/345863bbd52187c59cab741d7e28eb901c773ed6))
+* **docs:** Update the readme ([0b71325](https://github.com/tinogo/uc-intg-stormaudio/commit/0b71325ca8665df4cd418308f70c565c8ff39545))
+
 ## [0.21.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.21.0...v0.21.1) (2026-01-31)
 
 
