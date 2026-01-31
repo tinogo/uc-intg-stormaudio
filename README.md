@@ -19,6 +19,7 @@ The integration is based on the amazing work of JackJPowell's [ucapi-framework](
 
 - [Media player](#media-player-entity)
 - [Remote](#remote-entity)
+- [Selects](#select-entity)
 - [Sensors](#sensor-entity)
 
 ### Media Player entity
@@ -56,6 +57,12 @@ Additionally, you can send the following custom commands for the `send_cmd` and 
 1. `PRESET_<YourPresetName>` --> This will select the given preset on your device.
 2. `SOURCE_<YourSourceName>` --> This will select the given source on your device.
 3. `VOLUME_<YourVolumeLevel>` --> This will set the volume level on your device to the given value (i.e. `VOLUME_45` will result in `-55dB` in your ISP).
+
+### Select entity
+
+This integration provides the following Select-Types:
+- Presets
+- Sound mode (aka Upmixers)
 
 ### Sensor entity
 
