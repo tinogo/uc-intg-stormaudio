@@ -264,6 +264,17 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self.device_attributes.upmixer_mode_id = upmixer_mode_id
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.ALLOWED_MODE_X):
+                    actual_upmixer_mode_id, *_tail = json.loads(
+                        fix_json(
+                            message[len(StormAudioResponses.ALLOWED_MODE_X) :]  # noqa: E203
+                        )
+                    )
+                    self.device_attributes.actual_upmixer_mode_id = (
+                        actual_upmixer_mode_id
+                    )
+                    self._update_attributes()
+
                 case message if message.startswith(StormAudioResponses.VOLUME_X):
                     # The UC remotes currently only support absolute volume scales.
                     # That's why we need to convert the relative values from the ISPs.
@@ -412,7 +423,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.STATE: MEDIA_PLAYER_STATE_MAPPING[self.state],
             MediaAttr.SOURCE: self.device_attributes.source,
             MediaAttr.SOURCE_LIST: self.device_attributes.source_list,
-            MediaAttr.SOUND_MODE: self.device_attributes.sound_mode,
+            MediaAttr.SOUND_MODE: self.device_attributes.actual_sound_mode,
             MediaAttr.SOUND_MODE_LIST: self.device_attributes.sound_mode_list,
             MediaAttr.VOLUME: self.device_attributes.volume,
             MediaAttr.MUTED: self.device_attributes.muted,
@@ -446,7 +457,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the preset select attributes."""
         return {
             SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
-            SelectAttr.CURRENT_OPTION: self.device_attributes.sound_mode,
+            SelectAttr.CURRENT_OPTION: self.device_attributes.actual_sound_mode,
             SelectAttr.OPTIONS: self.device_attributes.sound_mode_list,
         }
 
@@ -566,7 +577,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the volume sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: self.device_attributes.sound_mode,
+            SensorAttr.VALUE: self.device_attributes.actual_sound_mode,
         }
 
     def _get_volume_sensor_attributes(self) -> dict[str, Any]:

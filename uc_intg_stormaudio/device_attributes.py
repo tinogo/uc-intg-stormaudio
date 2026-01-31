@@ -69,6 +69,7 @@ class StormAudioDeviceAttributes:
         }
     )
     upmixer_mode_id: int | None = None
+    actual_upmixer_mode_id: int | None = None
     volume: int = 0
 
     @property
@@ -122,6 +123,16 @@ class StormAudioDeviceAttributes:
         try:
             return list(self.upmixer_modes.keys())[
                 list(self.upmixer_modes.values()).index(self.upmixer_mode_id)
+            ]
+        except ValueError:
+            return None
+
+    @property
+    def actual_sound_mode(self) -> str | None:
+        """Returns the current actual sound mode."""
+        try:
+            return list(self.upmixer_modes.keys())[
+                list(self.upmixer_modes.values()).index(self.actual_upmixer_mode_id)
             ]
         except ValueError:
             return None

@@ -176,6 +176,7 @@ class StormAudioResponses(StrEnum):
     PRESET_CUSTOM_X = "ssp.preset.custom."
     INPUT_X_FORMAT = "ssp.input.[{}]"
     INPUT_X = "ssp.input."
+    ALLOWED_MODE_X = "ssp.allowedmode."
     SURROUND_MODE_X = "ssp.surroundmode."
     DOLBY_MODE_X = "ssp.dolbymode."
     DOLBY_MODE_OFF = "ssp.dolbymode.[0]"
