@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.21.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.21.0...v0.21.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* Fix select attribute updates ([9ba349f](https://github.com/tinogo/uc-intg-stormaudio/commit/9ba349f22d46f4bb457211a37281826b9c16a800))
+* Fix the select- and remote-entity attributes ([2f25f55](https://github.com/tinogo/uc-intg-stormaudio/commit/2f25f55b9ba9b97633dc5c102e601db80a34a394))
+
+
+### Miscellaneous
+
+* Apply some minor code changes ([80518ca](https://github.com/tinogo/uc-intg-stormaudio/commit/80518ca9fcda4432594ac9daf22a6d2d62f5d951))
+
 ## [0.21.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.20.0...v0.21.0) (2026-01-31)
 
 
