@@ -17,6 +17,17 @@ class StormAudioDeviceAttributes:
     This dataclass holds all the current state of our StormAudio ISP.
     """
 
+    auro_preset_id: int | None = None
+    auro_presets: dict[str, int] = field(
+        default_factory=lambda: {
+            "Small": 0,
+            "Medium": 1,
+            "Large": 2,
+            "Speech": 3,
+        }
+    )
+    auro_strength: int | None = None
+    auro_strength_list: list[int] = field(default_factory=lambda: list(range(0, 15)))
     bass: int = 0
     brightness: int = 0
     center_enhance: int = 0
@@ -59,6 +70,21 @@ class StormAudioDeviceAttributes:
     )
     upmixer_mode_id: int | None = None
     volume: int = 0
+
+    @property
+    def auro_preset(self) -> str | None:
+        """Returns the current Auro-Matic preset."""
+        try:
+            return list(self.auro_presets.keys())[
+                list(self.auro_presets.values()).index(self.auro_preset_id)
+            ]
+        except ValueError:
+            return None
+
+    @property
+    def auro_preset_list(self) -> list[str]:
+        """Returns a list of the Auro-Matic presets."""
+        return list(self.auro_presets.keys())
 
     @property
     def dolby_mode(self) -> str:

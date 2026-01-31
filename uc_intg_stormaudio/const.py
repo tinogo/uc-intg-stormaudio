@@ -133,6 +133,8 @@ class StormAudioCommands(StrEnum):
     AURO_PRESET_MEDIUM = "ssp.auropreset.[1]"
     AURO_PRESET_LARGE = "ssp.auropreset.[2]"
     AURO_PRESET_SPEECH = "ssp.auropreset.[3]"
+    AURO_PRESET_X_FORMAT = "ssp.auropreset.[{}]"
+    AURO_STRENGTH_X_FORMAT = "ssp.aurostrength.[{}]"
 
 
 class StormAudioResponses(StrEnum):
@@ -182,6 +184,8 @@ class StormAudioResponses(StrEnum):
     DOLBY_MODE_NIGHT = "ssp.dolbymode.[3]"
     STORM_XT_ON = "ssp.stormxt.on"
     STORM_XT_OFF = "ssp.stormxt.off"
+    AURO_PRESET_X = "ssp.auropreset."
+    AURO_STRENGTH_X = "ssp.aurostrength."
 
 
 class Loggers(StrEnum):
@@ -199,6 +203,8 @@ class Loggers(StrEnum):
 class SelectType(StrEnum):
     """Defines the supported select types for StormAudio devices."""
 
+    AURO_PRESET = "auro_preset"
+    AURO_STRENGTH = "auro_strength"
     PRESET = "preset"
     SOUND_MODE = "sound_mode"
 
@@ -206,6 +212,8 @@ class SelectType(StrEnum):
 class SensorType(StrEnum):
     """Defines the supported sensor types for StormAudio devices."""
 
+    AURO_PRESET = "auro_preset"
+    AURO_STRENGTH = "auro_strength"
     BASS_DB = "bass_db"
     BRIGHTNESS_DB = "brightness_db"
     CENTER_ENHANCE_DB = "center_enhance_db"

@@ -28,6 +28,8 @@ _decibel_based_custom_sensors = {
 }
 
 _simple_custom_sensors = {
+    SensorType.AURO_PRESET: "Auro-Matic Preset",
+    SensorType.AURO_STRENGTH: "Auro-Matic Strength",
     SensorType.DOLBY_MODE: "Dolby mode",
     SensorType.LOUDNESS: "Loudness",
     SensorType.PRESET: "Preset",
@@ -78,7 +80,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             ):
                 sensor = {
                     "identifier": sensor_entity_id,
-                    "name": f"{device.name} Sensor: {_decibel_based_custom_sensors.get(sensor_type)}",
+                    "name": f"{device.name} Sensor {_decibel_based_custom_sensors.get(sensor_type)}",
                     "device_class": DeviceClasses.CUSTOM,
                     "options": {
                         Options.CUSTOM_UNIT: "dB",

@@ -5,7 +5,7 @@ Select Entity.
 """
 
 import logging
-from typing import Any
+from typing import Any, Literal
 
 from ucapi import EntityTypes, Select, StatusCodes
 from ucapi.select import Commands as SelectCommands
@@ -17,6 +17,8 @@ from uc_intg_stormaudio.device import StormAudioDevice
 _LOG = logging.getLogger(Loggers.SELECT)
 
 _selects = {
+    SelectType.AURO_PRESET: "Auro-Matic Preset",
+    SelectType.AURO_STRENGTH: "Auro-Matic Strength",
     SelectType.PRESET: "Preset",
     SelectType.SOUND_MODE: "Sound mode",
 }
@@ -68,7 +70,7 @@ class StormAudioSelect(Select, Entity):
                 raise ValueError(f"Unsupported select type: {select_type}")
         return select
 
-    async def handle_command(  # pylint: disable=too-many-branches
+    async def handle_command(
         self,
         entity: Select,
         cmd_id: str,
@@ -83,63 +85,141 @@ class StormAudioSelect(Select, Entity):
             params if params else "",
         )
 
-        if self._select_type == SelectType.PRESET:
-            match cmd_id:
-                case SelectCommands.SELECT_OPTION:
-                    await self._device.preset_x(params["option"])
+        match self._select_type:
+            case SelectType.AURO_PRESET:
+                return await self._handle_auro_preset_command(cmd_id, params)
 
-                case SelectCommands.SELECT_FIRST:
-                    first_preset_name = self._device.device_attributes.preset_list[0]
-                    await self._device.preset_x(first_preset_name)
+            case SelectType.AURO_STRENGTH:
+                return await self._handle_auro_strength_command(cmd_id, params)
 
-                case SelectCommands.SELECT_LAST:
-                    last_preset_name = self._device.device_attributes.preset_list[-1]
-                    await self._device.preset_x(last_preset_name)
+            case SelectType.PRESET:
+                return await self._handle_preset_command(cmd_id, params)
 
-                case SelectCommands.SELECT_NEXT:
-                    await self._device.preset_next()
+            case SelectType.SOUND_MODE:
+                return await self._handle_sound_mode_command(cmd_id, params)
 
-                case SelectCommands.SELECT_PREVIOUS:
-                    await self._device.preset_prev()
+    async def _handle_auro_preset_command(
+        self, cmd_id: str, params: dict[str, Any] | None
+    ) -> Literal[StatusCodes.OK]:
+        auro_preset_list = self._device.device_attributes.auro_preset_list
+        match cmd_id:
+            case SelectCommands.SELECT_OPTION:
+                await self._device.auro_preset_x(params["option"])
 
-            return StatusCodes.OK
+            case SelectCommands.SELECT_FIRST:
+                first_auro_preset_name = auro_preset_list[0]
+                await self._device.auro_preset_x(first_auro_preset_name)
 
-        if self._select_type == SelectType.SOUND_MODE:
-            sound_mode_list = self._device.device_attributes.sound_mode_list
-            match cmd_id:
-                case SelectCommands.SELECT_OPTION:
-                    await self._device.select_sound_mode(params["option"])
+            case SelectCommands.SELECT_LAST:
+                last_auro_preset_name = auro_preset_list[-1]
+                await self._device.auro_preset_x(last_auro_preset_name)
 
-                case SelectCommands.SELECT_FIRST:
-                    first_sound_mode_name = sound_mode_list[0]
-                    await self._device.select_sound_mode(first_sound_mode_name)
+            case SelectCommands.SELECT_NEXT:
+                current_index = auro_preset_list.index(
+                    self._device.device_attributes.auro_preset
+                )
+                if current_index < len(auro_preset_list) - 1:
+                    next_auro_preset_name = auro_preset_list[current_index + 1]
+                    await self._device.auro_preset_x(next_auro_preset_name)
+                elif params["cycle"]:
+                    next_auro_preset_name = auro_preset_list[0]
+                    await self._device.auro_preset_x(next_auro_preset_name)
 
-                case SelectCommands.SELECT_LAST:
-                    last_sound_mode_name = sound_mode_list[-1]
-                    await self._device.select_sound_mode(last_sound_mode_name)
+            case SelectCommands.SELECT_PREVIOUS:
+                current_index = auro_preset_list.index(
+                    self._device.device_attributes.auro_preset
+                )
+                if current_index > 0:
+                    previous_auro_preset_name = auro_preset_list[current_index - 1]
+                    await self._device.auro_preset_x(previous_auro_preset_name)
+                elif params["cycle"]:
+                    previous_auro_preset_name = auro_preset_list[len(auro_preset_list)]
+                    await self._device.auro_preset_x(previous_auro_preset_name)
 
-                case SelectCommands.SELECT_NEXT:
-                    current_index = sound_mode_list.index(
-                        self._device.device_attributes.sound_mode
-                    )
-                    if current_index < len(sound_mode_list) - 1:
-                        next_sound_mode_name = sound_mode_list[current_index + 1]
-                        await self._device.select_sound_mode(next_sound_mode_name)
-                    elif params["cycle"]:
-                        next_sound_mode_name = sound_mode_list[0]
-                        await self._device.select_sound_mode(next_sound_mode_name)
+        return StatusCodes.OK
 
-                case SelectCommands.SELECT_PREVIOUS:
-                    current_index = sound_mode_list.index(
-                        self._device.device_attributes.sound_mode
-                    )
-                    if current_index > 0:
-                        previous_sound_mode_name = sound_mode_list[current_index - 1]
-                        await self._device.select_sound_mode(previous_sound_mode_name)
-                    elif params["cycle"]:
-                        previous_sound_mode_name = sound_mode_list[len(sound_mode_list)]
-                        await self._device.select_sound_mode(previous_sound_mode_name)
+    async def _handle_auro_strength_command(
+        self, cmd_id: str, params: dict[str, Any] | None
+    ) -> Literal[StatusCodes.OK]:
+        match cmd_id:
+            case SelectCommands.SELECT_OPTION:
+                await self._device.preset_x(params["option"])
 
-            return StatusCodes.OK
+            case SelectCommands.SELECT_FIRST:
+                first_preset_name = self._device.device_attributes.preset_list[0]
+                await self._device.preset_x(first_preset_name)
 
-        return StatusCodes.NOT_IMPLEMENTED
+            case SelectCommands.SELECT_LAST:
+                last_preset_name = self._device.device_attributes.preset_list[-1]
+                await self._device.preset_x(last_preset_name)
+
+            case SelectCommands.SELECT_NEXT:
+                await self._device.preset_next()
+
+            case SelectCommands.SELECT_PREVIOUS:
+                await self._device.preset_prev()
+
+        return StatusCodes.OK
+
+    async def _handle_sound_mode_command(
+        self, cmd_id: str, params: dict[str, Any] | None
+    ) -> Literal[StatusCodes.OK]:
+        sound_mode_list = self._device.device_attributes.sound_mode_list
+        match cmd_id:
+            case SelectCommands.SELECT_OPTION:
+                await self._device.select_sound_mode(params["option"])
+
+            case SelectCommands.SELECT_FIRST:
+                first_sound_mode_name = sound_mode_list[0]
+                await self._device.select_sound_mode(first_sound_mode_name)
+
+            case SelectCommands.SELECT_LAST:
+                last_sound_mode_name = sound_mode_list[-1]
+                await self._device.select_sound_mode(last_sound_mode_name)
+
+            case SelectCommands.SELECT_NEXT:
+                current_index = sound_mode_list.index(
+                    self._device.device_attributes.sound_mode
+                )
+                if current_index < len(sound_mode_list) - 1:
+                    next_sound_mode_name = sound_mode_list[current_index + 1]
+                    await self._device.select_sound_mode(next_sound_mode_name)
+                elif params["cycle"]:
+                    next_sound_mode_name = sound_mode_list[0]
+                    await self._device.select_sound_mode(next_sound_mode_name)
+
+            case SelectCommands.SELECT_PREVIOUS:
+                current_index = sound_mode_list.index(
+                    self._device.device_attributes.sound_mode
+                )
+                if current_index > 0:
+                    previous_sound_mode_name = sound_mode_list[current_index - 1]
+                    await self._device.select_sound_mode(previous_sound_mode_name)
+                elif params["cycle"]:
+                    previous_sound_mode_name = sound_mode_list[len(sound_mode_list)]
+                    await self._device.select_sound_mode(previous_sound_mode_name)
+
+        return StatusCodes.OK
+
+    async def _handle_preset_command(
+        self, cmd_id: str, params: dict[str, Any] | None
+    ) -> Literal[StatusCodes.OK]:
+        match cmd_id:
+            case SelectCommands.SELECT_OPTION:
+                await self._device.preset_x(params["option"])
+
+            case SelectCommands.SELECT_FIRST:
+                first_preset_name = self._device.device_attributes.preset_list[0]
+                await self._device.preset_x(first_preset_name)
+
+            case SelectCommands.SELECT_LAST:
+                last_preset_name = self._device.device_attributes.preset_list[-1]
+                await self._device.preset_x(last_preset_name)
+
+            case SelectCommands.SELECT_NEXT:
+                await self._device.preset_next()
+
+            case SelectCommands.SELECT_PREVIOUS:
+                await self._device.preset_prev()
+
+        return StatusCodes.OK

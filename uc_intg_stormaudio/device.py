@@ -63,11 +63,23 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.REMOTE, self.identifier
             ): self._get_remote_attributes,
             create_entity_id(
+                EntityTypes.SELECT, self.identifier, SelectType.AURO_PRESET.value
+            ): self._get_auro_preset_select_attributes,
+            create_entity_id(
+                EntityTypes.SELECT, self.identifier, SelectType.AURO_STRENGTH.value
+            ): self._get_auro_strength_select_attributes,
+            create_entity_id(
                 EntityTypes.SELECT, self.identifier, SelectType.PRESET.value
             ): self._get_preset_select_attributes,
             create_entity_id(
                 EntityTypes.SELECT, self.identifier, SelectType.SOUND_MODE.value
             ): self._get_sound_mode_select_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.AURO_PRESET.value
+            ): self._get_auro_preset_sensor_attributes,
+            create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.AURO_STRENGTH.value
+            ): self._get_auro_strength_sensor_attributes,
             create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.BASS_DB.value
             ): self._get_bass_sensor_attributes,
@@ -308,6 +320,20 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self.device_attributes.lfe_enhance = lfe_enhance
                     self._update_attributes()
 
+                case message if message.startswith(StormAudioResponses.AURO_PRESET_X):
+                    auro_preset_id, *_tail = json.loads(
+                        message[len(StormAudioResponses.AURO_PRESET_X) :]  # noqa: E203
+                    )
+                    self.device_attributes.auro_preset_id = auro_preset_id
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.AURO_STRENGTH_X):
+                    auro_strength, *_tail = json.loads(
+                        message[len(StormAudioResponses.AURO_STRENGTH_X) :]  # noqa: E203
+                    )
+                    self.device_attributes.auro_strength = auro_strength
+                    self._update_attributes()
+
         await self._client.parse_response_messages(self._connection, message_handler)
 
     async def _send_command(self, command: str) -> None:
@@ -392,6 +418,22 @@ class StormAudioDevice(PersistentConnectionDevice):
             MediaAttr.MUTED: self.device_attributes.muted,
         }
 
+    def _get_auro_preset_select_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic preset select attributes."""
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
+            SelectAttr.CURRENT_OPTION: self.device_attributes.auro_preset,
+            SelectAttr.OPTIONS: self.device_attributes.auro_preset_list,
+        }
+
+    def _get_auro_strength_select_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic strength select attributes."""
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
+            SelectAttr.CURRENT_OPTION: str(self.device_attributes.auro_strength),
+            SelectAttr.OPTIONS: self.device_attributes.auro_strength_list,
+        }
+
     def _get_preset_select_attributes(self) -> dict[str, Any]:
         """Get the preset select attributes."""
         return {
@@ -412,6 +454,20 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the remote attributes."""
         return {
             RemoteAttr.STATE: REMOTE_STATE_MAPPING[self.state],
+        }
+
+    def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic preset sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: str(self.device_attributes.auro_preset),
+        }
+
+    def _get_auro_strength_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic strength sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: str(self.device_attributes.auro_strength),
         }
 
     def _get_bass_sensor_attributes(self) -> dict[str, Any]:
@@ -862,6 +918,22 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def auro_preset_speech(self):
         """Set the Auro-Matic preset to "speech"."""
         await self._send_command(StormAudioCommands.AURO_PRESET_SPEECH)
+
+    async def auro_preset_x(self, auro_preset_name: str):
+        """Set the Auro-Matic preset to the given value."""
+        auro_preset_id = self.device_attributes.auro_presets.get(auro_preset_name)
+
+        if auro_preset_id is not None:
+            await self._send_command(
+                StormAudioCommands.AURO_PRESET_X_FORMAT.format(auro_preset_id)
+            )
+
+    async def auro_strength_x(self, auro_strength: int):
+        """Set the Auro-Matic strength to the given value."""
+        if auro_strength in self.device_attributes.auro_strength_list:
+            await self._send_command(
+                StormAudioCommands.AURO_STRENGTH_X_FORMAT.format(auro_strength)
+            )
 
     # --- Custom commands from the Remote entity ---
     async def preset_x(self, preset_name: str):
