@@ -245,16 +245,16 @@ REMOTE_STATE_MAPPING = {
     StormAudioStates.UNKNOWN: RemoteStates.UNKNOWN,
 }
 
-SENSOR_STATE_MAPPING = {
-    StormAudioStates.ON: SensorStates.ON,
-    StormAudioStates.OFF: SensorStates.UNAVAILABLE,
-    StormAudioStates.UNAVAILABLE: SensorStates.UNAVAILABLE,
-    StormAudioStates.UNKNOWN: SensorStates.UNKNOWN,
-}
-
 SELECT_STATE_MAPPING = {
     StormAudioStates.ON: SelectStates.ON,
     StormAudioStates.OFF: SelectStates.UNAVAILABLE,
     StormAudioStates.UNAVAILABLE: SelectStates.UNAVAILABLE,
     StormAudioStates.UNKNOWN: SelectStates.UNKNOWN,
+}
+
+SENSOR_STATE_MAPPING = {
+    StormAudioStates.ON: SensorStates.ON,
+    StormAudioStates.OFF: SensorStates.UNAVAILABLE,
+    StormAudioStates.UNAVAILABLE: SensorStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: SensorStates.UNKNOWN,
 }

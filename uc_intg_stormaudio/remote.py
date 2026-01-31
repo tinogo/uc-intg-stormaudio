@@ -44,6 +44,8 @@ class StormAudioRemote(Remote, Entity):
         :param device_config: Device configuration from the setup
         :param device: The device instance to control
         """
+        self._device = device
+
         self._command_map = {
             remote.Commands.ON.value: device.power_on,
             remote.Commands.OFF.value: device.power_off,
@@ -108,8 +110,6 @@ class StormAudioRemote(Remote, Entity):
             simple_commands=[member.value for member in SimpleCommands],
             cmd_handler=self.handle_command,
         )
-
-        self._device = device
 
     async def handle_command(
         self,

@@ -48,6 +48,8 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         :param device_config: Device configuration from the setup
         :param device: The device instance to control
         """
+        self._device = device
+
         self._command_map: dict[str, Callable] = {
             media_player.Commands.ON.value: device.power_on,
             media_player.Commands.OFF.value: device.power_off,
@@ -129,8 +131,6 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
             },
             cmd_handler=self.handle_command,
         )
-
-        self._device = device
 
     async def handle_command(
         self,

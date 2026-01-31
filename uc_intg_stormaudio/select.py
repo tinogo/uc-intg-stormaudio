@@ -45,8 +45,6 @@ class StormAudioSelect(Select, Entity):
             cmd_handler=self.handle_command,
         )
 
-        self._device = device
-
     def _get_select_config(
         self, select_type: SelectType, device: StormAudioDevice
     ) -> dict[str, Any]:
