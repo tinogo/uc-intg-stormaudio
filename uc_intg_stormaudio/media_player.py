@@ -9,8 +9,7 @@ Media Player Entity.
 import logging
 from typing import Any, Callable
 
-import ucapi
-from ucapi import EntityTypes, MediaPlayer, media_player
+from ucapi import EntityTypes, MediaPlayer, StatusCodes, media_player
 from ucapi.media_player import DeviceClasses
 from ucapi_framework import Entity, create_entity_id
 
@@ -140,7 +139,7 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         cmd_id: str,
         params: dict[str, Any] | None,
         _: Any | None = None,
-    ) -> ucapi.StatusCodes:
+    ) -> StatusCodes:
         """
         Handle media player commands from the remote.
 
@@ -179,10 +178,10 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
-                    return ucapi.StatusCodes.NOT_IMPLEMENTED
+                    return StatusCodes.NOT_IMPLEMENTED
 
-            return ucapi.StatusCodes.OK
+            return StatusCodes.OK
 
         except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
-            return ucapi.StatusCodes.BAD_REQUEST
+            return StatusCodes.BAD_REQUEST

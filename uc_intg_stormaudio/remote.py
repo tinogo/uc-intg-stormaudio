@@ -10,8 +10,7 @@ import asyncio
 import logging
 from typing import Any
 
-import ucapi
-from ucapi import EntityTypes, Remote, remote
+from ucapi import EntityTypes, Remote, StatusCodes, remote
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
@@ -102,15 +101,12 @@ class StormAudioRemote(Remote, Entity):
         _LOG.debug("Initializing remote entity: %s", entity_id)
 
         super().__init__(
-            entity_id,
-            f"{device_config.name} Remote",
-            FEATURES,
-            device.get_device_attributes(entity_id),
-            [member.value for member in SimpleCommands],
-            None,
-            None,
-            None,
-            self.handle_command,
+            identifier=entity_id,
+            name=f"{device_config.name} Remote",
+            features=FEATURES,
+            attributes=device.get_device_attributes(entity_id),
+            simple_commands=[member.value for member in SimpleCommands],
+            cmd_handler=self.handle_command,
         )
 
         self._device = device
@@ -121,7 +117,7 @@ class StormAudioRemote(Remote, Entity):
         cmd_id: str,
         params: dict[str, Any] | None,
         _: Any | None = None,
-    ) -> ucapi.StatusCodes:
+    ) -> StatusCodes:
         """
         Handle commands from the remote.
 
@@ -171,13 +167,13 @@ class StormAudioRemote(Remote, Entity):
                 # --- unhandled commands ---
                 case _:
                     _LOG.warning("Unhandled command: %s", cmd_id)
-                    return ucapi.StatusCodes.NOT_IMPLEMENTED
+                    return StatusCodes.NOT_IMPLEMENTED
 
-            return ucapi.StatusCodes.OK
+            return StatusCodes.OK
 
         except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
-            return ucapi.StatusCodes.BAD_REQUEST
+            return StatusCodes.BAD_REQUEST
 
     async def _handle_send_cmd(self, command: str, repeat: int, delay: int) -> None:
         for _ in range(repeat):
