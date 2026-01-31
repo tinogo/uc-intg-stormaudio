@@ -27,7 +27,7 @@ class StormAudioDeviceAttributes:
         }
     )
     auro_strength: int | None = None
-    auro_strength_list: list[int] = field(default_factory=lambda: list(range(0, 15)))
+    auro_strength_list: list[int] = field(default_factory=lambda: list(range(0, 16)))
     bass: int = 0
     brightness: int = 0
     center_enhance: int = 0

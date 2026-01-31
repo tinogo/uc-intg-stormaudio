@@ -143,21 +143,35 @@ class StormAudioSelect(Select, Entity):
     ) -> Literal[StatusCodes.OK]:
         match cmd_id:
             case SelectCommands.SELECT_OPTION:
-                await self._device.preset_x(params["option"])
+                await self._device.auro_strength_x(params["option"])
 
             case SelectCommands.SELECT_FIRST:
-                first_preset_name = self._device.device_attributes.preset_list[0]
-                await self._device.preset_x(first_preset_name)
+                await self._device.auro_strength_x(
+                    self._device.device_attributes.auro_strength_list[0]
+                )
 
             case SelectCommands.SELECT_LAST:
-                last_preset_name = self._device.device_attributes.preset_list[-1]
-                await self._device.preset_x(last_preset_name)
+                await self._device.auro_strength_x(
+                    self._device.device_attributes.auro_strength_list[-1]
+                )
 
             case SelectCommands.SELECT_NEXT:
-                await self._device.preset_next()
+                next_value = self._device.device_attributes.auro_strength + 1
+
+                if next_value in self._device.device_attributes.auro_strength_list:
+                    await self._device.auro_strength_x(next_value)
+                elif params["cycle"]:
+                    await self._device.auro_strength_x(0)
 
             case SelectCommands.SELECT_PREVIOUS:
-                await self._device.preset_prev()
+                previous_value = self._device.device_attributes.auro_strength - 1
+
+                if previous_value in self._device.device_attributes.auro_strength_list:
+                    await self._device.auro_strength_x(previous_value)
+                elif params["cycle"]:
+                    await self._device.auro_strength_x(
+                        self._device.device_attributes.auro_strength_list[-1]
+                    )
 
         return StatusCodes.OK
 
