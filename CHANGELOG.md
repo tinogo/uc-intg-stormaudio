@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.21.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.20.0...v0.21.0) (2026-01-31)
+
+
+### Features
+
+* **#71:** Add select entities for presets and surround-mode ([#91](https://github.com/tinogo/uc-intg-stormaudio/issues/91)) ([053094c](https://github.com/tinogo/uc-intg-stormaudio/commit/053094c0c4dc1e5bf6cb9a8a54920d57622c104c))
+
+
+### Miscellaneous
+
+* **deps:** Update the dependencies ([aca0c49](https://github.com/tinogo/uc-intg-stormaudio/commit/aca0c49e219fd5f05622ffb32cc901984bbafd97))
+* Use keyword args in the media-player again ([0c6243a](https://github.com/tinogo/uc-intg-stormaudio/commit/0c6243a733550da0ddd4fd054ae2122466265d8b))
+
 ## [0.20.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.19.2...v0.20.0) (2026-01-26)
 
 
