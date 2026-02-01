@@ -941,9 +941,13 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def auro_strength_x(self, auro_strength: int):
         """Set the Auro-Matic strength to the given value."""
-        if auro_strength in self.device_attributes.auro_strength_list:
+        if int(auro_strength) in self.device_attributes.auro_strength_list:
             await self._send_command(
                 StormAudioCommands.AURO_STRENGTH_X_FORMAT.format(auro_strength)
+            )
+        else:
+            _LOG.error(
+                f"[%s] Invalid Auro-Matic strength: {auro_strength}", self.log_id
             )
 
     # --- Custom commands from the Remote entity ---
