@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.22.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.1...v0.22.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* Add a debug log for invalid Auro-Matic strength values ([447da03](https://github.com/tinogo/uc-intg-stormaudio/commit/447da03e5c69994be34ce7261821911749654cba))
+
 ## [0.22.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.0...v0.22.1) (2026-01-31)
 
 
