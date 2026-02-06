@@ -71,6 +71,7 @@ This integration provides the following Select-Types:
 This integration provides the following sensors:
 - Current Volume
 - Muted Status
+- Current Audio-Stream-Info (Stream (like PCM, DTS, etc.), input channel configuration and Samplerate)
 - Current Auro-Matic Preset
 - Current Auro-Matic Strength
 - Current Dolby Mode

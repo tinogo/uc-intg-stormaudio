@@ -77,6 +77,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SELECT, self.identifier, SelectType.SOUND_MODE.value
             ): self._get_sound_mode_select_attributes,
             create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.AUDIO_STREAM.value
+            ): self._get_audio_stream_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.AURO_PRESET.value
             ): self._get_auro_preset_sensor_attributes,
             create_entity_id(
@@ -171,6 +174,29 @@ class StormAudioDevice(PersistentConnectionDevice):
         # pylint: disable=too-many-branches,too-many-locals,too-many-statements
         def message_handler(message: str) -> None:
             match message:
+                case message if message.startswith(StormAudioResponses.AUDIO_FORMAT_X):
+                    self.device_attributes.audio_format = message[
+                        len(StormAudioResponses.AUDIO_FORMAT_X)
+                        + 1 : -1  # noqa: E203
+                    ]
+                    self._update_attributes()
+
+                case message if message.startswith(
+                    StormAudioResponses.AUDIO_SAMPLE_RATE_X
+                ):
+                    self.device_attributes.audio_sample_rate = message[
+                        len(StormAudioResponses.AUDIO_SAMPLE_RATE_X)
+                        + 1 : -1  # noqa: E203
+                    ]
+                    self._update_attributes()
+
+                case message if message.startswith(StormAudioResponses.AUDIO_STREAM_X):
+                    self.device_attributes.audio_stream = message[
+                        len(StormAudioResponses.AUDIO_STREAM_X)
+                        + 1 : -1  # noqa: E203
+                    ]
+                    self._update_attributes()
+
                 case message if message.startswith(StormAudioResponses.DOLBY_MODE_X):
                     dolby_mode, *_tail = json.loads(
                         message[len(StormAudioResponses.DOLBY_MODE_X) :]  # noqa: E203
@@ -434,8 +460,15 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_media_player_attributes(self) -> dict[str, Any]:
         """Get the media player attributes."""
+        audio_stream = self.device_attributes.audio_stream
+        audio_format = self.device_attributes.audio_format
+        audio_sample_rate = self.device_attributes.audio_sample_rate
+
         return {
             MediaAttr.STATE: MEDIA_PLAYER_STATE_MAPPING[self.state],
+            MediaAttr.MEDIA_TITLE: f"Audio: {audio_stream}, {audio_format}, {audio_sample_rate}"
+            if self.device_attributes.audio_stream != "None"
+            else None,
             MediaAttr.SOURCE: self.device_attributes.source,
             MediaAttr.SOURCE_LIST: self.device_attributes.source_list,
             MediaAttr.SOUND_MODE: self.device_attributes.actual_sound_mode,
@@ -494,6 +527,19 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Get the remote attributes."""
         return {
             RemoteAttr.STATE: REMOTE_STATE_MAPPING[self.state],
+        }
+
+    def _get_audio_stream_sensor_attributes(self) -> dict[str, Any]:
+        """Get the current Audio stream sensor attributes."""
+        audio_stream = self.device_attributes.audio_stream
+        audio_format = self.device_attributes.audio_format
+        audio_sample_rate = self.device_attributes.audio_sample_rate
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: f"{audio_stream}, {audio_format}, {audio_sample_rate}"
+            if self.device_attributes.audio_stream != "None"
+            else None,
         }
 
     def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:

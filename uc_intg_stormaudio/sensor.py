@@ -28,6 +28,7 @@ _decibel_based_custom_sensors = {
 }
 
 _simple_custom_sensors = {
+    SensorType.AUDIO_STREAM: "Audio Stream",
     SensorType.AURO_PRESET: "Auro-Matic Preset",
     SensorType.AURO_STRENGTH: "Auro-Matic Strength",
     SensorType.DOLBY_MODE: "Dolby mode",

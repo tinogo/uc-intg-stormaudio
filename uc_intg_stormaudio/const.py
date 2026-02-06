@@ -195,6 +195,9 @@ class StormAudioResponses(StrEnum):
     AURO_STRENGTH_X = "ssp.aurostrength."
     DOLBY_VIRTUALIZER_ON = "ssp.dolbyvirtualizer.on"
     DOLBY_VIRTUALIZER_OFF = "ssp.dolbyvirtualizer.off"
+    AUDIO_SAMPLE_RATE_X = "ssp.fs."
+    AUDIO_STREAM_X = "ssp.stream."
+    AUDIO_FORMAT_X = "ssp.format."
 
 
 class Loggers(StrEnum):
@@ -221,6 +224,7 @@ class SelectType(StrEnum):
 class SensorType(StrEnum):
     """Defines the supported sensor types for StormAudio devices."""
 
+    AUDIO_STREAM = "audio_stream"
     AURO_PRESET = "auro_preset"
     AURO_STRENGTH = "auro_strength"
     BASS_DB = "bass_db"
