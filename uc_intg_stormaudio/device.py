@@ -539,7 +539,7 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: f"{audio_stream}, {audio_format}, {audio_sample_rate}"
             if self.device_attributes.audio_stream != "None"
-            else None,
+            else "-",
         }
 
     def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:
