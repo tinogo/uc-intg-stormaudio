@@ -431,6 +431,13 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_auro_preset_select_attributes(self) -> dict[str, Any]:
         """Get the Auro-Matic preset select attributes."""
+        if self.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SelectAttr.STATE: SELECT_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SelectAttr.CURRENT_OPTION: None,
+                SelectAttr.OPTIONS: [],
+            }
+
         return {
             SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
             SelectAttr.CURRENT_OPTION: self.device_attributes.auro_preset,
@@ -439,6 +446,13 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_auro_strength_select_attributes(self) -> dict[str, Any]:
         """Get the Auro-Matic strength select attributes."""
+        if self.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SelectAttr.STATE: SELECT_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SelectAttr.CURRENT_OPTION: None,
+                SelectAttr.OPTIONS: [],
+            }
+
         return {
             SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
             SelectAttr.CURRENT_OPTION: str(self.device_attributes.auro_strength),
@@ -469,6 +483,12 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:
         """Get the Auro-Matic preset sensor attributes."""
+        if self.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: str(self.device_attributes.auro_preset),
@@ -476,6 +496,12 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_auro_strength_sensor_attributes(self) -> dict[str, Any]:
         """Get the Auro-Matic strength sensor attributes."""
+        if self.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: str(self.device_attributes.auro_strength),
