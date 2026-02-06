@@ -11,6 +11,24 @@ _Changes in the next release_
 
 ---
 
+## [0.23.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.2...v0.23.0) (2026-02-06)
+
+
+### Features
+
+* **#67:** Add a sensor which displays the current audio stream ([db869bd](https://github.com/tinogo/uc-intg-stormaudio/commit/db869bdaac5ea944da95261624a8c1da628085a6))
+* Add support for the Dolby virtualizer (Simple Commands, Sensor) ([2471038](https://github.com/tinogo/uc-intg-stormaudio/commit/24710388c23346d46565e73887ac8cee3a57c26a))
+
+
+### Bug Fixes
+
+* **#98:** Take the allowed upmixer mode into account for the Auro-Matic select- and sensor-entities ([9194865](https://github.com/tinogo/uc-intg-stormaudio/commit/9194865ba0ea2a6b4b3806978c5de25c32cb7d46))
+
+
+### Miscellaneous
+
+* Fix a typo ([1174ecf](https://github.com/tinogo/uc-intg-stormaudio/commit/1174ecff27e2ae7ae64c81565a9b8fb93790fcbf))
+
 ## [0.22.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.1...v0.22.2) (2026-02-01)
 
 
