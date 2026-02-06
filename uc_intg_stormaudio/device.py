@@ -695,7 +695,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         """Power off the StormAudio processor."""
         await self._send_command(StormAudioCommands.POWER_OFF)
         await self._send_command(StormAudioCommands.PROC_STATE)
-        await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
+        await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF, MAX_TIME_OUT)
 
     async def power_toggle(self):
         """Toggle the power of the StormAudio processor."""
@@ -705,7 +705,9 @@ class StormAudioDevice(PersistentConnectionDevice):
         await self._send_command(StormAudioCommands.PROC_STATE)
 
         if current_power_state == StormAudioStates.ON:
-            await self._wait_for_response(StormAudioResponses.PROC_STATE_OFF)
+            await self._wait_for_response(
+                StormAudioResponses.PROC_STATE_OFF, MAX_TIME_OUT
+            )
         else:
             await self._wait_for_response(
                 StormAudioResponses.PROC_STATE_ON, MAX_TIME_OUT
