@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.23.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.0...v0.23.1) (2026-02-06)
+
+
+### Bug Fixes
+
+* Use the max waiting time when powering off the ISP ([f317fb3](https://github.com/tinogo/uc-intg-stormaudio/commit/f317fb3050b8c80250dd131994a26c6f7ee8db2e))
+
 ## [0.23.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.22.2...v0.23.0) (2026-02-06)
 
 
