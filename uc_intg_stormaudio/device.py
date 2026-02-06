@@ -454,7 +454,7 @@ class StormAudioDevice(PersistentConnectionDevice):
         }
 
     def _get_sound_mode_select_attributes(self) -> dict[str, Any]:
-        """Get the preset select attributes."""
+        """Get the sound mode select attributes."""
         return {
             SelectAttr.STATE: SELECT_STATE_MAPPING[self.state],
             SelectAttr.CURRENT_OPTION: self.device_attributes.actual_sound_mode,
