@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.23.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.1...v0.23.2) (2026-02-06)
+
+
+### Bug Fixes
+
+* **#67:** Display a fallback value if there is currently no audio stream ([949ec89](https://github.com/tinogo/uc-intg-stormaudio/commit/949ec89507a0956551c3caa85d83adedb6c5a863))
+
 ## [0.23.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.0...v0.23.1) (2026-02-06)
 
 
