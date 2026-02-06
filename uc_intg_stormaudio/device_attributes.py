@@ -71,6 +71,7 @@ class StormAudioDeviceAttributes:
     upmixer_mode_id: int | None = None
     actual_upmixer_mode_id: int | None = None
     volume: int = 0
+    dolby_virtualizer: bool = False
 
     @property
     def auro_preset(self) -> str | None:

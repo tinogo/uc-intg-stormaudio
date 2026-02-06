@@ -1,3 +1,5 @@
+# pylint: disable=too-many-lines
+
 """
 Device Communication Module.
 
@@ -93,6 +95,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SENSOR, self.identifier, SensorType.DOLBY_MODE.value
             ): self._get_dolby_mode_sensor_attributes,
             create_entity_id(
+                EntityTypes.SENSOR, self.identifier, SensorType.DOLBY_VIRTUALIZER.value
+            ): self._get_dolby_virtualizer_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.LFE_ENHANCE_DB.value
             ): self._get_lfe_enhance_sensor_attributes,
             create_entity_id(
@@ -173,6 +178,15 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self.device_attributes.dolby_mode_id = dolby_mode
                     self._update_attributes()
 
+                case (
+                    StormAudioResponses.DOLBY_VIRTUALIZER_ON
+                    | StormAudioResponses.DOLBY_VIRTUALIZER_OFF
+                ):
+                    self.device_attributes.dolby_virtualizer = (
+                        message == StormAudioResponses.DOLBY_VIRTUALIZER_ON
+                    )
+                    self._update_attributes()
+
                 case StormAudioResponses.INPUT_LIST_START:
                     self.device_attributes.sources = {}
 
@@ -206,8 +220,9 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case StormAudioResponses.MUTE_ON | StormAudioResponses.MUTE_OFF:
-                    muted = message == StormAudioResponses.MUTE_ON
-                    self.device_attributes.muted = muted
+                    self.device_attributes.muted = (
+                        message == StormAudioResponses.MUTE_ON
+                    )
                     self._update_attributes()
 
                 case StormAudioResponses.PRESET_LIST_START:
@@ -536,6 +551,16 @@ class StormAudioDevice(PersistentConnectionDevice):
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: self.device_attributes.dolby_mode,
+        }
+
+    def _get_dolby_virtualizer_sensor_attributes(self) -> dict[str, Any]:
+        """Get the dolby virtualizer sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: "on"
+            if self.device_attributes.dolby_virtualizer
+            else "off",
+            SensorAttr.UNIT: "sound",
         }
 
     def _get_surround_enhance_sensor_attributes(self) -> dict[str, Any]:
@@ -975,6 +1000,20 @@ class StormAudioDevice(PersistentConnectionDevice):
             _LOG.error(
                 f"[%s] Invalid Auro-Matic strength: {auro_strength}", self.log_id
             )
+
+    async def dolby_virtualizer_on(self):
+        """Set the Dolby Virtualizer to on."""
+        await self._send_command(StormAudioCommands.DOLBY_VIRTUALIZER_ON)
+        await self._wait_for_response(StormAudioResponses.DOLBY_VIRTUALIZER_ON)
+
+    async def dolby_virtualizer_off(self):
+        """Set the Dolby Virtualizer to off."""
+        await self._send_command(StormAudioCommands.DOLBY_VIRTUALIZER_OFF)
+        await self._wait_for_response(StormAudioResponses.DOLBY_VIRTUALIZER_OFF)
+
+    async def dolby_virtualizer_toggle(self):
+        """Toggle the Dolby Virtualizer."""
+        await self._send_command(StormAudioCommands.DOLBY_VIRTUALIZER_TOGGLE)
 
     # --- Custom commands from the Remote entity ---
     async def preset_x(self, preset_name: str):

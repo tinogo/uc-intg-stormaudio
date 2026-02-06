@@ -96,6 +96,9 @@ class StormAudioRemote(Remote, Entity):
             SimpleCommands.AURO_PRESET_MEDIUM.value: device.auro_preset_medium,
             SimpleCommands.AURO_PRESET_LARGE.value: device.auro_preset_large,
             SimpleCommands.AURO_PRESET_SPEECH.value: device.auro_preset_speech,
+            SimpleCommands.DOLBY_VIRTUALIZER_ON.value: device.dolby_virtualizer_on,
+            SimpleCommands.DOLBY_VIRTUALIZER_OFF.value: device.dolby_virtualizer_off,
+            SimpleCommands.DOLBY_VIRTUALIZER_TOGGLE.value: device.dolby_virtualizer_toggle,
         }
 
         entity_id = create_entity_id(EntityTypes.REMOTE, device.identifier)

@@ -67,6 +67,9 @@ class SimpleCommands(StrEnum):
     AURO_PRESET_MEDIUM = "AURO_PRESET_MEDIUM"
     AURO_PRESET_LARGE = "AURO_PRESET_LARGE"
     AURO_PRESET_SPEECH = "AURO_PRESET_SPEECH"
+    DOLBY_VIRTUALIZER_ON = "DOLBY_VIRTUALIZER_ON"
+    DOLBY_VIRTUALIZER_OFF = "DOLBY_VIRTUALIZER_OFF"
+    DOLBY_VIRTUALIZER_TOGGLE = "DOLBY_VIRTUALIZER_TOGGLE"
 
 
 class StormAudioCommands(StrEnum):
@@ -135,6 +138,9 @@ class StormAudioCommands(StrEnum):
     AURO_PRESET_SPEECH = "ssp.auropreset.[3]"
     AURO_PRESET_X_FORMAT = "ssp.auropreset.[{}]"
     AURO_STRENGTH_X_FORMAT = "ssp.aurostrength.[{}]"
+    DOLBY_VIRTUALIZER_ON = "ssp.dolbyvirtualizer.on"
+    DOLBY_VIRTUALIZER_OFF = "ssp.dolbyvirtualizer.off"
+    DOLBY_VIRTUALIZER_TOGGLE = "ssp.dolbyvirtualizer.toggle"
 
 
 class StormAudioResponses(StrEnum):
@@ -187,6 +193,8 @@ class StormAudioResponses(StrEnum):
     STORM_XT_OFF = "ssp.stormxt.off"
     AURO_PRESET_X = "ssp.auropreset."
     AURO_STRENGTH_X = "ssp.aurostrength."
+    DOLBY_VIRTUALIZER_ON = "ssp.dolbyvirtualizer.on"
+    DOLBY_VIRTUALIZER_OFF = "ssp.dolbyvirtualizer.off"
 
 
 class Loggers(StrEnum):
@@ -219,6 +227,7 @@ class SensorType(StrEnum):
     BRIGHTNESS_DB = "brightness_db"
     CENTER_ENHANCE_DB = "center_enhance_db"
     DOLBY_MODE = "dolby_mode"
+    DOLBY_VIRTUALIZER = "dolby_virtualizer"
     LFE_ENHANCE_DB = "lfe_enhance_db"
     LOUDNESS = "loudness"
     MUTE = "mute"
