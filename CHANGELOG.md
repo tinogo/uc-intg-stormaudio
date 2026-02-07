@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.23.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.2...v0.23.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* Fix the entity states after powering the ISP off ([22dba28](https://github.com/tinogo/uc-intg-stormaudio/commit/22dba284334ada09e6268f260043946d6f3956f3))
+
 ## [0.23.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.1...v0.23.2) (2026-02-06)
 
 
