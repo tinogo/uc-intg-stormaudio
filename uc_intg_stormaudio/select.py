@@ -9,9 +9,15 @@ from typing import Any, Literal
 
 from ucapi import EntityTypes, Select, StatusCodes
 from ucapi.select import Commands as SelectCommands
+from ucapi.select import States
 from ucapi_framework import Entity, create_entity_id
 
-from uc_intg_stormaudio.const import Loggers, SelectType
+from uc_intg_stormaudio.const import (
+    SELECT_STATE_MAPPING,
+    Loggers,
+    SelectType,
+    StormAudioStates,
+)
 from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.SELECT)
@@ -237,3 +243,7 @@ class StormAudioSelect(Select, Entity):
                 await self._device.preset_prev()
 
         return StatusCodes.OK
+
+    def map_entity_states(self, device_state: StormAudioStates) -> States:
+        """Convert a device-specific state to a UC API entity state."""
+        return SELECT_STATE_MAPPING[device_state]

@@ -10,11 +10,16 @@ import logging
 from typing import Any, Callable
 
 from ucapi import EntityTypes, MediaPlayer, StatusCodes, media_player
-from ucapi.media_player import DeviceClasses
+from ucapi.media_player import DeviceClasses, States
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
-from uc_intg_stormaudio.const import Loggers, SimpleCommands
+from uc_intg_stormaudio.const import (
+    MEDIA_PLAYER_STATE_MAPPING,
+    Loggers,
+    SimpleCommands,
+    StormAudioStates,
+)
 from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
@@ -187,3 +192,7 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         except Exception as ex:  # pylint: disable=broad-exception-caught
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
             return StatusCodes.BAD_REQUEST
+
+    def map_entity_states(self, device_state: StormAudioStates) -> States:
+        """Convert a device-specific state to a UC API entity state."""
+        return MEDIA_PLAYER_STATE_MAPPING[device_state]

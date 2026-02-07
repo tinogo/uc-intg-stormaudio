@@ -11,10 +11,16 @@ import logging
 from typing import Any
 
 from ucapi import EntityTypes, Remote, StatusCodes, remote
+from ucapi.remote import States
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
-from uc_intg_stormaudio.const import Loggers, SimpleCommands
+from uc_intg_stormaudio.const import (
+    REMOTE_STATE_MAPPING,
+    Loggers,
+    SimpleCommands,
+    StormAudioStates,
+)
 from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.REMOTE)
@@ -196,3 +202,7 @@ class StormAudioRemote(Remote, Entity):
 
             if delay > 0:
                 await asyncio.sleep(delay / 1000)
+
+    def map_entity_states(self, device_state: StormAudioStates) -> States:
+        """Convert a device-specific state to a UC API entity state."""
+        return REMOTE_STATE_MAPPING[device_state]

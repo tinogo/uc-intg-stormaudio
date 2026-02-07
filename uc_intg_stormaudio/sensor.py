@@ -8,10 +8,15 @@ import logging
 from typing import Any
 
 from ucapi import EntityTypes, Sensor
-from ucapi.sensor import DeviceClasses, Options
+from ucapi.sensor import DeviceClasses, Options, States
 from ucapi_framework import Entity, create_entity_id
 
-from uc_intg_stormaudio.const import Loggers, SensorType
+from uc_intg_stormaudio.const import (
+    SENSOR_STATE_MAPPING,
+    Loggers,
+    SensorType,
+    StormAudioStates,
+)
 from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.SENSOR)
@@ -110,3 +115,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             case _:
                 raise ValueError(f"Unsupported sensor type: {sensor_type}")
         return sensor
+
+    def map_entity_states(self, device_state: StormAudioStates) -> States:
+        """Convert a device-specific state to a UC API entity state."""
+        return SENSOR_STATE_MAPPING[device_state]
