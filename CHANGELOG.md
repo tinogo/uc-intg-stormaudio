@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.23.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.3...v0.23.4) (2026-02-07)
+
+
+### Bug Fixes
+
+* Fix the default names of the decibel-based sensors ([89e08df](https://github.com/tinogo/uc-intg-stormaudio/commit/89e08dfc114294883c32e7625f69159881f965ce))
+
 ## [0.23.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.2...v0.23.3) (2026-02-07)
 
 
