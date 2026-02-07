@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.23.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.4...v0.23.5) (2026-02-07)
+
+
+### Miscellaneous
+
+* **deps:** Update uv to version 0.10.0 ([8f35c2c](https://github.com/tinogo/uc-intg-stormaudio/commit/8f35c2c4299d544c70421bb537dc12c80ae9e10b))
+
 ## [0.23.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.3...v0.23.4) (2026-02-07)
 
 
