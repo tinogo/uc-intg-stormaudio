@@ -1086,7 +1086,7 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     async def dolby_center_spread_off(self):
         """Set the Dolby Center Spread to off."""
-        await self._send_command(StormAudioCommands.DOLBY_CENTER_SPREAD_ON)
+        await self._send_command(StormAudioCommands.DOLBY_CENTER_SPREAD_OFF)
         await self._wait_for_response(StormAudioResponses.DOLBY_CENTER_SPREAD_OFF)
 
     async def dolby_center_spread_toggle(self):
