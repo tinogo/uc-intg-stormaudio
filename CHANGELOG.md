@@ -11,6 +11,25 @@ _Changes in the next release_
 
 ---
 
+## [0.24.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.4...v0.24.0) (2026-02-14)
+
+
+### Features
+
+* Add asensor which shows the current Dolby Center Spread status ([24a3828](https://github.com/tinogo/uc-intg-stormaudio/commit/24a3828f8a7cb7fe1a0f9ecaa080dc6a7325602a))
+* Add SimpleCommands for the Dolby Center Spread ([48e8074](https://github.com/tinogo/uc-intg-stormaudio/commit/48e8074ecdffef58e38391bfe94736be5dd3d860))
+
+
+### Bug Fixes
+
+* Fix the dolby_center_spread_off simple-command ([26286ed](https://github.com/tinogo/uc-intg-stormaudio/commit/26286ed2b44f5824f8a29567f6752a90662bc5b1))
+
+
+### Miscellaneous
+
+* **deps:** Update the dependencies ([9f3e00e](https://github.com/tinogo/uc-intg-stormaudio/commit/9f3e00ebe2f32f4d5530b21b328f72b1b4b961d0))
+* **deps:** Update uv to version 0.10.0 ([8f35c2c](https://github.com/tinogo/uc-intg-stormaudio/commit/8f35c2c4299d544c70421bb537dc12c80ae9e10b))
+
 ## [0.23.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.3...v0.23.4) (2026-02-07)
 
 
