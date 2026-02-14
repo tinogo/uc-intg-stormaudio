@@ -17,6 +17,10 @@ class StormAudioDeviceAttributes:
     This dataclass holds all the current state of our StormAudio ISP.
     """
 
+    actual_upmixer_mode_id: int | None = None
+    audio_format: str | None = None
+    audio_sample_rate: str | None = None
+    audio_stream: str | None = None
     auro_preset_id: int | None = None
     auro_presets: dict[str, int] = field(
         default_factory=lambda: {
@@ -40,6 +44,8 @@ class StormAudioDeviceAttributes:
             3: "Night",
         }
     )
+    dolby_center_spread: bool = False
+    dolby_virtualizer: bool = False
     lfe_enhance: int = 0
     loudness_mode_id: int | None = None
     loudness_modes: dict[int, str] = field(
@@ -69,12 +75,7 @@ class StormAudioDeviceAttributes:
         }
     )
     upmixer_mode_id: int | None = None
-    actual_upmixer_mode_id: int | None = None
     volume: int = 0
-    dolby_virtualizer: bool = False
-    audio_sample_rate: str | None = None
-    audio_stream: str | None = None
-    audio_format: str | None = None
 
     @property
     def auro_preset(self) -> str | None:

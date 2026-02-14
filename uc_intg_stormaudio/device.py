@@ -205,6 +205,15 @@ class StormAudioDevice(PersistentConnectionDevice):
                     self._update_attributes()
 
                 case (
+                    StormAudioResponses.DOLBY_CENTER_SPREAD_ON
+                    | StormAudioResponses.DOLBY_CENTER_SPREAD_OFF
+                ):
+                    self.device_attributes.dolby_center_spread = (
+                        message == StormAudioResponses.DOLBY_CENTER_SPREAD_ON
+                    )
+                    self._update_attributes()
+
+                case (
                     StormAudioResponses.DOLBY_VIRTUALIZER_ON
                     | StormAudioResponses.DOLBY_VIRTUALIZER_OFF
                 ):
@@ -1048,6 +1057,20 @@ class StormAudioDevice(PersistentConnectionDevice):
             _LOG.error(
                 f"[%s] Invalid Auro-Matic strength: {auro_strength}", self.log_id
             )
+
+    async def dolby_center_spread_on(self):
+        """Set the Dolby Center Spread to on."""
+        await self._send_command(StormAudioCommands.DOLBY_CENTER_SPREAD_ON)
+        await self._wait_for_response(StormAudioResponses.DOLBY_CENTER_SPREAD_ON)
+
+    async def dolby_center_spread_off(self):
+        """Set the Dolby Center Spread to off."""
+        await self._send_command(StormAudioCommands.DOLBY_CENTER_SPREAD_ON)
+        await self._wait_for_response(StormAudioResponses.DOLBY_CENTER_SPREAD_OFF)
+
+    async def dolby_center_spread_toggle(self):
+        """Toggle the Dolby Center Spread."""
+        await self._send_command(StormAudioCommands.DOLBY_CENTER_SPREAD_TOGGLE)
 
     async def dolby_virtualizer_on(self):
         """Set the Dolby Virtualizer to on."""
