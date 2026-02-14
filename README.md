@@ -75,6 +75,7 @@ This integration provides the following sensors:
 - Current Auro-Matic Preset
 - Current Auro-Matic Strength
 - Current Dolby Mode
+- Current Dolby Center Spread Setting
 - Current Dolby Virtualizer Setting
 - Current Loudness Setting
 - Current Preset

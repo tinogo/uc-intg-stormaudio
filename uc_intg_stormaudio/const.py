@@ -239,6 +239,7 @@ class SensorType(StrEnum):
     BRIGHTNESS_DB = "brightness_db"
     CENTER_ENHANCE_DB = "center_enhance_db"
     DOLBY_MODE = "dolby_mode"
+    DOLBY_CENTER_SPREAD = "dolby_center_spread"
     DOLBY_VIRTUALIZER = "dolby_virtualizer"
     LFE_ENHANCE_DB = "lfe_enhance_db"
     LOUDNESS = "loudness"

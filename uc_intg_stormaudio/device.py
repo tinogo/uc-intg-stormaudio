@@ -98,6 +98,11 @@ class StormAudioDevice(PersistentConnectionDevice):
                 EntityTypes.SENSOR, self.identifier, SensorType.DOLBY_MODE.value
             ): self._get_dolby_mode_sensor_attributes,
             create_entity_id(
+                EntityTypes.SENSOR,
+                self.identifier,
+                SensorType.DOLBY_CENTER_SPREAD.value,
+            ): self._get_dolby_center_spread_sensor_attributes,
+            create_entity_id(
                 EntityTypes.SENSOR, self.identifier, SensorType.DOLBY_VIRTUALIZER.value
             ): self._get_dolby_virtualizer_sensor_attributes,
             create_entity_id(
@@ -608,8 +613,24 @@ class StormAudioDevice(PersistentConnectionDevice):
             SensorAttr.VALUE: self.device_attributes.dolby_mode,
         }
 
+    def _get_dolby_center_spread_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Dolby Center Spread sensor attributes."""
+        if self.device_attributes.actual_upmixer_mode_id != 2:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
+            SensorAttr.VALUE: "on"
+            if self.device_attributes.dolby_center_spread
+            else "off",
+            SensorAttr.UNIT: "sound",
+        }
+
     def _get_dolby_virtualizer_sensor_attributes(self) -> dict[str, Any]:
-        """Get the dolby virtualizer sensor attributes."""
+        """Get the Dolby virtualizer sensor attributes."""
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
             SensorAttr.VALUE: "on"

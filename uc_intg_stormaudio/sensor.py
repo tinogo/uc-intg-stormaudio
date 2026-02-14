@@ -44,6 +44,7 @@ _simple_custom_sensors = {
 }
 
 _binary_sensors = {
+    SensorType.DOLBY_CENTER_SPREAD: "Dolby Center Spread",
     SensorType.DOLBY_VIRTUALIZER: "Dolby Virtualizer",
     SensorType.MUTE: "Mute",
     SensorType.STORM_XT: "StormXT",
