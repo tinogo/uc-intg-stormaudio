@@ -206,6 +206,22 @@ class StormAudioResponses(StrEnum):
     AUDIO_SAMPLE_RATE_X = "ssp.fs."
     AUDIO_STREAM_X = "ssp.stream."
     AUDIO_FORMAT_X = "ssp.format."
+    VIDEO_HDMI_1_INPUT_X = "ssp.hdmi1.input."
+    VIDEO_HDMI_1_SYNC_X = "ssp.hdmi1.sync."
+    VIDEO_HDMI_1_TIMING_X = "ssp.hdmi1.timing."
+    VIDEO_HDMI_1_COPY_PROTECTED_X = "ssp.hdmi1.cp."
+    VIDEO_HDMI_1_COLOR_SPACE_X = "ssp.hdmi1.colorspace."
+    VIDEO_HDMI_1_COLOR_DEPTH_X = "ssp.hdmi1.colordepth."
+    VIDEO_HDMI_1_MODE_X = "ssp.hdmi1.mode."
+    VIDEO_HDMI_1_HDR_X = "ssp.hdmi1.hdr."
+    VIDEO_HDMI_2_INPUT_X = "ssp.hdmi2.input."
+    VIDEO_HDMI_2_SYNC_X = "ssp.hdmi2.sync."
+    VIDEO_HDMI_2_TIMING_X = "ssp.hdmi2.timing."
+    VIDEO_HDMI_2_COPY_PROTECTED_X = "ssp.hdmi2.cp."
+    VIDEO_HDMI_2_COLOR_SPACE_X = "ssp.hdmi2.colorspace."
+    VIDEO_HDMI_2_COLOR_DEPTH_X = "ssp.hdmi2.colordepth."
+    VIDEO_HDMI_2_MODE_X = "ssp.hdmi2.mode."
+    VIDEO_HDMI_2_HDR_X = "ssp.hdmi2.hdr."
 
 
 class Loggers(StrEnum):
