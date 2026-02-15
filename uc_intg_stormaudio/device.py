@@ -295,7 +295,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     )
 
                     self.device_attributes.hdmi_1.update(
-                        {"color_space": hdmi_color_depth}
+                        {"color_depth": hdmi_color_depth}
                     )
                     self._update_attributes()
 
@@ -375,7 +375,7 @@ class StormAudioDevice(PersistentConnectionDevice):
                     )
 
                     self.device_attributes.hdmi_2.update(
-                        {"color_space": hdmi_color_depth}
+                        {"color_depth": hdmi_color_depth}
                     )
                     self._update_attributes()
 
