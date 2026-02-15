@@ -717,13 +717,17 @@ class StormAudioDevice(PersistentConnectionDevice):
 
     def _get_audio_stream_sensor_attributes(self) -> dict[str, Any]:
         """Get the current Audio stream sensor attributes."""
-        audio_stream = self.device_attributes.audio_stream
-        audio_format = self.device_attributes.audio_format
-        audio_sample_rate = self.device_attributes.audio_sample_rate
+        values = [
+            self.device_attributes.audio_stream,
+            self.device_attributes.audio_format,
+            self.device_attributes.audio_sample_rate,
+        ]
+        # Filter out falsy values (None, empty string, etc.)
+        filtered_values = [str(v) for v in values if v]
 
         return {
             SensorAttr.STATE: SENSOR_STATE_MAPPING[self.state],
-            SensorAttr.VALUE: f"{audio_stream}, {audio_format}, {audio_sample_rate}"
+            SensorAttr.VALUE: ", ".join(filtered_values)
             if self.device_attributes.audio_stream != "None"
             else "-",
         }
