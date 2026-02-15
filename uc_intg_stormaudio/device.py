@@ -227,6 +227,146 @@ class StormAudioDevice(PersistentConnectionDevice):
                     )
                     self._update_attributes()
 
+                case StormAudioResponses.VIDEO_HDMI_1_INPUT_X:
+                    hdmi_input_name, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_INPUT_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(input=hdmi_input_name)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_SYNC_X:
+                    hdmi_sync, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_SYNC_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(sync=hdmi_sync)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_TIMING_X:
+                    hdmi_timing, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_TIMING_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(timing=hdmi_timing)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_COPY_PROTECTION_X:
+                    hdmi_copy_protection, *_tail = json.loads(
+                        message[
+                            len(
+                                StormAudioResponses.VIDEO_HDMI_1_COPY_PROTECTION_X
+                            ) :  # noqa: E203
+                        ]
+                    )
+
+                    self.device_attributes.hdmi_1.update(
+                        copy_protection=hdmi_copy_protection
+                    )
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_COLOR_SPACE_X:
+                    hdmi_color_space, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_COLOR_SPACE_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(color_space=hdmi_color_space)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_COLOR_DEPTH_X:
+                    hdmi_color_depth, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_COLOR_DEPTH_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(color_space=hdmi_color_depth)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_MODE_X:
+                    hdmi_mode, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_MODE_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(mode=hdmi_mode)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_1_HDR_X:
+                    hdmi_hdr, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_1_HDR_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_1.update(hdr=hdmi_hdr)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_INPUT_X:
+                    hdmi_input_name, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_INPUT_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(input=hdmi_input_name)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_SYNC_X:
+                    hdmi_sync, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_SYNC_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(sync=hdmi_sync)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_TIMING_X:
+                    hdmi_timing, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_TIMING_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(timing=hdmi_timing)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_COPY_PROTECTION_X:
+                    hdmi_copy_protection, *_tail = json.loads(
+                        message[
+                            len(
+                                StormAudioResponses.VIDEO_HDMI_2_COPY_PROTECTION_X
+                            ) :  # noqa: E203
+                        ]
+                    )
+
+                    self.device_attributes.hdmi_2.update(
+                        copy_protection=hdmi_copy_protection
+                    )
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_COLOR_SPACE_X:
+                    hdmi_color_space, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_COLOR_SPACE_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(color_space=hdmi_color_space)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_COLOR_DEPTH_X:
+                    hdmi_color_depth, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_COLOR_DEPTH_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(color_space=hdmi_color_depth)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_MODE_X:
+                    hdmi_mode, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_MODE_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(mode=hdmi_mode)
+                    self._update_attributes()
+
+                case StormAudioResponses.VIDEO_HDMI_2_HDR_X:
+                    hdmi_hdr, *_tail = json.loads(
+                        message[len(StormAudioResponses.VIDEO_HDMI_2_HDR_X) :]  # noqa: E203
+                    )
+
+                    self.device_attributes.hdmi_2.update(hdr=hdmi_hdr)
+                    self._update_attributes()
+
                 case StormAudioResponses.INPUT_LIST_START:
                     self.device_attributes.sources = {}
 
