@@ -37,6 +37,8 @@ _simple_custom_sensors = {
     SensorType.AURO_PRESET: "Auro-Matic Preset",
     SensorType.AURO_STRENGTH: "Auro-Matic Strength",
     SensorType.DOLBY_MODE: "Dolby mode",
+    SensorType.HDMI_1_VIDEO_STREAM: "HDMI-Out 1 Video Stream",
+    SensorType.HDMI_2_VIDEO_STREAM: "HDMI-Out 2 Video Stream",
     SensorType.LOUDNESS: "Loudness",
     SensorType.PRESET: "Preset",
     SensorType.SOURCE: "Source",

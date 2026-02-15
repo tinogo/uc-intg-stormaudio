@@ -46,6 +46,28 @@ class StormAudioDeviceAttributes:
     )
     dolby_center_spread: bool = False
     dolby_virtualizer: bool = False
+    hdmi_1: dict[str, str | None] = field(
+        default_factory=lambda: {
+            "input_name": None,
+            "timing": None,
+            "copy_protection": None,
+            "color_space": None,
+            "color_depth": None,
+            "mode": None,
+            "hdr": None,
+        }
+    )
+    hdmi_2: dict[str, str | None] = field(
+        default_factory=lambda: {
+            "input_name": None,
+            "timing": None,
+            "copy_protection": None,
+            "color_space": None,
+            "color_depth": None,
+            "mode": None,
+            "hdr": None,
+        }
+    )
     lfe_enhance: int = 0
     loudness_mode_id: int | None = None
     loudness_modes: dict[int, str] = field(
