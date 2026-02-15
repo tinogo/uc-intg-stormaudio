@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.25.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.24.0...v0.25.0) (2026-02-15)
+
+
+### Features
+
+* **#68:** Add sensors for the current Video Stream ([#108](https://github.com/tinogo/uc-intg-stormaudio/issues/108)) ([124d615](https://github.com/tinogo/uc-intg-stormaudio/commit/124d6159633ab397762fece44a281a22970a84da))
+
 ## [0.24.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.23.4...v0.24.0) (2026-02-14)
 
 
