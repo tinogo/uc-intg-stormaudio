@@ -48,26 +48,24 @@ class StormAudioDeviceAttributes:
     dolby_virtualizer: bool = False
     hdmi_1: dict[str, str | None] = field(
         default_factory=lambda: {
-            "input": str | None,
-            "sync": str | None,
-            "timing": str | None,
-            "copy_protection": str | None,
-            "color_space": str | None,
-            "color_depth": str | None,
-            "mode": str | None,
-            "hdr": str | None,
+            "input_name": None,
+            "timing": None,
+            "copy_protection": None,
+            "color_space": None,
+            "color_depth": None,
+            "mode": None,
+            "hdr": None,
         }
     )
     hdmi_2: dict[str, str | None] = field(
         default_factory=lambda: {
-            "input": str | None,
-            "sync": str | None,
-            "timing": str | None,
-            "copy_protection": str | None,
-            "color_space": str | None,
-            "color_depth": str | None,
-            "mode": str | None,
-            "hdr": str | None,
+            "input_name": None,
+            "timing": None,
+            "copy_protection": None,
+            "color_space": None,
+            "color_depth": None,
+            "mode": None,
+            "hdr": None,
         }
     )
     lfe_enhance: int = 0
