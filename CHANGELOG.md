@@ -11,6 +11,14 @@ _Changes in the next release_
 
 ---
 
+## [0.25.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.0...v0.25.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* Fix the reporting of the color depth ([0b4b6ad](https://github.com/tinogo/uc-intg-stormaudio/commit/0b4b6add2e7e1657d95cb6fcd029e28f192d86ec))
+* Improve the output of the audio stream sensor ([079e009](https://github.com/tinogo/uc-intg-stormaudio/commit/079e009215087062366d1abc60512c63c91a74ec))
+
 ## [0.25.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.24.0...v0.25.0) (2026-02-15)
 
 
