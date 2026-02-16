@@ -11,6 +11,20 @@ _Changes in the next release_
 
 ---
 
+## [0.25.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.1...v0.25.2) (2026-02-16)
+
+
+### Documentation
+
+* Update the project structure ([1858c26](https://github.com/tinogo/uc-intg-stormaudio/commit/1858c266e32164ea044095f735467415ecbf776e))
+
+
+### Miscellaneous
+
+* **ci-cd:** Update the PyInstaller image ([c90b499](https://github.com/tinogo/uc-intg-stormaudio/commit/c90b499335dfe44651ae84bebc6b8833c7e37ae4))
+* **deps:** Update the dependencies ([9347203](https://github.com/tinogo/uc-intg-stormaudio/commit/93472031dd08d963ae0d9b80ae696196a0cc59f9))
+* Make documentation updates visible in the changelog ([4d18e86](https://github.com/tinogo/uc-intg-stormaudio/commit/4d18e8660d69118ac9017d4bb542a3c2e1d12f60))
+
 ## [0.25.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.0...v0.25.1) (2026-02-15)
 
 
