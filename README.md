@@ -111,14 +111,21 @@ The major changes found in each new release are listed in the [changelog](https:
 
 ```
 ├── driver.json              # Integration metadata and configuration
-├── uc_intg_stormaudio/         # Main integration code
+├── uc_intg_stormaudio/      # Main integration code
 │   ├── __init__.py          # Main entry point
-│   ├── const.py             # Constants and device configuration dataclass
+│   ├── config.py            # device configuration dataclass
+│   ├── const.py             # Constants
 │   ├── device.py            # Device communication and state management
+│   ├── device_attributes.py # Contains the device attributes, i.e. the state of the StormAudio ISP
 │   ├── discover.py          # Network device discovery
 │   ├── driver.py            # Integration Driver
+│   ├── helpers.py           # Common used helper files
 │   ├── media_player.py      # Media player entity
-│   └── setup.py             # Setup flow and user configuration
+│   ├── remote.py            # Remote entity
+│   ├── select.py            # Select entity
+│   ├── sensor.py            # Sensor entity
+│   ├── setup.py             # Setup flow and user configuration
+│   └── stormaudio.py        # The basic TCP-/Telnet-client for communicating with StormAudio devices
 ├── config/                  # Runtime configuration storage
 ├── Dockerfile               # Container build configuration
 └── requirements.txt         # Python dependencies
