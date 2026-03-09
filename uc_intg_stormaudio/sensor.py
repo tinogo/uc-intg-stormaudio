@@ -5,7 +5,7 @@ Sensor Entity.
 """
 
 import logging
-from typing import Any
+from typing import Any, Callable
 
 from ucapi import EntityTypes, Sensor
 from ucapi.sensor import Attributes as SensorAttr
@@ -61,6 +61,29 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
         """Initialize the sensor entity."""
         self._device = device
         self._sensor_type = sensor_type
+        self._entity_attribute_map: dict[SensorType, Callable] = {
+            SensorType.AUDIO_STREAM: self._get_audio_stream_sensor_attributes,
+            SensorType.AURO_PRESET: self._get_auro_preset_sensor_attributes,
+            SensorType.AURO_STRENGTH: self._get_auro_strength_sensor_attributes,
+            SensorType.BASS_DB: self._get_bass_sensor_attributes,
+            SensorType.BRIGHTNESS_DB: self._get_brightness_sensor_attributes,
+            SensorType.CENTER_ENHANCE_DB: self._get_center_enhance_sensor_attributes,
+            SensorType.DOLBY_CENTER_SPREAD: self._get_dolby_center_spread_sensor_attributes,
+            SensorType.DOLBY_MODE: self._get_dolby_mode_sensor_attributes,
+            SensorType.DOLBY_VIRTUALIZER: self._get_dolby_virtualizer_sensor_attributes,
+            SensorType.HDMI_1_VIDEO_STREAM: self._get_hdmi_out_1_video_stream_sensor_attributes,
+            SensorType.HDMI_2_VIDEO_STREAM: self._get_hdmi_out_2_video_stream_sensor_attributes,
+            SensorType.LFE_ENHANCE_DB: self._get_lfe_enhance_sensor_attributes,
+            SensorType.LOUDNESS: self._get_loudness_sensor_attributes,
+            SensorType.MUTE: self._get_mute_sensor_attributes,
+            SensorType.PRESET: self._get_preset_sensor_attributes,
+            SensorType.SOURCE: self._get_source_sensor_attributes,
+            SensorType.STORM_XT: self._get_storm_xt_sensor_attributes,
+            SensorType.SURROUND_ENHANCE_DB: self._get_surround_enhance_sensor_attributes,
+            SensorType.TREBLE_DB: self._get_treble_sensor_attributes,
+            SensorType.UPMIXER_MODE: self._get_upmixer_mode_sensor_attributes,
+            SensorType.VOLUME_DB: self._get_volume_sensor_attributes,
+        }
 
         sensor_config = self._get_sensor_config(sensor_type, device)
 
@@ -127,50 +150,11 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
         """Convert a device-specific state to a UC API entity state."""
         return SENSOR_STATE_MAPPING[device_state]
 
-    async def sync_state(self) -> None:  # pylint: disable=too-many-branches
+    async def sync_state(self) -> None:
         """Update the sensor attributes."""
-        if self._sensor_type == SensorType.AUDIO_STREAM:
-            self.update(self._get_audio_stream_sensor_attributes())
-        elif self._sensor_type == SensorType.AURO_PRESET:
-            self.update(self._get_auro_preset_sensor_attributes())
-        elif self._sensor_type == SensorType.AURO_STRENGTH:
-            self.update(self._get_auro_strength_sensor_attributes())
-        elif self._sensor_type == SensorType.BASS_DB:
-            self.update(self._get_bass_sensor_attributes())
-        elif self._sensor_type == SensorType.BRIGHTNESS_DB:
-            self.update(self._get_brightness_sensor_attributes())
-        elif self._sensor_type == SensorType.CENTER_ENHANCE_DB:
-            self.update(self._get_center_enhance_sensor_attributes())
-        elif self._sensor_type == SensorType.DOLBY_CENTER_SPREAD:
-            self.update(self._get_dolby_center_spread_sensor_attributes())
-        elif self._sensor_type == SensorType.DOLBY_MODE:
-            self.update(self._get_dolby_mode_sensor_attributes())
-        elif self._sensor_type == SensorType.DOLBY_VIRTUALIZER:
-            self.update(self._get_dolby_virtualizer_sensor_attributes())
-        elif self._sensor_type == SensorType.HDMI_1_VIDEO_STREAM:
-            self.update(self._get_hdmi_out_1_video_stream_sensor_attributes())
-        elif self._sensor_type == SensorType.HDMI_2_VIDEO_STREAM:
-            self.update(self._get_hdmi_out_2_video_stream_sensor_attributes())
-        elif self._sensor_type == SensorType.LFE_ENHANCE_DB:
-            self.update(self._get_lfe_enhance_sensor_attributes())
-        elif self._sensor_type == SensorType.LOUDNESS:
-            self.update(self._get_loudness_sensor_attributes())
-        elif self._sensor_type == SensorType.MUTE:
-            self.update(self._get_mute_sensor_attributes())
-        elif self._sensor_type == SensorType.PRESET:
-            self.update(self._get_preset_sensor_attributes())
-        elif self._sensor_type == SensorType.SOURCE:
-            self.update(self._get_source_sensor_attributes())
-        elif self._sensor_type == SensorType.STORM_XT:
-            self.update(self._get_storm_xt_sensor_attributes())
-        elif self._sensor_type == SensorType.SURROUND_ENHANCE_DB:
-            self.update(self._get_surround_enhance_sensor_attributes())
-        elif self._sensor_type == SensorType.TREBLE_DB:
-            self.update(self._get_treble_sensor_attributes())
-        elif self._sensor_type == SensorType.UPMIXER_MODE:
-            self.update(self._get_upmixer_mode_sensor_attributes())
-        elif self._sensor_type == SensorType.VOLUME_DB:
-            self.update(self._get_volume_sensor_attributes())
+        attributes = self._entity_attribute_map.get(self._sensor_type)
+        if attributes is not None:
+            self.update(attributes())
         else:
             raise ValueError(f"Unsupported sensor type: {self._sensor_type}")
 

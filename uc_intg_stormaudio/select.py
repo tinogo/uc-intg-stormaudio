@@ -5,7 +5,7 @@ Select Entity.
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any, Callable, Literal
 
 from ucapi import EntityTypes, Select, StatusCodes
 from ucapi.select import Attributes as SelectAttr
@@ -42,6 +42,12 @@ class StormAudioSelect(Select, Entity):
         """Initialize the select entity."""
         self._device = device
         self._select_type = select_type
+        self._entity_attribute_map: dict[SelectType, Callable] = {
+            SelectType.AURO_PRESET: self._get_auro_preset_select_attributes,
+            SelectType.AURO_STRENGTH: self._get_auro_strength_select_attributes,
+            SelectType.PRESET: self._get_preset_select_attributes,
+            SelectType.SOUND_MODE: self._get_sound_mode_select_attributes,
+        }
 
         select_config = self._get_select_config(select_type, device)
 
@@ -253,14 +259,9 @@ class StormAudioSelect(Select, Entity):
 
     async def sync_state(self) -> None:
         """Update the select attributes."""
-        if self._select_type == SelectType.AURO_PRESET:
-            self.update(self._get_auro_preset_select_attributes())
-        elif self._select_type == SelectType.AURO_STRENGTH:
-            self.update(self._get_auro_strength_select_attributes())
-        elif self._select_type == SelectType.PRESET:
-            self.update(self._get_preset_select_attributes())
-        elif self._select_type == SelectType.SOUND_MODE:
-            self.update(self._get_sound_mode_select_attributes())
+        attributes = self._entity_attribute_map.get(self._select_type)
+        if attributes is not None:
+            self.update(attributes())
         else:
             raise ValueError(f"Unsupported select type: {self._select_type}")
 
