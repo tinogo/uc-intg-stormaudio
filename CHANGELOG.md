@@ -11,6 +11,14 @@ _Changes in the next release_
 
 ---
 
+## [0.25.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.3...v0.25.4) (2026-03-09)
+
+
+### Miscellaneous
+
+* Eliminate the duplicated code regarding the simple commands ([dbaf55c](https://github.com/tinogo/uc-intg-stormaudio/commit/dbaf55c1c80c097642bf4047b7e7646f21a72c9f))
+* Reduce the cyclomatic complexity in sensor and select entities ([9847a6c](https://github.com/tinogo/uc-intg-stormaudio/commit/9847a6cb5dba83fbac3846bda04353fd5f4ff24d))
+
 ## [0.25.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.2...v0.25.3) (2026-03-09)
 
 
