@@ -11,6 +11,14 @@ _Changes in the next release_
 
 ---
 
+## [0.25.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.2...v0.25.3) (2026-03-09)
+
+
+### Miscellaneous
+
+* **deps:** Update the dependencies ([5c1d809](https://github.com/tinogo/uc-intg-stormaudio/commit/5c1d809eb2e891f4fd592a1ca8b1b61b250a7065))
+* Make use of the newly introduced coordinator pattern ([710db40](https://github.com/tinogo/uc-intg-stormaudio/commit/710db40c53e6800f852ae3847b09058146283a1d))
+
 ## [0.25.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.1...v0.25.2) (2026-02-16)
 
 
