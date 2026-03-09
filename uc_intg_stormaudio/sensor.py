@@ -8,6 +8,7 @@ import logging
 from typing import Any
 
 from ucapi import EntityTypes, Sensor
+from ucapi.sensor import Attributes as SensorAttr
 from ucapi.sensor import DeviceClasses, Options, States
 from ucapi_framework import Entity, create_entity_id
 
@@ -59,6 +60,7 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
     def __init__(self, device: StormAudioDevice, sensor_type: SensorType):
         """Initialize the sensor entity."""
         self._device = device
+        self._sensor_type = sensor_type
 
         sensor_config = self._get_sensor_config(sensor_type, device)
 
@@ -72,6 +74,8 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
             device_class=sensor_config["device_class"],
             options=sensor_config.get("options", {}),
         )
+
+        self.subscribe_to_device(device)
 
     def _get_sensor_config(
         self, sensor_type: SensorType, device: StormAudioDevice
@@ -122,3 +126,262 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
     def map_entity_states(self, device_state: StormAudioStates) -> States:
         """Convert a device-specific state to a UC API entity state."""
         return SENSOR_STATE_MAPPING[device_state]
+
+    async def sync_state(self) -> None:  # pylint: disable=too-many-branches
+        """Update the sensor attributes."""
+        if self._sensor_type == SensorType.AUDIO_STREAM:
+            self.update(self._get_audio_stream_sensor_attributes())
+        elif self._sensor_type == SensorType.AURO_PRESET:
+            self.update(self._get_auro_preset_sensor_attributes())
+        elif self._sensor_type == SensorType.AURO_STRENGTH:
+            self.update(self._get_auro_strength_sensor_attributes())
+        elif self._sensor_type == SensorType.BASS_DB:
+            self.update(self._get_bass_sensor_attributes())
+        elif self._sensor_type == SensorType.BRIGHTNESS_DB:
+            self.update(self._get_brightness_sensor_attributes())
+        elif self._sensor_type == SensorType.CENTER_ENHANCE_DB:
+            self.update(self._get_center_enhance_sensor_attributes())
+        elif self._sensor_type == SensorType.DOLBY_CENTER_SPREAD:
+            self.update(self._get_dolby_center_spread_sensor_attributes())
+        elif self._sensor_type == SensorType.DOLBY_MODE:
+            self.update(self._get_dolby_mode_sensor_attributes())
+        elif self._sensor_type == SensorType.DOLBY_VIRTUALIZER:
+            self.update(self._get_dolby_virtualizer_sensor_attributes())
+        elif self._sensor_type == SensorType.HDMI_1_VIDEO_STREAM:
+            self.update(self._get_hdmi_out_1_video_stream_sensor_attributes())
+        elif self._sensor_type == SensorType.HDMI_2_VIDEO_STREAM:
+            self.update(self._get_hdmi_out_2_video_stream_sensor_attributes())
+        elif self._sensor_type == SensorType.LFE_ENHANCE_DB:
+            self.update(self._get_lfe_enhance_sensor_attributes())
+        elif self._sensor_type == SensorType.LOUDNESS:
+            self.update(self._get_loudness_sensor_attributes())
+        elif self._sensor_type == SensorType.MUTE:
+            self.update(self._get_mute_sensor_attributes())
+        elif self._sensor_type == SensorType.PRESET:
+            self.update(self._get_preset_sensor_attributes())
+        elif self._sensor_type == SensorType.SOURCE:
+            self.update(self._get_source_sensor_attributes())
+        elif self._sensor_type == SensorType.STORM_XT:
+            self.update(self._get_storm_xt_sensor_attributes())
+        elif self._sensor_type == SensorType.SURROUND_ENHANCE_DB:
+            self.update(self._get_surround_enhance_sensor_attributes())
+        elif self._sensor_type == SensorType.TREBLE_DB:
+            self.update(self._get_treble_sensor_attributes())
+        elif self._sensor_type == SensorType.UPMIXER_MODE:
+            self.update(self._get_upmixer_mode_sensor_attributes())
+        elif self._sensor_type == SensorType.VOLUME_DB:
+            self.update(self._get_volume_sensor_attributes())
+        else:
+            raise ValueError(f"Unsupported sensor type: {self._sensor_type}")
+
+    def _get_audio_stream_sensor_attributes(self) -> dict[str, Any]:
+        """Get the current Audio stream sensor attributes."""
+        values = [
+            self._device.device_attributes.audio_stream,
+            self._device.device_attributes.audio_format,
+            self._device.device_attributes.audio_sample_rate,
+        ]
+        # Filter out falsy values (None, empty string, etc.)
+        filtered_values = [str(v) for v in values if v]
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: ", ".join(filtered_values)
+            if self._device.device_attributes.audio_stream != "None"
+            else "-",
+        }
+
+    def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic preset sensor attributes."""
+        if self._device.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.auro_preset),
+        }
+
+    def _get_auro_strength_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic strength sensor attributes."""
+        if self._device.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.auro_strength),
+        }
+
+    def _get_bass_sensor_attributes(self) -> dict[str, Any]:
+        """Get the bass sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.bass),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_brightness_sensor_attributes(self) -> dict[str, Any]:
+        """Get the brightness sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.brightness),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_center_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the center-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.center_enhance),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_dolby_center_spread_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Dolby Center Spread sensor attributes."""
+        if self._device.device_attributes.actual_upmixer_mode_id != 2:
+            return {
+                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SensorAttr.VALUE: None,
+            }
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: "on"
+            if self._device.device_attributes.dolby_center_spread
+            else "off",
+            SensorAttr.UNIT: "sound",
+        }
+
+    def _get_dolby_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: self._device.device_attributes.dolby_mode,
+        }
+
+    def _get_dolby_virtualizer_sensor_attributes(self) -> dict[str, Any]:
+        """Get the Dolby virtualizer sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: "on"
+            if self._device.device_attributes.dolby_virtualizer
+            else "off",
+            SensorAttr.UNIT: "sound",
+        }
+
+    def _get_hdmi_out_1_video_stream_sensor_attributes(self) -> dict[str, Any]:
+        """Get the current HDMI-Out 1 video stream sensor attributes."""
+        input_name = self._device.device_attributes.hdmi_1.get("input_name")
+        timing = self._device.device_attributes.hdmi_1.get("timing")
+        copy_protection = self._device.device_attributes.hdmi_1.get("copy_protection")
+        color_space = self._device.device_attributes.hdmi_1.get("color_space")
+        color_depth = self._device.device_attributes.hdmi_1.get("color_depth")
+        mode = self._device.device_attributes.hdmi_1.get("mode")
+        hdr = self._device.device_attributes.hdmi_1.get("hdr")
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: f"{timing}, {copy_protection}, {color_space}, {color_depth}, {mode}, {hdr}"
+            if input_name != "-" and input_name is not None
+            else "-",
+        }
+
+    def _get_hdmi_out_2_video_stream_sensor_attributes(self) -> dict[str, Any]:
+        """Get the current HDMI-Out 2 video stream sensor attributes."""
+        input_name = self._device.device_attributes.hdmi_2.get("input_name")
+        timing = self._device.device_attributes.hdmi_2.get("timing")
+        copy_protection = self._device.device_attributes.hdmi_2.get("copy_protection")
+        color_space = self._device.device_attributes.hdmi_2.get("color_space")
+        color_depth = self._device.device_attributes.hdmi_2.get("color_depth")
+        mode = self._device.device_attributes.hdmi_2.get("mode")
+        hdr = self._device.device_attributes.hdmi_2.get("hdr")
+
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: f"{timing}, {copy_protection}, {color_space}, {color_depth}, {mode}, {hdr}"
+            if input_name != "-" and input_name is not None
+            else "-",
+        }
+
+    def _get_lfe_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the LFE-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.lfe_enhance),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_loudness_sensor_attributes(self) -> dict[str, Any]:
+        """Get the loudness sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: self._device.device_attributes.loudness,
+        }
+
+    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
+        """Get the mute sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: "on" if self._device.device_attributes.muted else "off",
+            SensorAttr.UNIT: "sound",
+        }
+
+    def _get_preset_sensor_attributes(self) -> dict[str, Any]:
+        """Get the preset sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: self._device.device_attributes.preset,
+        }
+
+    def _get_source_sensor_attributes(self) -> dict[str, Any]:
+        """Get the source sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: self._device.device_attributes.source,
+        }
+
+    def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
+        """Get the StormXT sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: "on"
+            if self._device.device_attributes.storm_xt_active
+            else "off",
+            SensorAttr.UNIT: "sound",
+        }
+
+    def _get_surround_enhance_sensor_attributes(self) -> dict[str, Any]:
+        """Get the surround-enhance sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.surround_enhance),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_treble_sensor_attributes(self) -> dict[str, Any]:
+        """Get the treble sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.treble),
+            SensorAttr.UNIT: "dB",
+        }
+
+    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: self._device.device_attributes.actual_sound_mode,
+        }
+
+    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
+        """Get the volume sensor attributes."""
+        return {
+            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
+            SensorAttr.VALUE: str(self._device.device_attributes.volume - 100),
+            SensorAttr.UNIT: "dB",
+        }

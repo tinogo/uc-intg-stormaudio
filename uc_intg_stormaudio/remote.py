@@ -11,6 +11,7 @@ import logging
 from typing import Any
 
 from ucapi import EntityTypes, Remote, StatusCodes, remote
+from ucapi.remote import Attributes as RemoteAttr
 from ucapi.remote import States
 from ucapi_framework import Entity, create_entity_id
 
@@ -123,6 +124,8 @@ class StormAudioRemote(Remote, Entity):
             cmd_handler=self.handle_command,
         )
 
+        self.subscribe_to_device(device)
+
     async def handle_command(
         self,
         entity: Remote,
@@ -209,3 +212,11 @@ class StormAudioRemote(Remote, Entity):
     def map_entity_states(self, device_state: StormAudioStates) -> States:
         """Convert a device-specific state to a UC API entity state."""
         return REMOTE_STATE_MAPPING[device_state]
+
+    async def sync_state(self) -> None:
+        """Update the remote attributes."""
+        self.update(
+            {
+                RemoteAttr.STATE: REMOTE_STATE_MAPPING[self._device.state],
+            }
+        )

@@ -8,6 +8,7 @@ import logging
 from typing import Any, Literal
 
 from ucapi import EntityTypes, Select, StatusCodes
+from ucapi.select import Attributes as SelectAttr
 from ucapi.select import Commands as SelectCommands
 from ucapi.select import States
 from ucapi_framework import Entity, create_entity_id
@@ -52,6 +53,8 @@ class StormAudioSelect(Select, Entity):
             attributes=select_config["attributes"],
             cmd_handler=self.handle_command,
         )
+
+        self.subscribe_to_device(device)
 
     def _get_select_config(
         self, select_type: SelectType, device: StormAudioDevice
@@ -247,3 +250,64 @@ class StormAudioSelect(Select, Entity):
     def map_entity_states(self, device_state: StormAudioStates) -> States:
         """Convert a device-specific state to a UC API entity state."""
         return SELECT_STATE_MAPPING[device_state]
+
+    async def sync_state(self) -> None:
+        """Update the select attributes."""
+        if self._select_type == SelectType.AURO_PRESET:
+            self.update(self._get_auro_preset_select_attributes())
+        elif self._select_type == SelectType.AURO_STRENGTH:
+            self.update(self._get_auro_strength_select_attributes())
+        elif self._select_type == SelectType.PRESET:
+            self.update(self._get_preset_select_attributes())
+        elif self._select_type == SelectType.SOUND_MODE:
+            self.update(self._get_sound_mode_select_attributes())
+        else:
+            raise ValueError(f"Unsupported select type: {self._select_type}")
+
+    def _get_auro_preset_select_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic preset select attributes."""
+        if self._device.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SelectAttr.STATE: SELECT_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SelectAttr.CURRENT_OPTION: None,
+                SelectAttr.OPTIONS: [],
+            }
+
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self._device.state],
+            SelectAttr.CURRENT_OPTION: self._device.device_attributes.auro_preset,
+            SelectAttr.OPTIONS: self._device.device_attributes.auro_preset_list,
+        }
+
+    def _get_auro_strength_select_attributes(self) -> dict[str, Any]:
+        """Get the Auro-Matic strength select attributes."""
+        if self._device.device_attributes.actual_upmixer_mode_id != 4:
+            return {
+                SelectAttr.STATE: SELECT_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+                SelectAttr.CURRENT_OPTION: None,
+                SelectAttr.OPTIONS: [],
+            }
+
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self._device.state],
+            SelectAttr.CURRENT_OPTION: str(
+                self._device.device_attributes.auro_strength
+            ),
+            SelectAttr.OPTIONS: self._device.device_attributes.auro_strength_list,
+        }
+
+    def _get_preset_select_attributes(self) -> dict[str, Any]:
+        """Get the preset select attributes."""
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self._device.state],
+            SelectAttr.CURRENT_OPTION: self._device.device_attributes.preset,
+            SelectAttr.OPTIONS: self._device.device_attributes.preset_list,
+        }
+
+    def _get_sound_mode_select_attributes(self) -> dict[str, Any]:
+        """Get the sound mode select attributes."""
+        return {
+            SelectAttr.STATE: SELECT_STATE_MAPPING[self._device.state],
+            SelectAttr.CURRENT_OPTION: self._device.device_attributes.actual_sound_mode,
+            SelectAttr.OPTIONS: self._device.device_attributes.sound_mode_list,
+        }

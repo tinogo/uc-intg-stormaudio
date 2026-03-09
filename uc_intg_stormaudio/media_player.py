@@ -10,6 +10,7 @@ import logging
 from typing import Any, Callable
 
 from ucapi import EntityTypes, MediaPlayer, StatusCodes, media_player
+from ucapi.media_player import Attributes as MediaAttr
 from ucapi.media_player import DeviceClasses, States
 from ucapi_framework import Entity, create_entity_id
 
@@ -143,6 +144,8 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
             cmd_handler=self.handle_command,
         )
 
+        self.subscribe_to_device(device)
+
     async def handle_command(
         self,
         entity: MediaPlayer,
@@ -199,3 +202,24 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
     def map_entity_states(self, device_state: StormAudioStates) -> States:
         """Convert a device-specific state to a UC API entity state."""
         return MEDIA_PLAYER_STATE_MAPPING[device_state]
+
+    async def sync_state(self) -> None:
+        """Update the media player attributes."""
+        audio_stream = self._device.device_attributes.audio_stream
+        audio_format = self._device.device_attributes.audio_format
+        audio_sample_rate = self._device.device_attributes.audio_sample_rate
+
+        self.update(
+            {
+                MediaAttr.STATE: MEDIA_PLAYER_STATE_MAPPING[self._device.state],
+                MediaAttr.MEDIA_TITLE: f"Audio: {audio_stream}, {audio_format}, {audio_sample_rate}"
+                if self._device.device_attributes.audio_stream != "None"
+                else None,
+                MediaAttr.SOURCE: self._device.device_attributes.source,
+                MediaAttr.SOURCE_LIST: self._device.device_attributes.source_list,
+                MediaAttr.SOUND_MODE: self._device.device_attributes.actual_sound_mode,
+                MediaAttr.SOUND_MODE_LIST: self._device.device_attributes.sound_mode_list,
+                MediaAttr.VOLUME: self._device.device_attributes.volume,
+                MediaAttr.MUTED: self._device.device_attributes.muted,
+            }
+        )
