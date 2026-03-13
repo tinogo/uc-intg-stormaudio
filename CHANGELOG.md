@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.25.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.4...v0.25.5) (2026-03-13)
+
+
+### Miscellaneous
+
+* **deps:** Update the ucapi-framework to version 1.9.1 ([421af73](https://github.com/tinogo/uc-intg-stormaudio/commit/421af73ded270e31e5dce5bb37816891feb1d73c))
+
 ## [0.25.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.3...v0.25.4) (2026-03-09)
 
 
