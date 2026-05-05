@@ -11,6 +11,23 @@ _Changes in the next release_
 
 ---
 
+## [0.25.6](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.5...v0.25.6) (2026-05-05)
+
+
+### Bug Fixes
+
+* fix the dependabot config for updating github actions ([058d0fd](https://github.com/tinogo/uc-intg-stormaudio/commit/058d0fd4cd6b916af5186fcec5f6b4016522f605))
+
+
+### Miscellaneous
+
+* **deps:** Add requirements for uv ([9236aa5](https://github.com/tinogo/uc-intg-stormaudio/commit/9236aa57635f98e943ab199644800421c73f00f2))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#126](https://github.com/tinogo/uc-intg-stormaudio/issues/126)) ([c4d74f4](https://github.com/tinogo/uc-intg-stormaudio/commit/c4d74f413f2e2603f42732703bc7a513abaec657))
+* **deps:** let dependabot update the uv.lock ([6f6e302](https://github.com/tinogo/uc-intg-stormaudio/commit/6f6e302d47f18577f4ee5e586151f612c4c7ed47))
+* **deps:** Update the dependencies ([bdf7634](https://github.com/tinogo/uc-intg-stormaudio/commit/bdf7634a4ed9d041bb28c70f8c1de11e9ca1c0a4))
+* **deps:** update the r2-pyinstaller docker image ([cdafb97](https://github.com/tinogo/uc-intg-stormaudio/commit/cdafb979a573832ad43de7917ee919fdf8aa420b))
+* ignore updates to protobuf ([2170e55](https://github.com/tinogo/uc-intg-stormaudio/commit/2170e553507536b1a9e2511bf27e899c26d9b6e4))
+
 ## [0.25.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.4...v0.25.5) (2026-03-13)
 
 
