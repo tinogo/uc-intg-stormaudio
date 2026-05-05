@@ -7,7 +7,7 @@ idna==3.13
 ifaddr==0.2.0
 multidict==6.7.1
 propcache==0.4.1
-protobuf==6.33.6
+protobuf==7.34.1
 pyee==13.0.1
 typing-extensions==4.15.0
 ucapi==0.6.0
