@@ -24,7 +24,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.GOOGLE_RELEASE_PLEASE_TOKEN }}
