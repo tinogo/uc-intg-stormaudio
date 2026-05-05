@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "protobuf"
 
   - package-ecosystem: "github-actions"
     directory: ".github/workflows"
