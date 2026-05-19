@@ -11,6 +11,18 @@ _Changes in the next release_
 
 ---
 
+## [0.25.7](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.6...v0.25.7) (2026-05-19)
+
+
+### Bug Fixes
+
+* **ci:** Restrict the permissions in the CI-pipeline a bit ([6638550](https://github.com/tinogo/uc-intg-stormaudio/commit/66385509f09cab8cd7e3eb3afa108a425b6bcbd2))
+
+
+### Miscellaneous
+
+* Update the dependencies ([f9f8eb2](https://github.com/tinogo/uc-intg-stormaudio/commit/f9f8eb2452f4edc45cea0230e7546c26325ebf4b))
+
 ## [0.25.6](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.5...v0.25.6) (2026-05-05)
 
 
