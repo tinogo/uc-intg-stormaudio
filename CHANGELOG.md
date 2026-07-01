@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.25.8](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.7...v0.25.8) (2026-07-01)
+
+
+### Bug Fixes
+
+* gracefully handle TCP-Connection errors in close_connection ([fd31ebd](https://github.com/tinogo/uc-intg-stormaudio/commit/fd31ebd0d82a16c7036d1791950da104b652e432))
+
+
+### Miscellaneous
+
+* **deps:** bump actions/checkout from 6 to 7 in /.github/workflows ([#144](https://github.com/tinogo/uc-intg-stormaudio/issues/144)) ([bdc57f7](https://github.com/tinogo/uc-intg-stormaudio/commit/bdc57f7e427bc64187a527e42a9d921829566379))
+* **deps:** Update the dependencies ([d1e12b5](https://github.com/tinogo/uc-intg-stormaudio/commit/d1e12b5d1211369647e21ee70725ff2cdcb42d76))
+
 ## [0.25.7](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.6...v0.25.7) (2026-05-19)
 
 
