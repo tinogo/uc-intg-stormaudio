@@ -1,9 +1,9 @@
-aiohappyeyeballs==2.6.1
-aiohttp==3.13.5
+aiohappyeyeballs==2.7.1
+aiohttp==3.14.1
 aiosignal==1.4.0
 attrs==26.1.0
 frozenlist==1.8.0
-idna==3.15
+idna==3.18
 ifaddr==0.2.0
 multidict==6.7.1
 propcache==0.5.2
@@ -14,4 +14,4 @@ ucapi==0.7.0
 ucapi-framework==1.9.5
 websockets==16.0
 yarl==1.24.2
-zeroconf==0.149.7
+zeroconf==0.150.0
