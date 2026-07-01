@@ -77,7 +77,14 @@ class StormAudioDevice(PersistentConnectionDevice):
     async def close_connection(self) -> None:
         """Close the connection."""
         if self._connection:
-            await self._client.close(self._connection)
+            try:
+                await self._client.close(self._connection)
+            except ConnectionResetError as error:
+                _LOG.warning(
+                    "[%s] Received: %s. Ignoring, as connection cleanup is handled by UCAPI-Framework",
+                    self.log_id,
+                    error,
+                )
 
     async def maintain_connection(self) -> None:  # pylint: disable=too-many-statements
         """Maintain the connection."""  # noqa: D202
