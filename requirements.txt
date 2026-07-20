@@ -12,6 +12,6 @@ pyee==13.0.1
 typing-extensions==4.15.0
 ucapi==0.7.0
 ucapi-framework==1.9.5
-websockets==16.0
+websockets==16.1.1
 yarl==1.24.2
 zeroconf==0.150.0
