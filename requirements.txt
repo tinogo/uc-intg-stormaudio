@@ -13,5 +13,5 @@ typing-extensions==4.15.0
 ucapi==0.7.0
 ucapi-framework==1.9.5
 websockets==16.0
-yarl==1.24.2
+yarl==1.24.5
 zeroconf==0.150.0
