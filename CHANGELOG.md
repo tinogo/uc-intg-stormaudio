@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.26.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.8...v0.26.0) (2026-07-28)
+
+
+### Features
+
+* **ci-cd:** use a ARM-native CI-runner to build the artifact ([c5dabaa](https://github.com/tinogo/uc-intg-stormaudio/commit/c5dabaa3ccb84188d6e8816fec9c3c87a9631911))
+
+
+### Miscellaneous
+
+* **deps:** bump actions/setup-python from 6 to 7 in /.github/workflows ([#148](https://github.com/tinogo/uc-intg-stormaudio/issues/148)) ([f524ae0](https://github.com/tinogo/uc-intg-stormaudio/commit/f524ae0962f6c9ed6a2cedefd36180b528ffb7ee))
+* **deps:** Update the dependencies ([5ab1af8](https://github.com/tinogo/uc-intg-stormaudio/commit/5ab1af892afa7d4f5d5adff4682a73d3e2e1e7a2))
+
 ## [0.25.8](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.7...v0.25.8) (2026-07-01)
 
 
