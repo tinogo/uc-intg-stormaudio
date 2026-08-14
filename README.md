@@ -51,7 +51,7 @@ The Media Player entity implements the following features:
 
 Furthermore, it implements many Simple-Commands.
 
-These commands `SEND_CMD` and `SEND_CMD_SEQUENCE` allow the user to send any of your StormAudio's supported TCP commands (see https://www.stormaudio.com/tools-guides/ → Drivers Packages → TCP/IP API for reference).
+The commands `SEND_CMD` and `SEND_CMD_SEQUENCE` allow the user to send any of your StormAudio's supported TCP commands (see https://www.stormaudio.com/tools-guides/ → Drivers Packages → TCP/IP API for reference).
 
 Additionally, you can send the following custom commands for the `send_cmd` and `send_cmd_sequence` commands:
 1. `PRESET_<YourPresetName>` --> This will select the given preset on your device.

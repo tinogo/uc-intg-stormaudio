@@ -76,7 +76,7 @@ class SimpleCommands(StrEnum):
 
 
 class StormAudioCommands(StrEnum):
-    """Telnet commands for StormAudio device."""
+    """Telnet commands to a StormAudio device."""
 
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
@@ -150,7 +150,7 @@ class StormAudioCommands(StrEnum):
 
 
 class StormAudioResponses(StrEnum):
-    """Telnet responses from StormAudio device."""
+    """Telnet responses from a StormAudio device."""
 
     POWER_ON = "ssp.power.on"
     POWER_OFF = "ssp.power.off"
