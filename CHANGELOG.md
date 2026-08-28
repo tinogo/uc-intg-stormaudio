@@ -11,6 +11,23 @@ _Changes in the next release_
 
 ---
 
+## [0.26.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.0...v0.26.1) (2026-08-28)
+
+
+### Documentation
+
+* document how to update a single package ([3754088](https://github.com/tinogo/uc-intg-stormaudio/commit/375408817367e0546a8c2f2b7e6fea99d7eb2d03))
+* fix some typos ([2388443](https://github.com/tinogo/uc-intg-stormaudio/commit/2388443d9f597fcee56dae8be2a6bb2c15516beb))
+
+
+### Miscellaneous
+
+* **deps:** update the ucapi-framework to version 1.9.6 ([fdefcec](https://github.com/tinogo/uc-intg-stormaudio/commit/fdefcec5a974c3cbd880570e265844dea731ccd7))
+* leverage immutable releases ([73edc02](https://github.com/tinogo/uc-intg-stormaudio/commit/73edc02fc1ee9f90d491f31ec2c89655243f7292))
+* reduce code duplication for the Select entities ([07c3379](https://github.com/tinogo/uc-intg-stormaudio/commit/07c33795b3b2b12752ade92e81624289d5da0b1f))
+* reduce code duplication for the Sensor entities ([238f4bd](https://github.com/tinogo/uc-intg-stormaudio/commit/238f4bd3f0d1e5c032245b46aff8f6d5d87d8663))
+* some move code around ([373bda6](https://github.com/tinogo/uc-intg-stormaudio/commit/373bda688f4e6cccd9aaeba7f807a7c1ecd380f2))
+
 ## [0.26.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.25.8...v0.26.0) (2026-07-28)
 
 
