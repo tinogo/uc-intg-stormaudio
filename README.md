@@ -181,6 +181,13 @@ uv export --format requirements.txt --output-file requirements.txt --no-annotate
 
 ```
 
+#### Updating a single dependency
+
+```bash
+uv lock --upgrade-package <dependency>
+uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
+```
+
 #### Updating all dependencies
 
 ```bash
