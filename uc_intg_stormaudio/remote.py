@@ -12,12 +12,11 @@ from typing import Any
 
 from ucapi import EntityTypes, Remote, StatusCodes, remote
 from ucapi.remote import Attributes as RemoteAttr
-from ucapi.remote import States
+from ucapi.remote import States as RemoteStates
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import (
-    REMOTE_STATE_MAPPING,
     Loggers,
     SimpleCommands,
     StormAudioStates,
@@ -27,15 +26,17 @@ from uc_intg_stormaudio.simple_commands import get_simple_command_map
 
 _LOG = logging.getLogger(Loggers.REMOTE)
 
-FEATURES = [
-    remote.Features.ON_OFF,
-    remote.Features.SEND_CMD,
-    remote.Features.TOGGLE,
-]
-
 _PRESET_CMD_PREFIX = "PRESET_"
 _SOURCE_CMD_PREFIX = "SOURCE_"
 _VOLUME_CMD_PREFIX = "VOLUME_"
+
+
+REMOTE_STATE_MAPPING = {
+    StormAudioStates.ON: RemoteStates.ON,
+    StormAudioStates.OFF: RemoteStates.OFF,
+    StormAudioStates.UNAVAILABLE: RemoteStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: RemoteStates.UNKNOWN,
+}
 
 
 class StormAudioRemote(Remote, Entity):
@@ -65,7 +66,11 @@ class StormAudioRemote(Remote, Entity):
         super().__init__(
             identifier=entity_id,
             name=f"{device_config.name} Remote",
-            features=FEATURES,
+            features=[
+                remote.Features.ON_OFF,
+                remote.Features.SEND_CMD,
+                remote.Features.TOGGLE,
+            ],
             attributes=device.get_device_attributes(entity_id),
             simple_commands=[member.value for member in SimpleCommands],
             cmd_handler=self.handle_command,
@@ -156,7 +161,7 @@ class StormAudioRemote(Remote, Entity):
             if delay > 0:
                 await asyncio.sleep(delay / 1000)
 
-    def map_entity_states(self, device_state: StormAudioStates) -> States:
+    def map_entity_states(self, device_state: StormAudioStates) -> RemoteStates:
         """Convert a device-specific state to a UC API entity state."""
         return REMOTE_STATE_MAPPING[device_state]
 

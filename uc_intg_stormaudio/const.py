@@ -8,9 +8,6 @@ This module contains constants used throughout the integration.
 
 from enum import StrEnum
 
-from ucapi.media_player import States as MediaPlayerStates
-from ucapi.remote import States as RemoteStates
-
 
 class SimpleCommands(StrEnum):
     """
@@ -239,18 +236,3 @@ class StormAudioStates(StrEnum):
     UNAVAILABLE = "UNAVAILABLE"
     OFF = "OFF"
     ON = "ON"
-
-
-MEDIA_PLAYER_STATE_MAPPING = {
-    StormAudioStates.ON: MediaPlayerStates.ON,
-    StormAudioStates.OFF: MediaPlayerStates.OFF,
-    StormAudioStates.UNAVAILABLE: MediaPlayerStates.UNAVAILABLE,
-    StormAudioStates.UNKNOWN: MediaPlayerStates.UNKNOWN,
-}
-
-REMOTE_STATE_MAPPING = {
-    StormAudioStates.ON: RemoteStates.ON,
-    StormAudioStates.OFF: RemoteStates.OFF,
-    StormAudioStates.UNAVAILABLE: RemoteStates.UNAVAILABLE,
-    StormAudioStates.UNKNOWN: RemoteStates.UNKNOWN,
-}

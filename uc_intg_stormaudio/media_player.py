@@ -11,12 +11,12 @@ from typing import Any, Callable
 
 from ucapi import EntityTypes, MediaPlayer, StatusCodes, media_player
 from ucapi.media_player import Attributes as MediaAttr
-from ucapi.media_player import DeviceClasses, States
+from ucapi.media_player import DeviceClasses
+from ucapi.media_player import States as MediaPlayerStates
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.config import StormAudioConfig
 from uc_intg_stormaudio.const import (
-    MEDIA_PLAYER_STATE_MAPPING,
     Loggers,
     SimpleCommands,
     StormAudioStates,
@@ -26,19 +26,13 @@ from uc_intg_stormaudio.simple_commands import get_simple_command_map
 
 _LOG = logging.getLogger(Loggers.MEDIA_PLAYER)
 
-FEATURES = [
-    media_player.Features.ON_OFF,
-    media_player.Features.DPAD,
-    media_player.Features.TOGGLE,
-    media_player.Features.VOLUME,
-    media_player.Features.VOLUME_UP_DOWN,
-    media_player.Features.HOME,
-    media_player.Features.MUTE,
-    media_player.Features.UNMUTE,
-    media_player.Features.MUTE_TOGGLE,
-    media_player.Features.SELECT_SOUND_MODE,
-    media_player.Features.SELECT_SOURCE,
-]
+
+MEDIA_PLAYER_STATE_MAPPING = {
+    StormAudioStates.ON: MediaPlayerStates.ON,
+    StormAudioStates.OFF: MediaPlayerStates.OFF,
+    StormAudioStates.UNAVAILABLE: MediaPlayerStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: MediaPlayerStates.UNKNOWN,
+}
 
 
 class StormAudioMediaPlayer(MediaPlayer, Entity):
@@ -83,7 +77,19 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
         super().__init__(
             identifier=entity_id,
             name=f"{device_config.name} Media Player",
-            features=FEATURES,
+            features=[
+                media_player.Features.ON_OFF,
+                media_player.Features.DPAD,
+                media_player.Features.TOGGLE,
+                media_player.Features.VOLUME,
+                media_player.Features.VOLUME_UP_DOWN,
+                media_player.Features.HOME,
+                media_player.Features.MUTE,
+                media_player.Features.UNMUTE,
+                media_player.Features.MUTE_TOGGLE,
+                media_player.Features.SELECT_SOUND_MODE,
+                media_player.Features.SELECT_SOURCE,
+            ],
             attributes=device.get_device_attributes(entity_id),
             device_class=DeviceClasses.RECEIVER,
             options={
@@ -149,7 +155,7 @@ class StormAudioMediaPlayer(MediaPlayer, Entity):
             _LOG.error("Error executing command %s: %s", cmd_id, ex)
             return StatusCodes.BAD_REQUEST
 
-    def map_entity_states(self, device_state: StormAudioStates) -> States:
+    def map_entity_states(self, device_state: StormAudioStates) -> MediaPlayerStates:
         """Convert a device-specific state to a UC API entity state."""
         return MEDIA_PLAYER_STATE_MAPPING[device_state]
 
