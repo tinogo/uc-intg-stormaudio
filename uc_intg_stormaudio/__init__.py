@@ -14,13 +14,13 @@ import os
 from ucapi_framework import BaseConfigManager, BaseIntegrationDriver, get_config_path
 
 from uc_intg_stormaudio.config import StormAudioConfig
-from uc_intg_stormaudio.const import Loggers, SensorType
+from uc_intg_stormaudio.const import Loggers
 from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
 from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
 from uc_intg_stormaudio.remote import StormAudioRemote
 from uc_intg_stormaudio.select import SelectType, StormAudioSelect
-from uc_intg_stormaudio.sensor import StormAudioSensor
+from uc_intg_stormaudio.sensor import SensorType, StormAudioSensor
 from uc_intg_stormaudio.setup import StormAudioSetupFlow
 
 

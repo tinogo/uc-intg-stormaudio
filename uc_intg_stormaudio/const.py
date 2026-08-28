@@ -10,7 +10,6 @@ from enum import StrEnum
 
 from ucapi.media_player import States as MediaPlayerStates
 from ucapi.remote import States as RemoteStates
-from ucapi.sensor import States as SensorStates
 
 
 class SimpleCommands(StrEnum):
@@ -233,32 +232,6 @@ class Loggers(StrEnum):
     SETUP_FLOW = "setup_flow"
 
 
-class SensorType(StrEnum):
-    """Defines the supported sensor types for StormAudio devices."""
-
-    AUDIO_STREAM = "audio_stream"
-    AURO_PRESET = "auro_preset"
-    AURO_STRENGTH = "auro_strength"
-    BASS_DB = "bass_db"
-    BRIGHTNESS_DB = "brightness_db"
-    CENTER_ENHANCE_DB = "center_enhance_db"
-    DOLBY_MODE = "dolby_mode"
-    DOLBY_CENTER_SPREAD = "dolby_center_spread"
-    DOLBY_VIRTUALIZER = "dolby_virtualizer"
-    HDMI_1_VIDEO_STREAM = "hdmi_1_video_stream"
-    HDMI_2_VIDEO_STREAM = "hdmi_2_video_stream"
-    LFE_ENHANCE_DB = "lfe_enhance_db"
-    LOUDNESS = "loudness"
-    MUTE = "mute"
-    PRESET = "preset"
-    SOURCE = "source"
-    STORM_XT = "storm_xt"
-    SURROUND_ENHANCE_DB = "surround_enhance_db"
-    TREBLE_DB = "treble_db"
-    UPMIXER_MODE = "upmixer"
-    VOLUME_DB = "volume_db"
-
-
 class StormAudioStates(StrEnum):
     """Defines the possible states of the StormAudio device."""
 
@@ -280,12 +253,4 @@ REMOTE_STATE_MAPPING = {
     StormAudioStates.OFF: RemoteStates.OFF,
     StormAudioStates.UNAVAILABLE: RemoteStates.UNAVAILABLE,
     StormAudioStates.UNKNOWN: RemoteStates.UNKNOWN,
-}
-
-
-SENSOR_STATE_MAPPING = {
-    StormAudioStates.ON: SensorStates.ON,
-    StormAudioStates.OFF: SensorStates.UNAVAILABLE,
-    StormAudioStates.UNAVAILABLE: SensorStates.UNAVAILABLE,
-    StormAudioStates.UNKNOWN: SensorStates.UNKNOWN,
 }

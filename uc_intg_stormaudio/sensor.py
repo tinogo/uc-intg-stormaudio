@@ -5,52 +5,344 @@ Sensor Entity.
 """
 
 import logging
+from dataclasses import dataclass
+from enum import StrEnum
 from typing import Any, Callable
 
 from ucapi import EntityTypes, Sensor
 from ucapi.sensor import Attributes as SensorAttr
-from ucapi.sensor import DeviceClasses, Options, States
+from ucapi.sensor import DeviceClasses, Options
+from ucapi.sensor import States as SensorStates
 from ucapi_framework import Entity, create_entity_id
 
 from uc_intg_stormaudio.const import (
-    SENSOR_STATE_MAPPING,
     Loggers,
-    SensorType,
     StormAudioStates,
 )
 from uc_intg_stormaudio.device import StormAudioDevice
 
 _LOG = logging.getLogger(Loggers.SENSOR)
 
-_decibel_based_custom_sensors = {
-    SensorType.BASS_DB: "Bass",
-    SensorType.BRIGHTNESS_DB: "Brightness",
-    SensorType.CENTER_ENHANCE_DB: "Center enhance",
-    SensorType.LFE_ENHANCE_DB: "LFE enhance",
-    SensorType.LOUDNESS: "Loudness",
-    SensorType.SURROUND_ENHANCE_DB: "Surround enhance",
-    SensorType.TREBLE_DB: "Treble",
-    SensorType.VOLUME_DB: "Volume",
+_DB_SENSOR_OPTIONS = {
+    Options.CUSTOM_UNIT: "dB",
+    Options.DECIMALS: 1,
 }
 
-_simple_custom_sensors = {
-    SensorType.AUDIO_STREAM: "Audio Stream",
-    SensorType.AURO_PRESET: "Auro-Matic Preset",
-    SensorType.AURO_STRENGTH: "Auro-Matic Strength",
-    SensorType.DOLBY_MODE: "Dolby mode",
-    SensorType.HDMI_1_VIDEO_STREAM: "HDMI-Out 1 Video Stream",
-    SensorType.HDMI_2_VIDEO_STREAM: "HDMI-Out 2 Video Stream",
-    SensorType.LOUDNESS: "Loudness",
-    SensorType.PRESET: "Preset",
-    SensorType.SOURCE: "Source",
-    SensorType.UPMIXER_MODE: "Upmixer",
+
+class SensorType(StrEnum):
+    """Defines the supported sensor types for StormAudio devices."""
+
+    AUDIO_STREAM = "audio_stream"
+    AURO_PRESET = "auro_preset"
+    AURO_STRENGTH = "auro_strength"
+    BASS_DB = "bass_db"
+    BRIGHTNESS_DB = "brightness_db"
+    CENTER_ENHANCE_DB = "center_enhance_db"
+    DOLBY_MODE = "dolby_mode"
+    DOLBY_CENTER_SPREAD = "dolby_center_spread"
+    DOLBY_VIRTUALIZER = "dolby_virtualizer"
+    HDMI_1_VIDEO_STREAM = "hdmi_1_video_stream"
+    HDMI_2_VIDEO_STREAM = "hdmi_2_video_stream"
+    LFE_ENHANCE_DB = "lfe_enhance_db"
+    LOUDNESS = "loudness"
+    MUTE = "mute"
+    PRESET = "preset"
+    SOURCE = "source"
+    STORM_XT = "storm_xt"
+    SURROUND_ENHANCE_DB = "surround_enhance_db"
+    TREBLE_DB = "treble_db"
+    UPMIXER_MODE = "upmixer"
+    VOLUME_DB = "volume_db"
+
+
+SENSOR_STATE_MAPPING = {
+    StormAudioStates.ON: SensorStates.ON,
+    StormAudioStates.OFF: SensorStates.UNAVAILABLE,
+    StormAudioStates.UNAVAILABLE: SensorStates.UNAVAILABLE,
+    StormAudioStates.UNKNOWN: SensorStates.UNKNOWN,
 }
 
-_binary_sensors = {
-    SensorType.DOLBY_CENTER_SPREAD: "Dolby Center Spread",
-    SensorType.DOLBY_VIRTUALIZER: "Dolby Virtualizer",
-    SensorType.MUTE: "Mute",
-    SensorType.STORM_XT: "StormXT",
+
+@dataclass(frozen=True)
+class SensorEntityConfig:
+    """Defines all behavior required to build and handle a sensor entity."""
+
+    name: str
+    device_class: DeviceClasses
+    attributes_getter: Callable[[StormAudioDevice], dict[str, Any]]
+    options: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class ResolvedSensorConfig:
+    """Resolved config payload used for sensor initialization."""
+
+    identifier: str
+    name: str
+    device_class: DeviceClasses
+    attributes: Any
+    options: dict[str, Any]
+    entity_config: SensorEntityConfig
+
+
+def _build_sensor_attributes(
+    device: StormAudioDevice,
+    value: Any,
+    unit: str | None = None,
+) -> dict[str, Any]:
+    attributes = {
+        SensorAttr.STATE: SENSOR_STATE_MAPPING[device.state],
+        SensorAttr.VALUE: value,
+    }
+    if unit is not None:
+        attributes[SensorAttr.UNIT] = unit
+    return attributes
+
+
+def _build_unavailable_sensor_attributes() -> dict[str, Any]:
+    return {
+        SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
+        SensorAttr.VALUE: None,
+    }
+
+
+def _is_auro_upmixer_active(device: StormAudioDevice) -> bool:
+    return device.device_attributes.actual_upmixer_mode_id == 4
+
+
+def _is_dolby_upmixer_active(device: StormAudioDevice) -> bool:
+    return device.device_attributes.actual_upmixer_mode_id == 2
+
+
+def _format_on_off(value: bool) -> str:
+    return "on" if value else "off"
+
+
+def _get_audio_stream_value(device: StormAudioDevice) -> str:
+    values = [
+        device.device_attributes.audio_stream,
+        device.device_attributes.audio_format,
+        device.device_attributes.audio_sample_rate,
+    ]
+    filtered_values = [str(v) for v in values if v]
+
+    if device.device_attributes.audio_stream == "None":
+        return "-"
+    return ", ".join(filtered_values)
+
+
+def _get_hdmi_video_stream_value(hdmi: dict[str, str | None]) -> str:
+    input_name = hdmi.get("input_name")
+    if input_name in (None, "-"):
+        return "-"
+
+    values = [
+        hdmi.get("timing"),
+        hdmi.get("copy_protection"),
+        hdmi.get("color_space"),
+        hdmi.get("color_depth"),
+        hdmi.get("mode"),
+        hdmi.get("hdr"),
+    ]
+    return ", ".join(str(v) for v in values)
+
+
+SENSOR_ENTITY_CONFIG: dict[SensorType, SensorEntityConfig] = {
+    SensorType.AUDIO_STREAM: SensorEntityConfig(
+        name="Audio Stream",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _get_audio_stream_value(device),
+        ),
+    ),
+    SensorType.AURO_PRESET: SensorEntityConfig(
+        name="Auro-Matic Preset",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: (
+            _build_sensor_attributes(device, str(device.device_attributes.auro_preset))
+            if _is_auro_upmixer_active(device)
+            else _build_unavailable_sensor_attributes()
+        ),
+    ),
+    SensorType.AURO_STRENGTH: SensorEntityConfig(
+        name="Auro-Matic Strength",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: (
+            _build_sensor_attributes(
+                device, str(device.device_attributes.auro_strength)
+            )
+            if _is_auro_upmixer_active(device)
+            else _build_unavailable_sensor_attributes()
+        ),
+    ),
+    SensorType.BASS_DB: SensorEntityConfig(
+        name="Bass",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.bass),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.BRIGHTNESS_DB: SensorEntityConfig(
+        name="Brightness",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.brightness),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.CENTER_ENHANCE_DB: SensorEntityConfig(
+        name="Center enhance",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.center_enhance),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.DOLBY_CENTER_SPREAD: SensorEntityConfig(
+        name="Dolby Center Spread",
+        device_class=DeviceClasses.BINARY,
+        attributes_getter=lambda device: (
+            _build_sensor_attributes(
+                device,
+                _format_on_off(device.device_attributes.dolby_center_spread),
+                unit="sound",
+            )
+            if _is_dolby_upmixer_active(device)
+            else _build_unavailable_sensor_attributes()
+        ),
+    ),
+    SensorType.DOLBY_MODE: SensorEntityConfig(
+        name="Dolby mode",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            device.device_attributes.dolby_mode,
+        ),
+    ),
+    SensorType.DOLBY_VIRTUALIZER: SensorEntityConfig(
+        name="Dolby Virtualizer",
+        device_class=DeviceClasses.BINARY,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _format_on_off(device.device_attributes.dolby_virtualizer),
+            unit="sound",
+        ),
+    ),
+    SensorType.HDMI_1_VIDEO_STREAM: SensorEntityConfig(
+        name="HDMI-Out 1 Video Stream",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _get_hdmi_video_stream_value(device.device_attributes.hdmi_1),
+        ),
+    ),
+    SensorType.HDMI_2_VIDEO_STREAM: SensorEntityConfig(
+        name="HDMI-Out 2 Video Stream",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _get_hdmi_video_stream_value(device.device_attributes.hdmi_2),
+        ),
+    ),
+    SensorType.LFE_ENHANCE_DB: SensorEntityConfig(
+        name="LFE enhance",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.lfe_enhance),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.LOUDNESS: SensorEntityConfig(
+        name="Loudness",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            device.device_attributes.loudness,
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.MUTE: SensorEntityConfig(
+        name="Mute",
+        device_class=DeviceClasses.BINARY,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _format_on_off(device.device_attributes.muted),
+            unit="sound",
+        ),
+    ),
+    SensorType.PRESET: SensorEntityConfig(
+        name="Preset",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            device.device_attributes.preset,
+        ),
+    ),
+    SensorType.SOURCE: SensorEntityConfig(
+        name="Source",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            device.device_attributes.source,
+        ),
+    ),
+    SensorType.STORM_XT: SensorEntityConfig(
+        name="StormXT",
+        device_class=DeviceClasses.BINARY,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            _format_on_off(device.device_attributes.storm_xt_active),
+            unit="sound",
+        ),
+    ),
+    SensorType.SURROUND_ENHANCE_DB: SensorEntityConfig(
+        name="Surround enhance",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.surround_enhance),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.TREBLE_DB: SensorEntityConfig(
+        name="Treble",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.treble),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
+    SensorType.UPMIXER_MODE: SensorEntityConfig(
+        name="Upmixer",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            device.device_attributes.actual_sound_mode,
+        ),
+    ),
+    SensorType.VOLUME_DB: SensorEntityConfig(
+        name="Volume",
+        device_class=DeviceClasses.CUSTOM,
+        attributes_getter=lambda device: _build_sensor_attributes(
+            device,
+            str(device.device_attributes.volume - 100),
+            unit="dB",
+        ),
+        options=_DB_SENSOR_OPTIONS,
+    ),
 }
 
 
@@ -60,312 +352,49 @@ class StormAudioSensor(Sensor, Entity):  # pylint: disable=too-few-public-method
     def __init__(self, device: StormAudioDevice, sensor_type: SensorType):
         """Initialize the sensor entity."""
         self._device = device
-        self._sensor_type = sensor_type
-        self._entity_attribute_map: dict[SensorType, Callable] = {
-            SensorType.AUDIO_STREAM: self._get_audio_stream_sensor_attributes,
-            SensorType.AURO_PRESET: self._get_auro_preset_sensor_attributes,
-            SensorType.AURO_STRENGTH: self._get_auro_strength_sensor_attributes,
-            SensorType.BASS_DB: self._get_bass_sensor_attributes,
-            SensorType.BRIGHTNESS_DB: self._get_brightness_sensor_attributes,
-            SensorType.CENTER_ENHANCE_DB: self._get_center_enhance_sensor_attributes,
-            SensorType.DOLBY_CENTER_SPREAD: self._get_dolby_center_spread_sensor_attributes,
-            SensorType.DOLBY_MODE: self._get_dolby_mode_sensor_attributes,
-            SensorType.DOLBY_VIRTUALIZER: self._get_dolby_virtualizer_sensor_attributes,
-            SensorType.HDMI_1_VIDEO_STREAM: self._get_hdmi_out_1_video_stream_sensor_attributes,
-            SensorType.HDMI_2_VIDEO_STREAM: self._get_hdmi_out_2_video_stream_sensor_attributes,
-            SensorType.LFE_ENHANCE_DB: self._get_lfe_enhance_sensor_attributes,
-            SensorType.LOUDNESS: self._get_loudness_sensor_attributes,
-            SensorType.MUTE: self._get_mute_sensor_attributes,
-            SensorType.PRESET: self._get_preset_sensor_attributes,
-            SensorType.SOURCE: self._get_source_sensor_attributes,
-            SensorType.STORM_XT: self._get_storm_xt_sensor_attributes,
-            SensorType.SURROUND_ENHANCE_DB: self._get_surround_enhance_sensor_attributes,
-            SensorType.TREBLE_DB: self._get_treble_sensor_attributes,
-            SensorType.UPMIXER_MODE: self._get_upmixer_mode_sensor_attributes,
-            SensorType.VOLUME_DB: self._get_volume_sensor_attributes,
-        }
 
         sensor_config = self._get_sensor_config(sensor_type, device)
+        self._entity_config = sensor_config.entity_config
 
-        _LOG.debug("Initializing sensor: %s", sensor_config["identifier"])
+        _LOG.debug("Initializing sensor: %s", sensor_config.identifier)
 
         super().__init__(
-            identifier=sensor_config["identifier"],
-            name=sensor_config["name"],
+            identifier=sensor_config.identifier,
+            name=sensor_config.name,
             features=[],
-            attributes=sensor_config["attributes"],
-            device_class=sensor_config["device_class"],
-            options=sensor_config.get("options", {}),
+            attributes=sensor_config.attributes,
+            device_class=sensor_config.device_class,
+            options=sensor_config.options,
         )
 
         self.subscribe_to_device(device)
 
     def _get_sensor_config(
         self, sensor_type: SensorType, device: StormAudioDevice
-    ) -> dict[str, Any]:
+    ) -> ResolvedSensorConfig:
         """Get sensor configuration based on type."""
-        sensor = {}
+        config = SENSOR_ENTITY_CONFIG.get(sensor_type)
+        if config is None:
+            raise ValueError(f"Unsupported sensor type: {sensor_type}")
         sensor_entity_id = create_entity_id(
             EntityTypes.SENSOR,
             device.identifier,
             sensor_type,
         )
 
-        match sensor_type:
-            case sensor_type if (
-                _decibel_based_custom_sensors.get(sensor_type) is not None
-            ):
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Sensor: {_decibel_based_custom_sensors.get(sensor_type)}",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "options": {
-                        Options.CUSTOM_UNIT: "dB",
-                        Options.DECIMALS: 1,
-                    },
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
+        return ResolvedSensorConfig(
+            identifier=sensor_entity_id,
+            name=f"{device.name} Sensor: {config.name}",
+            device_class=config.device_class,
+            options=config.options or {},
+            attributes=self._device.get_device_attributes(sensor_entity_id),
+            entity_config=config,
+        )
 
-            case sensor_type if _simple_custom_sensors.get(sensor_type) is not None:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Sensor: {_simple_custom_sensors.get(sensor_type)}",
-                    "device_class": DeviceClasses.CUSTOM,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case sensor_type if _binary_sensors.get(sensor_type) is not None:
-                sensor = {
-                    "identifier": sensor_entity_id,
-                    "name": f"{device.name} Sensor: {_binary_sensors.get(sensor_type)}",
-                    "device_class": DeviceClasses.BINARY,
-                    "attributes": self._device.get_device_attributes(sensor_entity_id),
-                }
-
-            case _:
-                raise ValueError(f"Unsupported sensor type: {sensor_type}")
-        return sensor
-
-    def map_entity_states(self, device_state: StormAudioStates) -> States:
+    def map_entity_states(self, device_state: StormAudioStates) -> SensorStates:
         """Convert a device-specific state to a UC API entity state."""
         return SENSOR_STATE_MAPPING[device_state]
 
     async def sync_state(self) -> None:
         """Update the sensor attributes."""
-        attributes = self._entity_attribute_map.get(self._sensor_type)
-        if attributes is not None:
-            self.update(attributes())
-        else:
-            raise ValueError(f"Unsupported sensor type: {self._sensor_type}")
-
-    def _get_audio_stream_sensor_attributes(self) -> dict[str, Any]:
-        """Get the current Audio stream sensor attributes."""
-        values = [
-            self._device.device_attributes.audio_stream,
-            self._device.device_attributes.audio_format,
-            self._device.device_attributes.audio_sample_rate,
-        ]
-        # Filter out falsy values (None, empty string, etc.)
-        filtered_values = [str(v) for v in values if v]
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: ", ".join(filtered_values)
-            if self._device.device_attributes.audio_stream != "None"
-            else "-",
-        }
-
-    def _get_auro_preset_sensor_attributes(self) -> dict[str, Any]:
-        """Get the Auro-Matic preset sensor attributes."""
-        if self._device.device_attributes.actual_upmixer_mode_id != 4:
-            return {
-                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
-                SensorAttr.VALUE: None,
-            }
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.auro_preset),
-        }
-
-    def _get_auro_strength_sensor_attributes(self) -> dict[str, Any]:
-        """Get the Auro-Matic strength sensor attributes."""
-        if self._device.device_attributes.actual_upmixer_mode_id != 4:
-            return {
-                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
-                SensorAttr.VALUE: None,
-            }
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.auro_strength),
-        }
-
-    def _get_bass_sensor_attributes(self) -> dict[str, Any]:
-        """Get the bass sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.bass),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_brightness_sensor_attributes(self) -> dict[str, Any]:
-        """Get the brightness sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.brightness),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_center_enhance_sensor_attributes(self) -> dict[str, Any]:
-        """Get the center-enhance sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.center_enhance),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_dolby_center_spread_sensor_attributes(self) -> dict[str, Any]:
-        """Get the Dolby Center Spread sensor attributes."""
-        if self._device.device_attributes.actual_upmixer_mode_id != 2:
-            return {
-                SensorAttr.STATE: SENSOR_STATE_MAPPING[StormAudioStates.UNAVAILABLE],
-                SensorAttr.VALUE: None,
-            }
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: "on"
-            if self._device.device_attributes.dolby_center_spread
-            else "off",
-            SensorAttr.UNIT: "sound",
-        }
-
-    def _get_dolby_mode_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: self._device.device_attributes.dolby_mode,
-        }
-
-    def _get_dolby_virtualizer_sensor_attributes(self) -> dict[str, Any]:
-        """Get the Dolby virtualizer sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: "on"
-            if self._device.device_attributes.dolby_virtualizer
-            else "off",
-            SensorAttr.UNIT: "sound",
-        }
-
-    def _get_hdmi_out_1_video_stream_sensor_attributes(self) -> dict[str, Any]:
-        """Get the current HDMI-Out 1 video stream sensor attributes."""
-        input_name = self._device.device_attributes.hdmi_1.get("input_name")
-        timing = self._device.device_attributes.hdmi_1.get("timing")
-        copy_protection = self._device.device_attributes.hdmi_1.get("copy_protection")
-        color_space = self._device.device_attributes.hdmi_1.get("color_space")
-        color_depth = self._device.device_attributes.hdmi_1.get("color_depth")
-        mode = self._device.device_attributes.hdmi_1.get("mode")
-        hdr = self._device.device_attributes.hdmi_1.get("hdr")
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: f"{timing}, {copy_protection}, {color_space}, {color_depth}, {mode}, {hdr}"
-            if input_name != "-" and input_name is not None
-            else "-",
-        }
-
-    def _get_hdmi_out_2_video_stream_sensor_attributes(self) -> dict[str, Any]:
-        """Get the current HDMI-Out 2 video stream sensor attributes."""
-        input_name = self._device.device_attributes.hdmi_2.get("input_name")
-        timing = self._device.device_attributes.hdmi_2.get("timing")
-        copy_protection = self._device.device_attributes.hdmi_2.get("copy_protection")
-        color_space = self._device.device_attributes.hdmi_2.get("color_space")
-        color_depth = self._device.device_attributes.hdmi_2.get("color_depth")
-        mode = self._device.device_attributes.hdmi_2.get("mode")
-        hdr = self._device.device_attributes.hdmi_2.get("hdr")
-
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: f"{timing}, {copy_protection}, {color_space}, {color_depth}, {mode}, {hdr}"
-            if input_name != "-" and input_name is not None
-            else "-",
-        }
-
-    def _get_lfe_enhance_sensor_attributes(self) -> dict[str, Any]:
-        """Get the LFE-enhance sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.lfe_enhance),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_loudness_sensor_attributes(self) -> dict[str, Any]:
-        """Get the loudness sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: self._device.device_attributes.loudness,
-        }
-
-    def _get_mute_sensor_attributes(self) -> dict[str, Any]:
-        """Get the mute sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: "on" if self._device.device_attributes.muted else "off",
-            SensorAttr.UNIT: "sound",
-        }
-
-    def _get_preset_sensor_attributes(self) -> dict[str, Any]:
-        """Get the preset sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: self._device.device_attributes.preset,
-        }
-
-    def _get_source_sensor_attributes(self) -> dict[str, Any]:
-        """Get the source sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: self._device.device_attributes.source,
-        }
-
-    def _get_storm_xt_sensor_attributes(self) -> dict[str, Any]:
-        """Get the StormXT sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: "on"
-            if self._device.device_attributes.storm_xt_active
-            else "off",
-            SensorAttr.UNIT: "sound",
-        }
-
-    def _get_surround_enhance_sensor_attributes(self) -> dict[str, Any]:
-        """Get the surround-enhance sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.surround_enhance),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_treble_sensor_attributes(self) -> dict[str, Any]:
-        """Get the treble sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.treble),
-            SensorAttr.UNIT: "dB",
-        }
-
-    def _get_upmixer_mode_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: self._device.device_attributes.actual_sound_mode,
-        }
-
-    def _get_volume_sensor_attributes(self) -> dict[str, Any]:
-        """Get the volume sensor attributes."""
-        return {
-            SensorAttr.STATE: SENSOR_STATE_MAPPING[self._device.state],
-            SensorAttr.VALUE: str(self._device.device_attributes.volume - 100),
-            SensorAttr.UNIT: "dB",
-        }
+        self.update(self._entity_config.attributes_getter(self._device))
