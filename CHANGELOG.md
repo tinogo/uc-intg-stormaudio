@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.26.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.1...v0.26.2) (2026-08-29)
+
+
+### Documentation
+
+* remove a non-existing file from the README.md ([da7dc39](https://github.com/tinogo/uc-intg-stormaudio/commit/da7dc39104844f07a33a10169d991905d1b5c5b5))
+
+
+### Miscellaneous
+
+* **deps:** Update the dependencies ([33b9887](https://github.com/tinogo/uc-intg-stormaudio/commit/33b988747f2a9414451922c87dad1226954287a5))
+* **deps:** Update the required uv version to 0.12.7 ([c2a4c73](https://github.com/tinogo/uc-intg-stormaudio/commit/c2a4c7382e5fedc90365189a506387d162f6422d))
+
 ## [0.26.1](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.0...v0.26.1) (2026-08-28)
 
 
