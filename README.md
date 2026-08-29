@@ -118,7 +118,6 @@ The major changes found in each new release are listed in the [changelog](https:
 │   ├── device.py            # Device communication and state management
 │   ├── device_attributes.py # Contains the device attributes, i.e. the state of the StormAudio ISP
 │   ├── discover.py          # Network device discovery
-│   ├── driver.py            # Integration Driver
 │   ├── helpers.py           # Common used helper files
 │   ├── media_player.py      # Media player entity
 │   ├── remote.py            # Remote entity
