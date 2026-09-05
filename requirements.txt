@@ -15,4 +15,4 @@ ucapi==0.7.0
 ucapi-framework==1.9.6
 websockets==17.1
 yarl==1.24.5
-zeroconf==0.151.1
+zeroconf==0.151.3

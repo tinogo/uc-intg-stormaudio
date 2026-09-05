@@ -7,14 +7,8 @@ COPY ./requirements.txt requirements.txt
 RUN uv pip install --no-cache-dir -r requirements.txt --system
 RUN mkdir /config
 
-ADD driver.json .
-ADD uc_intg_stormaudio ./uc_intg_stormaudio
-
-# Network configuration
-ENV UC_DISABLE_MDNS_PUBLISH="false"
-ENV UC_MDNS_LOCAL_HOSTNAME=""
-ENV UC_INTEGRATION_INTERFACE="0.0.0.0"
-ENV UC_INTEGRATION_HTTP_PORT="9090"
+COPY driver.json .
+COPY uc_intg_stormaudio ./uc_intg_stormaudio
 
 # Configuration path
 ENV UC_CONFIG_HOME="/config"

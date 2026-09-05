@@ -121,7 +121,7 @@ The major changes found in each new release are listed in the [changelog](https:
 │   ├── helpers.py           # Common used helper files
 │   ├── media_player.py      # Media player entity
 │   ├── remote.py            # Remote entity
-│   ├── select.py            # Select entity
+│   ├── select_entity.py     # Select entity
 │   ├── sensor.py            # Sensor entity
 │   ├── setup.py             # Setup flow and user configuration
 │   └── stormaudio.py        # The basic TCP-/Telnet-client for communicating with StormAudio devices
@@ -156,7 +156,7 @@ The major changes found in each new release are listed in the [changelog](https:
 4. Run the integration either locally or via a Compose environment:
    1. Locally:
       ```bash
-      uv run uc_intg_stormaudio/__init__.py
+      uv run python3 uc_intg_stormaudio
       ```
    2. via Compose:
       ```bash

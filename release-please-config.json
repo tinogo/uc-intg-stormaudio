@@ -32,7 +32,6 @@
       "hidden": false
     }
   ],
-  "draft": true,
   "include-component-in-tag": false,
   "packages": {
     ".": {
