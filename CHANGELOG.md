@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.26.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.2...v0.26.3) (2026-09-05)
+
+
+### Miscellaneous
+
+* **ci-cd:** optimize building the integration ([b8ef902](https://github.com/tinogo/uc-intg-stormaudio/commit/b8ef9022ef174668380e6754ff888bc89485bdc6))
+
 ## [0.26.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.1...v0.26.2) (2026-08-29)
 
 
