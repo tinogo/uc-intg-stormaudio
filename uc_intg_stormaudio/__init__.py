@@ -19,13 +19,13 @@ from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
 from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
 from uc_intg_stormaudio.remote import StormAudioRemote
-from uc_intg_stormaudio.select import SelectType, StormAudioSelect
+from uc_intg_stormaudio.select_entity import SelectType, StormAudioSelect
 from uc_intg_stormaudio.sensor import SensorType, StormAudioSensor
 from uc_intg_stormaudio.setup import StormAudioSetupFlow
 
 
-async def main():
-    """Start the Remote Two integration driver."""
+async def _run():
+    """Start the Remote Two/3 integration driver."""
     logging.basicConfig()
 
     # Configure logging level from environment variable
@@ -72,5 +72,6 @@ async def main():
     await asyncio.Future()
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+def main():
+    """Start the entry point in a synchronous fashion."""
+    asyncio.run(_run())

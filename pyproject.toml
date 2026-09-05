@@ -26,11 +26,9 @@ dev = [
     "flake8-docstrings>=1.7.0",
     "isort>=7.0.0",
     "pre-commit>=4.5.1",
+    "pyinstaller>=6.22.2",
     "pylint>=4.0.4",
 ]
-
-[project.scripts]
-uc-intg-stormaudio = "uc_intg_stormaudio:main"
 
 [tool.uv]
 required-version = ">=0.12.7"

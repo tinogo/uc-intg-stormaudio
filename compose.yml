@@ -22,7 +22,11 @@ services:
      build:
        dockerfile: ./Dockerfile
      hostname: uc-intg-stormaudio
-     command: bash -c "UC_INTEGRATION_INTERFACE=$(hostname -i) python3 -m uc_intg_stormaudio"
+     environment:
+       - UC_DISABLE_MDNS_PUBLISH=false
+       - UC_MDNS_LOCAL_HOSTNAME=
+       - UC_INTEGRATION_INTERFACE=0.0.0.0
+       - UC_INTEGRATION_HTTP_PORT=9090
      volumes:
        - integration-data:/config
      develop:
