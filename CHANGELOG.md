@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.27.0](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.3...v0.27.0) (2026-09-06)
+
+
+### Features
+
+* **ci-cd:** Re-enable immutable release support ([5ade16a](https://github.com/tinogo/uc-intg-stormaudio/commit/5ade16a3203611e8c0fefd6fab85aab38b904cda))
+
 ## [0.26.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.26.2...v0.26.3) (2026-09-05)
 
 
