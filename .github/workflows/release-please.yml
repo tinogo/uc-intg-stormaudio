@@ -77,3 +77,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GOOGLE_RELEASE_PLEASE_TOKEN }}
         run:
           gh release upload ${{ steps.release.outputs.tag_name }} ${{ env.ARTIFACT_NAME }}.tar.gz
+
+      - name: Publish Immutable Release
+        if: ${{ steps.release.outputs.release_created }}
+        run: gh release edit "${{ steps.release.outputs.tag_name }}" --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
