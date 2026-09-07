@@ -40,7 +40,7 @@ jobs:
 
       - name: Install UV
         if: ${{ steps.release.outputs.release_created }}
-        uses: astral-sh/setup-uv@v10.0.0
+        uses: astral-sh/setup-uv@v10.0.1
 
       - name: Install the dependencies
         if: ${{ steps.release.outputs.release_created }}
