@@ -6,7 +6,7 @@ frozenlist==1.8.0
 idna==3.19
 ifaddr==0.2.0
 multidict==6.7.1
-propcache==0.5.2
+propcache==0.5.4
 protobuf==6.33.6
 pyee==13.0.1 ; python_full_version < '3.12'
 pyee==14.0.0 ; python_full_version >= '3.12'
