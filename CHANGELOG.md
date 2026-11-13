@@ -11,6 +11,21 @@ _Changes in the next release_
 
 ---
 
+## [0.27.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.2...v0.27.3) (2026-11-13)
+
+
+### Bug Fixes
+
+* Fix the local execution of the integration ([1e86998](https://github.com/tinogo/uc-intg-stormaudio/commit/1e869980ef02241303343b273af3db2f817f7b1f))
+
+
+### Miscellaneous
+
+* **deps:** bump astral-sh/setup-uv from 10.3.0 to 10.3.2 in /.github/workflows ([#189](https://github.com/tinogo/uc-intg-stormaudio/issues/189)) ([f2fc4d2](https://github.com/tinogo/uc-intg-stormaudio/commit/f2fc4d2ee9cf64046cf8cb24e4b14163c9edea0f))
+* **deps:** bump astral-sh/setup-uv from 10.3.2 to 10.3.3 in /.github/workflows ([#194](https://github.com/tinogo/uc-intg-stormaudio/issues/194)) ([9d93f31](https://github.com/tinogo/uc-intg-stormaudio/commit/9d93f3157971c7582bc21d7380e45729e7bff0eb))
+* **deps:** Update the Python dependencies ([f9f72d9](https://github.com/tinogo/uc-intg-stormaudio/commit/f9f72d97767557dc5ba8b3a6b965a26104666ad4))
+* Update to Python 3.14 ([5a9615e](https://github.com/tinogo/uc-intg-stormaudio/commit/5a9615e508e71c705adac8b6cff224f9e375c36e))
+
 ## [0.27.2](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.1...v0.27.2) (2026-10-19)
 
 
