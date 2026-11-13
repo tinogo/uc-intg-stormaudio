@@ -132,7 +132,7 @@ The major changes found in each new release are listed in the [changelog](https:
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.14+
 - uv
 - Docker, Docker Compose
 
