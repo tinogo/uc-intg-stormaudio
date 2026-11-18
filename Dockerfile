@@ -3,10 +3,11 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
+RUN mkdir /config
+
 COPY ./pyproject.toml ./uv.lock ./
 RUN uv sync --locked --no-dev --no-install-project
 ENV PATH="/app/.venv/bin:$PATH"
-RUN mkdir /config
 
 COPY driver.json .
 COPY uc_intg_stormaudio ./uc_intg_stormaudio
