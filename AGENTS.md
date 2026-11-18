@@ -43,5 +43,5 @@ Run the driver locally with `uv run python3 uc_intg_stormaudio` or `uv run pytho
 - Follow `docs/code_guidelines.md`: use double quotes and keep lines within 120 characters. Import ordering is configured in `setup.cfg`; format with `uv format`.
 - Use `StormAudioDeviceAttributes` as the shared source of current device state. When adding a protocol response, update that state in the response handler and push an update so subscribed entities stay synchronized.
 - When adding a select or sensor type, extend its `StrEnum` and corresponding configuration map; entity construction is already registered for every enum member in `__init__.py`.
-- When adding or removing a runtime dependency, use `uv add` or `uv remove`, then regenerate the exported runtime dependency list with `uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev`. Keep `uv.lock` and `requirements.txt` in sync.
+- When adding or removing a dependency, use `uv add` or `uv remove` and commit the updated `uv.lock`. Docker images install dependencies from `pyproject.toml` and `uv.lock`.
 - Keep integration metadata in `driver.json` aligned with changes that affect the published driver or supported API.

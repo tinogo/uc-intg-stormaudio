@@ -12,11 +12,6 @@ repos:
         language: python
         additional_dependencies: [uv==0.13.1]
 
-      - id: uv-export
-        args: [ "--format=requirements.txt", "--output-file=requirements.txt", "--no-annotate", "--no-header", "--no-hashes", "--no-dev" ]
-        language: python
-        additional_dependencies: [uv==0.13.1]
-
       - id: uv-sync
         language: python
         additional_dependencies: [uv==0.13.1]

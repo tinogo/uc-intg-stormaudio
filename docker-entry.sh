@@ -2,5 +2,5 @@
 # Docker entrypoint script
 
 cd /usr/src/app
-pip install --no-cache-dir -q -r requirements.txt
-python -m uc_intg_stormaudio
+uv sync --locked --no-dev --no-install-project
+exec uv run --locked --no-sync python -m uc_intg_stormaudio

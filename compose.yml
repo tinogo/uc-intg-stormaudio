@@ -31,7 +31,10 @@ services:
        - integration-data:/config
      develop:
        watch:
-         - path: ./requirements.txt
+         - path: ./pyproject.toml
+           action: rebuild
+
+         - path: ./uv.lock
            action: rebuild
 
          - path: uc_intg_stormaudio
@@ -52,9 +55,6 @@ services:
        - 23:23
      develop:
        watch:
-         - path: ./requirements.txt
-           action: rebuild
-
          - path: ./server.py
            target: /app/server.py
            action: sync+restart

@@ -127,7 +127,8 @@ The major changes found in each new release are listed in the [changelog](https:
 │   └── stormaudio.py        # The basic TCP-/Telnet-client for communicating with StormAudio devices
 ├── config/                  # Runtime configuration storage
 ├── Dockerfile               # Container build configuration
-└── requirements.txt         # Python dependencies
+├── pyproject.toml           # Project and dependency configuration
+└── uv.lock                  # Locked dependency versions
 ```
 
 ### Prerequisites
@@ -169,29 +170,24 @@ The major changes found in each new release are listed in the [changelog](https:
 
 ```bash
 uv add <dependency>
-uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
 ```
 
 #### Removing dependencies
 
 ```bash
 uv remove <dependency>
-uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
-
 ```
 
 #### Updating a single dependency
 
 ```bash
 uv lock --upgrade-package <dependency>
-uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
 ```
 
 #### Updating all dependencies
 
 ```bash
 uv lock --upgrade
-uv export --format requirements.txt --output-file requirements.txt --no-annotate --no-header --no-hashes --no-dev
 ```
 
 ### Environment Variables
