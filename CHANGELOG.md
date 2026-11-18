@@ -11,6 +11,21 @@ _Changes in the next release_
 
 ---
 
+## [0.27.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.3...v0.27.4) (2026-11-18)
+
+
+### Documentation
+
+* add an AGENTS.md ([4394295](https://github.com/tinogo/uc-intg-stormaudio/commit/4394295a775f7c618a843ba389c3a8bbfddc849a))
+
+
+### Miscellaneous
+
+* change the layer order of the Docker image ([3ea87bd](https://github.com/tinogo/uc-intg-stormaudio/commit/3ea87bd6d5adc6dc8364970ae97cd8c0bc35fa00))
+* **deps:** update the dependabot config ([6727d70](https://github.com/tinogo/uc-intg-stormaudio/commit/6727d70b6b34f7f3f86d7db68bb7cc98d4dcaf07))
+* **deps:** update the package dependencies ([8a3fc4e](https://github.com/tinogo/uc-intg-stormaudio/commit/8a3fc4ed1773ff95693f8522108f3a7380e23d73))
+* get rid of the requirements.txt ([87150aa](https://github.com/tinogo/uc-intg-stormaudio/commit/87150aa671dfa099079bcb6d3753f3c96a3594cc))
+
 ## [0.27.3](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.2...v0.27.3) (2026-11-13)
 
 
