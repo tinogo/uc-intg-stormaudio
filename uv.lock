@@ -826,16 +826,16 @@ wheels = [
 
 [[package]]
 name = "ucapi-framework"
-version = "1.9.8"
+version = "1.9.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pyee" },
     { name = "ucapi" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/95/a2/0d2b266152b96eba70ef84b99ed6cf48739dc660c2bba58c6e6b165ec3bf/ucapi_framework-1.9.8.tar.gz", hash = "sha256:64b9faf69ceebd0e52b5a96c498956a95c0f9ea30a9ec994e56dc33071d97315", size = 161922, upload-time = "2026-10-12T20:44:53.035Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/14/87b6f289bfc06be75da4ab97b83ff2295d6b80eb610e53aa1bb9a23e4754/ucapi_framework-1.9.9.tar.gz", hash = "sha256:abc35f33fc1b555f792b4375c7feab5bb1dc729a221913c0840962aecf0338f6", size = 162661, upload-time = "2026-11-14T18:34:48.63Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bb/39/bf2638d0bcfd26bd34e6dd73062e37775b499a50e1a153a06ad25be8c667/ucapi_framework-1.9.8-py3-none-any.whl", hash = "sha256:51a2cf0cd9362819be0267e4b86cf7b8867e3f06f5d5aca5febba43288e3c32c", size = 100380, upload-time = "2026-10-12T20:44:51.684Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/ea/73f880f95a67af2bf22fadbf0ac62f12d81da7e32c05541373f66d7ce43f/ucapi_framework-1.9.9-py3-none-any.whl", hash = "sha256:c823daa49fd70810540dfe0cc0236c79d5ae84761bd117a29c70913e2472a86e", size = 100524, upload-time = "2026-11-14T18:34:46.942Z" },
 ]
 
 [[package]]
