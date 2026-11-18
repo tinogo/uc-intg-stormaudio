@@ -612,14 +612,14 @@ wheels = [
 
 [[package]]
 name = "pyee"
-version = "16.0.2"
+version = "16.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/50/34/69e6daeca6b9f7417c3d67bd419215aa76cae56f317e479df7cbff8de882/pyee-16.0.2.tar.gz", hash = "sha256:31cb31131df7757f2a54fbd98ea5d37e736dc8a9f41ec4bdce40892a32474ec8", size = 144274, upload-time = "2026-11-11T19:54:53.934Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/bc/8d7e802a90112ce62c6cbcdeb519c79b966c528956054fa43b6c2e5e5993/pyee-16.1.0.tar.gz", hash = "sha256:fe092d3a2a66f0f6a277fb227b078d3d849318da9a9d5d2f6576143236e84e48", size = 138156, upload-time = "2026-11-14T18:06:23.782Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/6e/0d01bf187ea2abc1659d2d4c4049b722fbfe25e2ba5bac37aacc427c4791/pyee-16.0.2-py3-none-any.whl", hash = "sha256:b3221f531a85818fbcf4d5ba7d8620680036381e79ca312334a512077870ba60", size = 17694, upload-time = "2026-11-11T19:54:52.399Z" },
+    { url = "https://files.pythonhosted.org/packages/92/59/21807600b85ab28826c5096772d7ec3cca74c767ef07dc33df5ef3906098/pyee-16.1.0-py3-none-any.whl", hash = "sha256:45aaa35313906a780c539bd640ffba106d86dd63d3fd46b76d718bd611682995", size = 17220, upload-time = "2026-11-14T18:06:22.417Z" },
 ]
 
 [[package]]
