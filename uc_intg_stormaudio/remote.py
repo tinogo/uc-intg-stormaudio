@@ -78,7 +78,7 @@ class StormAudioRemote(Remote, Entity):
 
         self.subscribe_to_device(device)
 
-    async def handle_command(
+    async def handle_command(  # pylint: disable=too-many-branches
         self,
         entity: Remote,
         cmd_id: str,
