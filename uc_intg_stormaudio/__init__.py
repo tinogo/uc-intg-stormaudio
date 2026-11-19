@@ -18,6 +18,7 @@ from uc_intg_stormaudio.const import Loggers
 from uc_intg_stormaudio.device import StormAudioDevice
 from uc_intg_stormaudio.discover import StormAudioDiscovery
 from uc_intg_stormaudio.media_player import StormAudioMediaPlayer
+from uc_intg_stormaudio.number import NumberType, StormAudioNumber
 from uc_intg_stormaudio.remote import StormAudioRemote
 from uc_intg_stormaudio.select_entity import SelectType, StormAudioSelect
 from uc_intg_stormaudio.sensor import SensorType, StormAudioSensor
@@ -44,6 +45,9 @@ async def _run():
             ],
             lambda device_config, dev: [
                 StormAudioSensor(dev, sensor_type) for sensor_type in SensorType
+            ],
+            lambda device_config, dev: [
+                StormAudioNumber(dev, number_type) for number_type in NumberType
             ],
         ],
     )
