@@ -795,7 +795,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pyee", specifier = ">=9.0" },
-    { name = "ucapi", specifier = ">=0.5.2" },
+    { name = "ucapi", git = "https://github.com/unfoldedcircle/integration-python-library?rev=e1316f5b18d9dcdec2fdffce77935dec49b6448f" },
     { name = "ucapi-framework", specifier = ">=1.9.0" },
 ]
 
@@ -811,17 +811,13 @@ dev = [
 
 [[package]]
 name = "ucapi"
-version = "0.7.0"
-source = { registry = "https://pypi.org/simple" }
+version = "0.7.1.dev11+ge1316f5b1"
+source = { git = "https://github.com/unfoldedcircle/integration-python-library?rev=e1316f5b18d9dcdec2fdffce77935dec49b6448f#e1316f5b18d9dcdec2fdffce77935dec49b6448f" }
 dependencies = [
     { name = "protobuf" },
     { name = "pyee" },
     { name = "websockets" },
     { name = "zeroconf" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/08/ef/121c1fc9df3383a40362df17a29e36fa7dc5d7916a7b93fb5e6bbc8ce323/ucapi-0.7.0.tar.gz", hash = "sha256:4c182dd12c4e5245d43ceb5547c52cdca9ce41b91effca41c67d20eb864b1f69", size = 68893, upload-time = "2026-05-09T22:32:41.837Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/c8/6a0e799cc17948f50861ce59909823a9c243cb9389acf575cb992488217a/ucapi-0.7.0-py3-none-any.whl", hash = "sha256:e85707a91f73d9709ddb6ac8d1fcbc356686fd0fd09a4396e8206c4b4c13d281", size = 60121, upload-time = "2026-05-09T22:32:40.445Z" },
 ]
 
 [[package]]
