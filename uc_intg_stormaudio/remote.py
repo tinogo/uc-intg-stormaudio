@@ -107,6 +107,15 @@ class StormAudioRemote(Remote, Entity):
                 case cmd_id if cmd_id in self._command_map:
                     await self._command_map[cmd_id]()
 
+                case remote.Commands.ON:
+                    await self._device.power_on()
+
+                case remote.Commands.OFF:
+                    await self._device.power_off()
+
+                case remote.Commands.TOGGLE:
+                    await self._device.power_toggle()
+
                 case remote.Commands.SEND_CMD:
                     if params:
                         command = params.get("command", None)
