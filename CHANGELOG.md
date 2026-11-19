@@ -11,6 +11,19 @@ _Changes in the next release_
 
 ---
 
+## [0.27.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.4...v0.27.5) (2026-11-19)
+
+
+### Bug Fixes
+
+* Fix the (went) missing support ON, OFF and TOGGLE Remote commands ([0a9badd](https://github.com/tinogo/uc-intg-stormaudio/commit/0a9baddeec92ac744bb608eb7b6b59d9a0a80f0b))
+
+
+### Miscellaneous
+
+* **deps:** update uv to version 0.13.9 ([dda12f4](https://github.com/tinogo/uc-intg-stormaudio/commit/dda12f42412a03b8743b9a5f0876038fc6379b84))
+* Satisfy Pylint ([76cf13a](https://github.com/tinogo/uc-intg-stormaudio/commit/76cf13ac6528625e1b2f56171e195a596698c3fa))
+
 ## [0.27.4](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.3...v0.27.4) (2026-11-18)
 
 
