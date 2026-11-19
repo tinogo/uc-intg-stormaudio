@@ -6,15 +6,15 @@ default_install_hook_types:
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.13.1
+    rev: 0.13.9
     hooks:
       - id: uv-lock
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
 
       - id: uv-sync
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
 
   - repo: local
     hooks:
@@ -22,7 +22,7 @@ repos:
         name: uv-format
         entry: uv format --preview-features format --
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
         types: [python]
         pass_filenames: true
 
@@ -30,7 +30,7 @@ repos:
         name: isort
         entry: uv run -m isort --verbose --
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
         types: [python]
         pass_filenames: true
 
@@ -38,7 +38,7 @@ repos:
         name: pylint
         entry: uv run -m pylint uc_intg_stormaudio
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
         types: [python]
         pass_filenames: false
 
@@ -46,6 +46,6 @@ repos:
         name: flake8
         entry: uv run -m flake8 uc_intg_stormaudio --count --show-source --statistics
         language: python
-        additional_dependencies: [uv==0.13.1]
+        additional_dependencies: [uv==0.13.9]
         types: [python]
         pass_filenames: false
