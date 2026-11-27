@@ -11,6 +11,13 @@ _Changes in the next release_
 
 ---
 
+## [0.27.6](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.5...v0.27.6) (2026-11-27)
+
+
+### Miscellaneous
+
+* **deps:** bump astral-sh/setup-uv from 10.3.3 to 10.4.0 in the github-actions group ([#204](https://github.com/tinogo/uc-intg-stormaudio/issues/204)) ([7d442f7](https://github.com/tinogo/uc-intg-stormaudio/commit/7d442f7970e30b8142f91e2787526fce78101529))
+
 ## [0.27.5](https://github.com/tinogo/uc-intg-stormaudio/compare/v0.27.4...v0.27.5) (2026-11-19)
 
 
